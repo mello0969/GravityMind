@@ -1,0 +1,70 @@
+- generic [ref=f4e2]:
+  - link "Pular para o conteúdo" [ref=f4e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f4e4]:
+    - generic [ref=f4e5]:
+      - link "GRAVITYMIND, início" [ref=f4e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f4e7]: GRAVITYMIND
+      - paragraph [ref=f4e10]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Navegação principal" [ref=f4e11]:
+        - link "Estudar" [ref=f4e12] [cursor=pointer]:
+          - /url: /
+        - link "Prática" [ref=f4e13] [cursor=pointer]:
+          - /url: /questoes
+        - link "Flash Cards" [ref=f4e15] [cursor=pointer]:
+          - /url: /flashcards
+        - link "Cálculo" [ref=f4e16] [cursor=pointer]:
+          - /url: /calculo
+        - link "Explorar" [ref=f4e17] [cursor=pointer]:
+          - /url: /quadro
+  - main [ref=f4e19]:
+    - generic [ref=f4e21]:
+      - complementary [ref=f4e22]:
+        - text: DISCIPLINA
+        - combobox "DISCIPLINA" [ref=f4e23]:
+          - option "Revisão mista" [selected]
+          - option "Mecânica"
+          - option "1ª Lei de Newton"
+          - option "2ª Lei de Newton"
+          - option "3ª Lei de Newton"
+        - group "DIFICULDADE" [ref=f4e24]:
+          - generic [ref=f4e26]:
+            - button "Fácil" [ref=f4e27]
+            - button "Médio" [ref=f4e28]
+            - button "Difícil" [ref=f4e29]
+            - button "Adaptativo" [pressed] [ref=f4e30]
+          - paragraph [ref=f4e31]: O nível muda conforme seus acertos e correções.
+        - generic [ref=f4e32]:
+          - paragraph [ref=f4e33]: DICAS
+          - paragraph [ref=f4e34]: 2 dicas por sessão
+          - paragraph [ref=f4e35]: O botão aparece junto à questão para manter a dica ligada ao raciocínio atual.
+        - generic [ref=f4e36]:
+          - paragraph [ref=f4e37]: META DIÁRIA
+          - paragraph [ref=f4e38]: "Meta de hoje: 0 de 5"
+          - paragraph [ref=f4e40]: 0 revisões pendentes
+        - button "Entrar no modo foco" [ref=f4e41] [cursor=pointer]
+      - generic [ref=f4e48]:
+        - generic [ref=f4e49]:
+          - generic [ref=f4e50]:
+            - paragraph [ref=f4e51]: QUESTÃO 1 DE 5
+            - generic [ref=f4e54]: 20%
+          - paragraph [ref=f4e56]: Ainda não há uma questão para este recorte.
+        - button "Reiniciar histórico de questões" [ref=f4e58]
+  - contentinfo [ref=f4e62]:
+    - generic [ref=f4e63]:
+      - generic [ref=f4e64]:
+        - generic [ref=f4e65]: GRAVITYMIND
+        - generic [ref=f4e68]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Links institucionais" [ref=f4e69]:
+        - link "Sobre" [ref=f4e70] [cursor=pointer]:
+          - /url: /sobre
+        - link "Privacidade" [ref=f4e71] [cursor=pointer]:
+          - /url: /privacidade
+        - link "Termos" [ref=f4e72] [cursor=pointer]:
+          - /url: /termos
+        - link "Ajuda" [ref=f4e73] [cursor=pointer]:
+          - /url: /contato
+        - link "Entrar" [ref=f4e74] [cursor=pointer]:
+          - /url: /login
+  - button "Abrir tutor Gravity" [ref=f4e75]

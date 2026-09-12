@@ -1,0 +1,210 @@
+import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
+import { i as gerarResumoPerfilParaGravity, G as GravityChat } from "./router-BiedwaEF.mjs";
+
+import "../_libs/seroval.mjs";
+import { T as Trash2, A as ArrowRight, Z as Paperclip, S as Send, W as Lightbulb } from "../_libs/lucide-react.mjs";
+
+import "../_libs/tanstack__react-query.mjs";
+import "../_libs/tanstack__query-core.mjs";
+import "../_libs/tanstack__react-router.mjs";
+import "../_libs/tanstack__router-core.mjs";
+import "../_libs/tanstack__history.mjs";
+import "../_libs/cookie-es.mjs";
+import "../_libs/seroval-plugins.mjs";
+
+
+import "../_libs/react-dom.mjs";
+import "../_libs/isbot.mjs";
+import "../_libs/motion.mjs";
+import "../_libs/framer-motion.mjs";
+import "../_libs/motion-dom.mjs";
+import "../_libs/motion-utils.mjs";
+import "../_libs/unenv.mjs";
+
+
+import "./server-DwUI_Cux.mjs";
+import "../_libs/h3-v2.mjs";
+import "../_libs/rou3.mjs";
+import "../_libs/srvx.mjs";
+
+
+
+
+import "./schemas-Dga4YmnR.mjs";
+import "../_libs/zod.mjs";
+const recent = [["Força e aceleração em plano…", "Lei de Newton · Plano inclinado", "10:24"], ["Atrito estático", "Lei de Newton · Atrito", "Ontem"], ["Sistema de polias", "Dinâmica · Polias", "Ontem"], ["Conservação da energia", "Energia · Mecânica", "12/04"], ["Lançamento oblíquo", "Cinemática · Projéteis", "11/04"], ["Quantidade de movimento", "Dinâmica · Colisões", "09/04"]];
+function TutorPage() {
+  const [liveConversation, setLiveConversation] = reactExports.useState(false);
+  const context = reactExports.useMemo(() => ({
+    leiAtual: {
+      numero: "2ª Lei",
+      titulo: "Bloco em plano inclinado com atrito",
+      enunciado: "Determine a aceleração de um bloco de 2,0 kg em um plano de 30° com atrito cinético 0,20."
+    },
+    resumoPerfil: gerarResumoPerfilParaGravity()
+  }), []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "gm-reference-page grid min-h-[calc(100dvh-5.5rem)] xl:grid-cols-[17.5rem_minmax(0,1fr)_25rem]", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "hidden border-r border-border p-6 xl:flex xl:flex-col", "aria-labelledby": "tutor-history-title", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { id: "tutor-history-title", className: "text-2xl font-semibold", children: "Tutor Virtual" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "mt-5 min-h-11 border border-primary text-sm text-primary hover:bg-primary hover:text-primary-foreground", onClick: () => setLiveConversation(true), children: "+  Nova conversa" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "mt-8 text-sm font-semibold", children: "Conversas recentes" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-3", children: recent.map(([title, subtitle, time], index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: () => setLiveConversation(index !== 0), className: `w-full border-b border-border px-2 py-4 text-left ${index === 0 && !liveConversation ? "border-l-2 border-l-primary bg-[#173027]" : "hover:bg-secondary"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-start justify-between gap-2 text-xs", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "truncate font-medium text-foreground", children: title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "shrink-0 text-muted-foreground", children: time })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mt-2 block truncate text-xs text-muted-foreground", children: subtitle })
+      ] }, title)) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", className: "mt-auto flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "h-4 w-4", "aria-hidden": "true" }),
+        "Limpar histórico"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "min-w-0 px-5 py-6 sm:px-7", "aria-labelledby": "guided-title", children: liveConversation ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "border-b border-border pb-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { id: "guided-title", className: "text-3xl font-semibold", children: "Nova conversa" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-base text-muted-foreground", children: "Descreva sua dúvida e avance uma etapa por vez." })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(GravityChat, { context, sugestoes: ["Como decomponho o peso no plano inclinado?", "Qual sentido devo escolher como positivo?", "Como o atrito entra na 2ª Lei?"], alturaMensagens: "min(66vh, 42rem)" }) })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(GuidedSolution, { onStart: () => setLiveConversation(true) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ProblemData, {})
+  ] });
+}
+function GuidedSolution({
+  onStart
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "border-b border-border pb-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { id: "guided-title", className: "text-3xl font-semibold", children: "Raciocínio guiado" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-lg text-[#c9d2cd]", children: "Vamos resolver juntos, passo a passo." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 space-y-5 text-sm leading-relaxed text-[#d2dbd6]", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(ReasoningStep, { number: "1", title: "O que você já tentou?", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Conte o que você já pensou ou escreveu. Assim, posso continuar a partir daí." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 flex items-center justify-between border border-border bg-[#0b1a14] px-3 py-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+            "Acho que a força resultante é m g sen(θ), então a = g sen(θ).",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+            "Não tenho certeza sobre o papel do atrito."
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onStart, className: "shrink-0 text-xs text-muted-foreground hover:text-foreground", children: "Editar" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(ReasoningStep, { number: "2", title: "Análise e plano", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Ótimo começo. Você identificou corretamente a componente do peso ao longo do plano. Agora vamos incluir o atrito e aplicar a 2ª Lei de Newton na direção do movimento." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "mt-2 block text-foreground", children: "Hipóteses e modelo" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "mt-1 grid gap-0.5 pl-5 marker:text-primary", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Bloco de massa m em um plano inclinado de ângulo θ." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Atrito cinético com coeficiente μₖ." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Eixo x ao longo do plano, positivo para baixo." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Movimento com aceleração constante." })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(ReasoningStep, { number: "3", title: "Equações e cálculo", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Decompondo as forças na direção do plano:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 grid gap-2 font-[Georgia,serif] text-lg italic sm:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "F∥ = m g sen(θ)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm not-italic text-muted-foreground", children: "componente do peso" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "fₐₜ = μₖ m g cos(θ)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm not-italic text-muted-foreground", children: "força de atrito" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 flex flex-wrap items-center justify-between gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-[Georgia,serif] text-xl italic", children: "m g sen(θ) − μₖ m g cos(θ) = m a" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "border border-primary px-6 py-3 font-[Georgia,serif] text-xl italic text-primary", children: "a = g (sen(θ) − μₖ cos(θ))" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(ReasoningStep, { number: "4", title: "Próximo passo", icon: true, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Agora que obtivemos a expressão para a aceleração, podemos analisar condições específicas ou verificar quando o bloco não desliza." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-3 flex flex-wrap gap-2", children: ["Calcular um caso numérico", "Quando o bloco não desliza?", "Variar o ângulo θ", "Outro cenário"].map((label) => /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: onStart, className: "flex min-h-9 items-center gap-2 border border-border-strong px-3 text-xs text-primary hover:bg-secondary", children: [
+          label,
+          " ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { className: "h-3.5 w-3.5", "aria-hidden": "true" })
+        ] }, label)) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: onStart, className: "mt-5 flex min-h-14 w-full items-center border border-border bg-[#0b1a14] text-left", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "grid h-14 w-14 place-items-center border-r border-border text-muted-foreground", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Paperclip, { className: "h-5 w-5", "aria-hidden": "true" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-1 px-4 text-sm text-muted-foreground", children: "Enviar pergunta" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex h-14 items-center gap-3 bg-primary px-6 font-semibold text-primary-foreground", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { className: "h-5 w-5", "aria-hidden": "true" }),
+        " Enviar pergunta"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-xs text-muted-foreground", children: "As respostas podem conter erros. Confira unidades e hipóteses." })
+  ] });
+}
+function ReasoningStep({
+  number,
+  title,
+  icon = false,
+  children
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "grid grid-cols-[2rem_minmax(0,1fr)] gap-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "grid h-7 w-7 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground", children: number }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "flex items-center gap-2 text-lg font-semibold text-foreground", children: [
+        icon && /* @__PURE__ */ jsxRuntimeExports.jsx(Lightbulb, { className: "h-5 w-5", "aria-hidden": "true" }),
+        title
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-0.5", children })
+    ] })
+  ] });
+}
+function ProblemData() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "hidden border-l border-border px-6 py-6 xl:block", "aria-labelledby": "problem-title", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "problem-title", className: "border-b border-border pb-3 text-2xl font-semibold", children: "Dados do problema" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "mt-5 font-semibold", children: "Bloco em plano inclinado com atrito" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-sm leading-relaxed text-[#d2dbd6]", children: [
+      "Um bloco de massa ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-[Georgia,serif] italic", children: "m = 2,0 kg" }),
+      " desliza para baixo em um plano inclinado de",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-[Georgia,serif] italic", children: "θ = 30°" }),
+      ", com coeficiente de atrito cinético ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-[Georgia,serif] italic", children: "μₖ = 0,20" }),
+      ". Determine a aceleração do bloco."
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(InclinedPlaneDiagram, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "mt-5 border-b border-border pb-3 font-semibold", children: "Dados" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("dl", { className: "divide-y divide-border text-sm", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DataRow, { label: "Massa do bloco", value: "m = 2,0 kg" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DataRow, { label: "Ângulo do plano", value: "θ = 30°" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DataRow, { label: "Coeficiente de atrito cinético", value: "μₖ = 0,20" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DataRow, { label: "Gravidade (Terra)", value: "g = 9,8 m/s²" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "mt-6 border-b border-border pb-3 font-semibold", children: "Perguntas" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "mt-3 grid gap-3 text-sm", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "①  Determine a aceleração do bloco." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "②  Qual seria a aceleração se μₖ = 0?" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "③  Para qual valor de θ o bloco não desliza?" })
+    ] })
+  ] });
+}
+function DataRow({
+  label,
+  value
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3 py-2", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: label }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { className: "font-[Georgia,serif] text-base italic", children: value })
+  ] });
+}
+function InclinedPlaneDiagram() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 330 155", className: "mt-5 w-full border border-border bg-[#0b1a14]", "aria-label": "Diagrama de um bloco descendo um plano inclinado", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { fill: "none", stroke: "#a8bbb2", strokeWidth: "1.4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M25 128h208L25 38v90Z" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M28 126h205", strokeDasharray: "4 4" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M122 126a36 36 0 0 1 7-22" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "m238 55 34 22m-34-22 5 10m-5-10 11 1", stroke: "#9de7cb" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "m286 108 25-8m-25 8 6-24", stroke: "#9de7cb" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "72", y: "42", width: "46", height: "39", fill: "#8ddabf", transform: "rotate(23 95 62)" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: "89", y: "65", fill: "#0a1812", fontFamily: "Georgia", fontStyle: "italic", children: "m" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: "126", y: "116", fill: "#c7d2cc", fontFamily: "Georgia", fontStyle: "italic", children: "θ" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: "284", y: "76", fill: "#c7d2cc", fontFamily: "Georgia", fontStyle: "italic", children: "y" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: "313", y: "102", fill: "#c7d2cc", fontFamily: "Georgia", fontStyle: "italic", children: "x" })
+  ] });
+}
+export {
+  TutorPage as component
+};

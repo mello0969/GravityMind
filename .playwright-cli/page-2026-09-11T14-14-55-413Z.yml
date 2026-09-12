@@ -1,0 +1,96 @@
+- generic [ref=f16e2]:
+  - link "Pular para o conteúdo" [ref=f16e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f16e4]:
+    - generic [ref=f16e5]:
+      - link "GRAVITYMIND, início" [ref=f16e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f16e7]: GRAVITYMIND
+      - paragraph [ref=f16e10]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Navegação principal" [ref=f16e11]:
+        - link "Estudar" [ref=f16e12] [cursor=pointer]:
+          - /url: /
+        - link "Prática" [ref=f16e14] [cursor=pointer]:
+          - /url: /questoes
+        - link "Flash Cards" [ref=f16e15] [cursor=pointer]:
+          - /url: /flashcards
+        - link "Cálculo" [ref=f16e16] [cursor=pointer]:
+          - /url: /calculo
+        - link "Explorar" [ref=f16e17] [cursor=pointer]:
+          - /url: /quadro
+  - main [ref=f16e19]:
+    - generic [ref=f16e20]:
+      - img "Maçã tridimensional usada para explorar gravidade e movimento" [ref=f16e22]
+      - generic [aria-hidden]:
+        - generic:
+          - text: F = G
+          - generic:
+            - generic: m₁m₂
+            - generic: r²
+        - paragraph: IDEIAS EM ÓRBITA
+        - paragraph: CONHECIMENTO ATRAI
+      - generic:
+        - heading "Entenda a força. Treine o raciocínio." [level=1]:
+          - generic:
+            - generic:
+              - generic: Entenda a força.
+              - generic [aria-hidden]:
+                - generic: Entenda
+                - generic: a
+                - generic: força.
+          - generic:
+            - generic:
+              - generic: Treine o raciocínio.
+              - generic [aria-hidden]:
+                - generic: Treine
+                - generic: o
+                - generic: raciocínio.
+        - generic [ref=f16e23]:
+          - link "Começar uma sessão" [ref=f16e24] [cursor=pointer]:
+            - /url: /questoes
+          - link "Explorar as leis" [ref=f16e27] [cursor=pointer]:
+            - /url: /lei-1
+    - generic [ref=f16e28]:
+      - generic [ref=f16e29]:
+        - paragraph [ref=f16e31]: PRÁTICA ADAPTATIVA
+        - heading "Questões que se adaptam a você." [level=2] [ref=f16e33]
+        - paragraph [ref=f16e34]: Mesmo assunto. Novos desafios.No seu ritmo.
+      - article [ref=f16e35]:
+        - generic [ref=f16e36]:
+          - generic [ref=f16e37]: Questão 1 de 5
+          - generic [ref=f16e38]: Nível adaptativo
+        - generic [ref=f16e39]:
+          - generic [ref=f16e40]:
+            - paragraph [ref=f16e41]: Um objeto de 2,0 kg é solto do repouso de uma altura de 5,0 m. Desprezando a resistência do ar, qual é a sua velocidade ao atingir o solo?
+            - generic [ref=f16e42]:
+              - generic [ref=f16e43]:
+                - generic [ref=f16e44]: A
+                - generic [ref=f16e45]: 7,0 m/s
+              - generic [ref=f16e46]:
+                - generic [ref=f16e47]: B
+                - generic [ref=f16e49]: 9,8 m/s
+              - generic [ref=f16e50]:
+                - generic [ref=f16e51]: C
+                - generic [ref=f16e52]: 10,0 m/s
+              - generic [ref=f16e53]:
+                - generic [ref=f16e54]: D
+                - generic [ref=f16e55]: 14,0 m/s
+          - img [aria-hidden] [ref=f16e56]:
+            - generic [ref=f16e61]: 5,0 m
+  - contentinfo [ref=f16e62]:
+    - generic [ref=f16e63]:
+      - generic [ref=f16e64]:
+        - generic [ref=f16e65]: GRAVITYMIND
+        - generic [ref=f16e68]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Links institucionais" [ref=f16e69]:
+        - link "Sobre" [ref=f16e70] [cursor=pointer]:
+          - /url: /sobre
+        - link "Privacidade" [ref=f16e71] [cursor=pointer]:
+          - /url: /privacidade
+        - link "Termos" [ref=f16e72] [cursor=pointer]:
+          - /url: /termos
+        - link "Ajuda" [ref=f16e73] [cursor=pointer]:
+          - /url: /contato
+        - link "Entrar" [ref=f16e74] [cursor=pointer]:
+          - /url: /login
+  - button "Abrir tutor Gravity" [ref=f16e75]

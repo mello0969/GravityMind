@@ -1,0 +1,31 @@
+{
+  "compatibility_date": "2025-09-24",
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gravitymind",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "main": "index.mjs",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fisicafacil-db",
+      "database_id": "COLOQUE_AQUI_O_ID_QUE_O_WRANGLER_GEROU",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "..\\client"
+  },
+  "no_bundle": true,
+  "rules": [
+    {
+      "type": "ESModule",
+      "globs": [
+        "**/*.mjs",
+        "**/*.js"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "verdict": "pass",
+  "confidence": 0.86,
+  "estimatedFidelity": 0.86,
+  "targetThreshold": 0.7,
+  "materialId": "stemFiber",
+  "sourceImage": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\material-crops\\stem.png",
+  "outDir": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-stem",
+  "palette": [
+    "#F47F6C",
+    "#EE423A",
+    "#FAB0A5",
+    "#AF2416",
+    "#BE6E49"
+  ],
+  "maps": {
+    "albedo": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-stem\\stemfiber_albedo.png",
+      "url": "stemfiber_albedo.png",
+      "channel": "albedo",
+      "source": "reference-pixel-extraction"
+    },
+    "roughness": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-stem\\stemfiber_roughness.png",
+      "url": "stemfiber_roughness.png",
+      "channel": "roughness",
+      "source": "reference-pixel-extraction"
+    },
+    "height": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-stem\\stemfiber_height.png",
+      "url": "stemfiber_height.png",
+      "channel": "height",
+      "source": "reference-pixel-extraction"
+    },
+    "normal": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-stem\\stemfiber_normal.png",
+      "url": "stemfiber_normal.png",
+      "channel": "normal",
+      "source": "reference-pixel-extraction"
+    },
+    "ao": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-stem\\stemfiber_ao.png",
+      "url": "stemfiber_ao.png",
+      "channel": "ao",
+      "source": "reference-pixel-extraction"
+    }
+  },
+  "diagnostics": {
+    "sourceWidth": 72,
+    "sourceHeight": 114,
+    "mapSize": 1024,
+    "cropBBoxPixels": {
+      "x": 0,
+      "y": 7,
+      "width": 72,
+      "height": 107
+    },
+    "mask": {
+      "backgroundColor": "#FFFFFF",
+      "backgroundNoise": 317.714,
+      "transparentPixelFraction": 0.0,
+      "foregroundCoverage": 0.5519
+    },
+    "mapStats": {
+      "valueRange": 0.5279,
+      "heightP90Gradient": 0.05812,
+      "roughnessBase": 0.706,
+      "roughnessVariation": 0.112,
+      "normalStrength": 0.224,
+      "blurRadius": 21
+    },
+    "palette": [
+      "#F47F6C",
+      "#EE423A",
+      "#FAB0A5",
+      "#AF2416",
+      "#BE6E49"
+    ]
+  },
+  "warnings": [
+    "single-image inverse rendering cannot prove true physical PBR; confidence is capped"
+  ],
+  "limitation": "single-image PBR extraction is an estimate; 70%+ extraction confidence still needs render screenshot review"
+}

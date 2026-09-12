@@ -1,0 +1,116 @@
+- generic [ref=f10e2]:
+  - link "Pular para o conteúdo" [ref=f10e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f10e4]:
+    - generic [ref=f10e5]:
+      - link "GRAVITYMIND, início" [ref=f10e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f10e7]: GRAVITYMIND
+      - paragraph [ref=f10e10]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Navegação principal" [ref=f10e11]:
+        - link "Estudar" [ref=f10e12] [cursor=pointer]:
+          - /url: /
+        - link "Prática" [ref=f10e13] [cursor=pointer]:
+          - /url: /questoes
+        - link "Flash Cards" [ref=f10e14] [cursor=pointer]:
+          - /url: /flashcards
+        - link "Cálculo" [ref=f10e15] [cursor=pointer]:
+          - /url: /calculo
+        - link "Explorar" [ref=f10e17] [cursor=pointer]:
+          - /url: /quadro
+  - main [ref=f10e19]:
+    - generic [ref=f10e20]:
+      - generic [ref=f10e21]:
+        - paragraph [ref=f10e22]: FERRAMENTA DE ESTUDO
+        - heading "Calculadora científica" [level=1] [ref=f10e23]
+        - paragraph [ref=f10e24]: Faça operações básicas, trigonometria, logaritmos e exponenciação sem sair da resolução.
+      - generic [ref=f10e25]:
+        - region "Calculadora científica" [ref=f10e26]:
+          - generic [ref=f10e27]:
+            - generic [ref=f10e28]:
+              - group "Unidade angular" [ref=f10e29]:
+                - button "deg" [pressed] [ref=f10e31]
+                - button "rad" [ref=f10e32]
+              - generic [ref=f10e33]: M 0
+            - paragraph [ref=f10e34]
+            - status [ref=f10e35]: "0"
+          - generic [ref=f10e36]:
+            - button "MC" [ref=f10e37]
+            - button "MR" [ref=f10e38]
+            - button "M+" [ref=f10e39]
+            - button "M−" [ref=f10e40]
+            - button "AC" [ref=f10e41]
+            - button "sin" [ref=f10e42]
+            - button "cos" [ref=f10e43]
+            - button "tan" [ref=f10e44]
+            - button "log" [ref=f10e45]
+            - button "ln" [ref=f10e46]
+            - button "√x" [ref=f10e47]
+            - button "x²" [ref=f10e48]
+            - button "xʸ" [ref=f10e49]
+            - button "±" [ref=f10e50]
+            - button "%" [ref=f10e51]
+            - button "7" [ref=f10e52]
+            - button "8" [ref=f10e53]
+            - button "9" [ref=f10e54]
+            - button "÷" [ref=f10e55]
+            - button "Apagar último dígito" [ref=f10e56]
+            - button "4" [ref=f10e61]
+            - button "5" [ref=f10e62]
+            - button "6" [ref=f10e63]
+            - button "×" [ref=f10e64]
+            - button "π" [ref=f10e65]
+            - button "1" [ref=f10e66]
+            - button "2" [ref=f10e67]
+            - button "3" [ref=f10e68]
+            - button "−" [ref=f10e69]
+            - button "e" [ref=f10e70]
+            - button "0" [ref=f10e71]
+            - button "," [ref=f10e72]
+            - button "=" [ref=f10e73]
+            - button "+" [ref=f10e74]
+            - button "1/x" [ref=f10e75]
+          - paragraph [ref=f10e76]: Trigonometria usa graus. A memória fica nesta sessão.
+        - region [ref=f10e77]:
+          - heading "Aplicar em uma questão" [level=2] [ref=f10e78]
+          - article [ref=f10e79]:
+            - generic [ref=f10e80]:
+              - generic [ref=f10e81]:
+                - generic [ref=f10e82]:
+                  - generic [ref=f10e83]: Cálculo
+                  - generic [aria-hidden] [ref=f10e84]: /
+                  - generic [ref=f10e85]: Força resultante nula
+                - heading "Um bloco está em repouso sobre uma mesa horizontal. O peso do bloco é de 30 N. Qual é o módulo da força normal que a mesa exerce sobre o bloco?" [level=2] [ref=f10e86]
+                - generic [ref=f10e88]:
+                  - term [ref=f10e89]: P
+                  - definition [ref=f10e90]: 30 N
+                - generic [ref=f10e91]: N = P (equilíbrio vertical)
+                - generic [ref=f10e92]:
+                  - generic [ref=f10e93]: Sua resposta em N
+                  - generic [ref=f10e94]:
+                    - textbox "Sua resposta em N" [ref=f10e95]:
+                      - /placeholder: "Exemplo: 9,8"
+                    - button "Verificar" [disabled] [ref=f10e96]
+              - complementary [ref=f10e99]:
+                - paragraph [ref=f10e100]: Estratégia
+                - list [ref=f10e101]:
+                  - listitem [ref=f10e102]: 1. Liste os dados.
+                  - listitem [ref=f10e103]: 2. Isole a incógnita.
+                  - listitem [ref=f10e104]: 3. Confira unidade e sinal.
+  - contentinfo [ref=f10e105]:
+    - generic [ref=f10e106]:
+      - generic [ref=f10e107]:
+        - generic [ref=f10e108]: GRAVITYMIND
+        - generic [ref=f10e111]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Links institucionais" [ref=f10e112]:
+        - link "Sobre" [ref=f10e113] [cursor=pointer]:
+          - /url: /sobre
+        - link "Privacidade" [ref=f10e114] [cursor=pointer]:
+          - /url: /privacidade
+        - link "Termos" [ref=f10e115] [cursor=pointer]:
+          - /url: /termos
+        - link "Ajuda" [ref=f10e116] [cursor=pointer]:
+          - /url: /contato
+        - link "Entrar" [ref=f10e117] [cursor=pointer]:
+          - /url: /login
+  - button "Abrir tutor Gravity" [ref=f10e118]

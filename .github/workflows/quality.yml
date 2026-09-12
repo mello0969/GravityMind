@@ -1,0 +1,31 @@
+name: Quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run security:secrets
+      - run: npm run security:config
+      - run: npm run security:dependencies
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run knip
+      - run: npm run test:coverage
+      - run: npm run test:mutation
+      - run: npm run test:e2e -- --project=desktop-chromium
+      - uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}

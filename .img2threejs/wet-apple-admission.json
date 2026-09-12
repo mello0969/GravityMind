@@ -1,0 +1,14 @@
+{
+  "admitted": true,
+  "reasons": [],
+  "provenance": {
+    "viewpoint": "front",
+    "sourcePath": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\wet-apple-reference.png",
+    "width": 980,
+    "height": 980,
+    "foregroundCoverage": 0.358,
+    "largestComponentFraction": 1.0,
+    "pHash": 18420003028992393368,
+    "duplicateOfHash": null
+  }
+}

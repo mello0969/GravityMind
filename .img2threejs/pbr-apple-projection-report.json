@@ -1,0 +1,87 @@
+{
+  "ok": true,
+  "verdict": "pass",
+  "confidence": 0.86,
+  "estimatedFidelity": 0.86,
+  "targetThreshold": 0.7,
+  "materialId": "appleSkinProjection",
+  "sourceImage": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\artifacts\\visual\\iteration-restoration\\apple-body-projection.png",
+  "outDir": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-apple-projection",
+  "palette": [
+    "#9A0122",
+    "#440618",
+    "#6A0A23",
+    "#CD1A36",
+    "#CF8592"
+  ],
+  "maps": {
+    "albedo": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-apple-projection\\appleskinprojection_albedo.png",
+      "url": "/assets/apple/projection/appleskinprojection_albedo.png",
+      "channel": "albedo",
+      "source": "reference-pixel-extraction"
+    },
+    "roughness": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-apple-projection\\appleskinprojection_roughness.png",
+      "url": "/assets/apple/projection/appleskinprojection_roughness.png",
+      "channel": "roughness",
+      "source": "reference-pixel-extraction"
+    },
+    "height": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-apple-projection\\appleskinprojection_height.png",
+      "url": "/assets/apple/projection/appleskinprojection_height.png",
+      "channel": "height",
+      "source": "reference-pixel-extraction"
+    },
+    "normal": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-apple-projection\\appleskinprojection_normal.png",
+      "url": "/assets/apple/projection/appleskinprojection_normal.png",
+      "channel": "normal",
+      "source": "reference-pixel-extraction"
+    },
+    "ao": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-apple-projection\\appleskinprojection_ao.png",
+      "url": "/assets/apple/projection/appleskinprojection_ao.png",
+      "channel": "ao",
+      "source": "reference-pixel-extraction"
+    }
+  },
+  "diagnostics": {
+    "sourceWidth": 1024,
+    "sourceHeight": 1024,
+    "mapSize": 1024,
+    "cropBBoxPixels": {
+      "x": 0,
+      "y": 0,
+      "width": 1024,
+      "height": 1024
+    },
+    "mask": {
+      "backgroundColor": "#97001F",
+      "backgroundNoise": 0.0,
+      "transparentPixelFraction": 0.0,
+      "foregroundCoverage": 1.0
+    },
+    "mapStats": {
+      "valueRange": 0.4282,
+      "heightP90Gradient": 0.08115,
+      "roughnessBase": 0.706,
+      "roughnessVariation": 0.14,
+      "normalStrength": 0.251,
+      "blurRadius": 21
+    },
+    "palette": [
+      "#9A0122",
+      "#440618",
+      "#6A0A23",
+      "#CD1A36",
+      "#CF8592"
+    ]
+  },
+  "warnings": [
+    "image is not clearly isolated from background; using most pixels as material evidence",
+    "object/background separation is weak",
+    "single-image inverse rendering cannot prove true physical PBR; confidence is capped"
+  ],
+  "limitation": "single-image PBR extraction is an estimate; 70%+ extraction confidence still needs render screenshot review"
+}

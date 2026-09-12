@@ -1,0 +1,71 @@
+{
+  "sourceImage": "C:\\Users\\frost\\AppData\\Local\\Temp\\codex-clipboard-da30e067-41b8-4c3a-abeb-afd3d8e065ae.png",
+  "zonesDir": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\material-crops",
+  "detailInventory": {
+    "scanMethod": "component-zones",
+    "targetMinDetails": 3,
+    "details": [
+      {
+        "id": "stem",
+        "kind": "",
+        "description": "",
+        "region": {
+          "x": 0.43,
+          "y": 0.08,
+          "width": 0.12,
+          "height": 0.19,
+          "units": "normalized"
+        },
+        "scale": "",
+        "affects": "",
+        "mapsTo": {
+          "type": "",
+          "ref": ""
+        },
+        "evidenceRef": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\material-crops\\stem.png",
+        "confidence": 0.0
+      },
+      {
+        "id": "dark-socket",
+        "kind": "",
+        "description": "",
+        "region": {
+          "x": 0.28,
+          "y": 0.16,
+          "width": 0.44,
+          "height": 0.18,
+          "units": "normalized"
+        },
+        "scale": "",
+        "affects": "",
+        "mapsTo": {
+          "type": "",
+          "ref": ""
+        },
+        "evidenceRef": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\material-crops\\dark-socket.png",
+        "confidence": 0.0
+      },
+      {
+        "id": "lenticels",
+        "kind": "",
+        "description": "",
+        "region": {
+          "x": 0.18,
+          "y": 0.31,
+          "width": 0.64,
+          "height": 0.48,
+          "units": "normalized"
+        },
+        "scale": "",
+        "affects": "",
+        "mapsTo": {
+          "type": "",
+          "ref": ""
+        },
+        "evidenceRef": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\material-crops\\lenticels.png",
+        "confidence": 0.0
+      }
+    ]
+  },
+  "authoringInstruction": "Open each zone crop under zonesDir and replace every detail stub's kind, description, scale, affects, mapsTo, and confidence with what is actually observed. Add more detail entries per zone if a single zone contains multiple distinct marks; do not leave stubs unfilled or unlinked (mapsTo must reference a real component.localFeatures or material.localOverrides entry)."
+}

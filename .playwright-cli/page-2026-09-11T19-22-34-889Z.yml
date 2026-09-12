@@ -1,0 +1,70 @@
+- generic [ref=f29e2]:
+  - link "Pular para o conteúdo" [ref=f29e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f29e4]:
+    - generic [ref=f29e5]:
+      - link "GRAVITYMIND, início" [ref=f29e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f29e7]: GRAVITYMIND
+      - paragraph [ref=f29e10]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Navegação principal" [ref=f29e11]:
+        - link "Estudar" [ref=f29e12] [cursor=pointer]:
+          - /url: /
+        - link "Prática" [ref=f29e13] [cursor=pointer]:
+          - /url: /questoes
+        - link "Flash Cards" [ref=f29e14] [cursor=pointer]:
+          - /url: /flashcards
+        - link "Cálculo" [ref=f29e16] [cursor=pointer]:
+          - /url: /calculo
+        - link "Explorar" [ref=f29e17] [cursor=pointer]:
+          - /url: /quadro
+  - main [ref=f29e19]:
+    - region "Deck em andamento" [ref=f29e21]:
+      - generic [ref=f29e22]:
+        - heading "Flash Cards" [level=1] [ref=f29e23]
+        - generic [ref=f29e24]: Cartão 1 de 12
+      - generic [ref=f29e28]:
+        - button "Cartão anterior" [ref=f29e29]
+        - article [ref=f29e33]:
+          - generic [ref=f29e34]:
+            - heading "Por que o passageiro se inclina para a frente quando o ônibus freia?" [level=2] [ref=f29e35]
+            - paragraph [ref=f29e51]: 1ª Lei
+          - generic [ref=f29e52]:
+            - generic [ref=f29e53]: RESPOSTA
+            - generic [ref=f29e54]:
+              - paragraph [ref=f29e55]: Por inércia, o corpo do passageiro tende a manter a velocidade que tinha antes da freada, enquanto o ônibus reduz sua velocidade.
+              - paragraph [ref=f29e56]: ΣF = 0 → velocidade constante
+            - group "Como foi lembrar?" [ref=f29e57]:
+              - button "Rever" [ref=f29e59] [cursor=pointer]
+              - button "Quase" [ref=f29e60] [cursor=pointer]
+              - button "Dominei" [ref=f29e61] [cursor=pointer]
+        - button "Próximo cartão" [ref=f29e62]
+      - generic [ref=f29e65]:
+        - button "Revelar resposta" [ref=f29e66] [cursor=pointer]
+        - button "Terminar" [ref=f29e67] [cursor=pointer]
+        - switch [checked] [ref=f29e70]
+      - generic [ref=f29e73]:
+        - generic [ref=f29e74]:
+          - text: Deck
+          - combobox "Deck" [ref=f29e75]:
+            - option "Fundamentos de Mecânica" [selected]
+            - option "Desafios integrados · Plus" [disabled]
+        - link "Desafios integrados no Plus" [ref=f29e76] [cursor=pointer]:
+          - /url: /plus
+  - contentinfo [ref=f29e81]:
+    - generic [ref=f29e82]:
+      - generic [ref=f29e83]:
+        - generic [ref=f29e84]: GRAVITYMIND
+        - generic [ref=f29e87]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Links institucionais" [ref=f29e88]:
+        - link "Sobre" [ref=f29e89] [cursor=pointer]:
+          - /url: /sobre
+        - link "Privacidade" [ref=f29e90] [cursor=pointer]:
+          - /url: /privacidade
+        - link "Termos" [ref=f29e91] [cursor=pointer]:
+          - /url: /termos
+        - link "Ajuda" [ref=f29e92] [cursor=pointer]:
+          - /url: /contato
+        - link "Entrar" [ref=f29e93] [cursor=pointer]:
+          - /url: /login
+  - button "Abrir tutor Gravity" [ref=f29e94]

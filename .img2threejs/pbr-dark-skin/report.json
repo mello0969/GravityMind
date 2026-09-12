@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "verdict": "pass",
+  "confidence": 0.86,
+  "estimatedFidelity": 0.86,
+  "targetThreshold": 0.7,
+  "materialId": "appleSkinDark",
+  "sourceImage": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\material-crops\\dark-socket.png",
+  "outDir": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-dark-skin",
+  "palette": [
+    "#EE2A23",
+    "#D80F0B",
+    "#F98478",
+    "#F3564C",
+    "#FCB7AF"
+  ],
+  "maps": {
+    "albedo": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-dark-skin\\appleskindark_albedo.png",
+      "url": "appleskindark_albedo.png",
+      "channel": "albedo",
+      "source": "reference-pixel-extraction"
+    },
+    "roughness": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-dark-skin\\appleskindark_roughness.png",
+      "url": "appleskindark_roughness.png",
+      "channel": "roughness",
+      "source": "reference-pixel-extraction"
+    },
+    "height": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-dark-skin\\appleskindark_height.png",
+      "url": "appleskindark_height.png",
+      "channel": "height",
+      "source": "reference-pixel-extraction"
+    },
+    "normal": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-dark-skin\\appleskindark_normal.png",
+      "url": "appleskindark_normal.png",
+      "channel": "normal",
+      "source": "reference-pixel-extraction"
+    },
+    "ao": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-dark-skin\\appleskindark_ao.png",
+      "url": "appleskindark_ao.png",
+      "channel": "ao",
+      "source": "reference-pixel-extraction"
+    }
+  },
+  "diagnostics": {
+    "sourceWidth": 264,
+    "sourceHeight": 108,
+    "mapSize": 1024,
+    "cropBBoxPixels": {
+      "x": 0,
+      "y": 0,
+      "width": 264,
+      "height": 108
+    },
+    "mask": {
+      "backgroundColor": "#FFFFFF",
+      "backgroundNoise": 300.756,
+      "transparentPixelFraction": 0.0,
+      "foregroundCoverage": 0.8164
+    },
+    "mapStats": {
+      "valueRange": 0.6027,
+      "heightP90Gradient": 0.04938,
+      "roughnessBase": 0.717,
+      "roughnessVariation": 0.096,
+      "normalStrength": 0.214,
+      "blurRadius": 21
+    },
+    "palette": [
+      "#EE2A23",
+      "#D80F0B",
+      "#F98478",
+      "#F3564C",
+      "#FCB7AF"
+    ]
+  },
+  "warnings": [
+    "single-image inverse rendering cannot prove true physical PBR; confidence is capped"
+  ],
+  "limitation": "single-image PBR extraction is an estimate; 70%+ extraction confidence still needs render screenshot review"
+}

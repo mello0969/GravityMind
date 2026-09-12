@@ -1,0 +1,97 @@
+- generic [ref=f6e2]:
+  - link "Pular para o conteúdo" [ref=f6e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f6e4]:
+    - generic [ref=f6e5]:
+      - link "GRAVITYMIND, início" [ref=f6e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f6e7]: GRAVITYMIND
+      - paragraph [ref=f6e10]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Navegação principal" [ref=f6e11]:
+        - link "Estudar" [ref=f6e12] [cursor=pointer]:
+          - /url: /
+        - link "Prática" [ref=f6e14] [cursor=pointer]:
+          - /url: /questoes
+        - link "Flash Cards" [ref=f6e15] [cursor=pointer]:
+          - /url: /flashcards
+        - link "Cálculo" [ref=f6e16] [cursor=pointer]:
+          - /url: /calculo
+        - link "Explorar" [ref=f6e17] [cursor=pointer]:
+          - /url: /quadro
+  - main [ref=f6e19]:
+    - generic [ref=f6e20]:
+      - generic [ref=f6e21]:
+        - heading "GRAVITYMIND Plus" [level=1] [ref=f6e22]
+        - paragraph [ref=f6e23]: Mais recursos para ir além.
+      - region "Comparação de planos" [ref=f6e24]:
+        - article [ref=f6e25]:
+          - heading "Essencial" [level=2] [ref=f6e26]
+          - paragraph [ref=f6e27]: O essencial para sua jornada de estudos.
+          - list [ref=f6e28]:
+            - listitem [ref=f6e29]: Flash Cards e prática
+            - listitem [ref=f6e33]: Acompanhamento de progresso
+            - listitem [ref=f6e37]: Tutor completo
+            - listitem [ref=f6e40]: Decks avançados
+            - listitem [ref=f6e43]: Metas sincronizadas
+        - article [ref=f6e46]:
+          - generic [ref=f6e48]:
+            - generic [ref=f6e49]:
+              - heading "Plus" [level=2] [ref=f6e50]
+              - paragraph [ref=f6e51]: A experiência completa para estudar sem limites.
+              - list [ref=f6e52]:
+                - listitem [ref=f6e53]: Flash Cards e prática
+                - listitem [ref=f6e57]: Acompanhamento de progresso
+                - listitem [ref=f6e61]: Tutor completo
+                - listitem [ref=f6e65]: Decks avançados
+                - listitem [ref=f6e69]: Metas sincronizadas
+            - paragraph [ref=f6e74]: Valor exibido no checkout
+      - region [ref=f6e75]:
+        - generic [ref=f6e76]:
+          - heading "Seus dados de cobrança" [level=2] [ref=f6e77]
+          - paragraph [ref=f6e78]: Você será redirecionado para um provedor de pagamento seguro.
+          - generic [ref=f6e79]:
+            - generic [ref=f6e80]:
+              - text: Nome no cartão
+              - textbox "Nome no cartão" [ref=f6e81]:
+                - /placeholder: "Ex.: Ana Silva"
+            - generic [ref=f6e82]:
+              - text: E-mail
+              - textbox "E-mail" [ref=f6e83]:
+                - /placeholder: seu@email.com
+            - generic [ref=f6e84]:
+              - text: País
+              - combobox "País" [ref=f6e85]:
+                - option "Brasil" [selected]
+            - generic [ref=f6e86]:
+              - checkbox "Entendo que valor e recorrência serão mostrados antes da confirmação no Stripe." [ref=f6e87]
+              - checkbox [aria-hidden]
+              - generic [ref=f6e88]: Entendo que valor e recorrência serão mostrados antes da confirmação no Stripe.
+            - button "Continuar no pagamento seguro" [disabled] [ref=f6e89]
+            - paragraph [ref=f6e92]: O número do cartão não passa pelo GRAVITYMIND. Esta tela não pede número, validade ou CVC; você será redirecionado para um provedor de pagamento seguro.
+        - generic [ref=f6e93]:
+          - heading "Prévia visual" [level=2] [ref=f6e94]
+          - paragraph [ref=f6e95]: Ilustração interativa. Dados reais são inseridos no checkout seguro.
+          - img "Prévia visual de cartão. Nenhum dado bancário é solicitado nesta tela." [ref=f6e98]:
+            - text: GRAVITYMIND
+            - generic [ref=f6e107]:
+              - paragraph [ref=f6e108]: •••• •••• •••• 4821
+              - generic [ref=f6e109]:
+                - paragraph [ref=f6e111]: ANA SILVA
+                - paragraph [ref=f6e112]: 04/28
+  - contentinfo [ref=f6e113]:
+    - generic [ref=f6e114]:
+      - generic [ref=f6e115]:
+        - generic [ref=f6e116]: GRAVITYMIND
+        - generic [ref=f6e119]: ESTUDE FÍSICA. PENSE MAIS LONGE.
+      - navigation "Links institucionais" [ref=f6e120]:
+        - link "Sobre" [ref=f6e121] [cursor=pointer]:
+          - /url: /sobre
+        - link "Privacidade" [ref=f6e122] [cursor=pointer]:
+          - /url: /privacidade
+        - link "Termos" [ref=f6e123] [cursor=pointer]:
+          - /url: /termos
+        - link "Ajuda" [ref=f6e124] [cursor=pointer]:
+          - /url: /contato
+        - link "Entrar" [ref=f6e125] [cursor=pointer]:
+          - /url: /login
+  - button "Abrir tutor Gravity" [ref=f6e126]

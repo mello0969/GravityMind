@@ -1,0 +1,87 @@
+{
+  "ok": true,
+  "verdict": "pass",
+  "confidence": 0.819,
+  "estimatedFidelity": 0.819,
+  "targetThreshold": 0.7,
+  "materialId": "lenticelMatte",
+  "sourceImage": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\material-crops\\lenticels.png",
+  "outDir": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-lenticels",
+  "palette": [
+    "#E7140F",
+    "#B10A09",
+    "#CC211E",
+    "#F63F38",
+    "#F7837C"
+  ],
+  "maps": {
+    "albedo": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-lenticels\\lenticelmatte_albedo.png",
+      "url": "lenticelmatte_albedo.png",
+      "channel": "albedo",
+      "source": "reference-pixel-extraction"
+    },
+    "roughness": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-lenticels\\lenticelmatte_roughness.png",
+      "url": "lenticelmatte_roughness.png",
+      "channel": "roughness",
+      "source": "reference-pixel-extraction"
+    },
+    "height": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-lenticels\\lenticelmatte_height.png",
+      "url": "lenticelmatte_height.png",
+      "channel": "height",
+      "source": "reference-pixel-extraction"
+    },
+    "normal": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-lenticels\\lenticelmatte_normal.png",
+      "url": "lenticelmatte_normal.png",
+      "channel": "normal",
+      "source": "reference-pixel-extraction"
+    },
+    "ao": {
+      "path": "C:\\Users\\frost\\OneDrive\\Pictures\\TCC\\fisicafacil-v16-db-fix\\fisicafacil\\.img2threejs\\pbr-lenticels\\lenticelmatte_ao.png",
+      "url": "lenticelmatte_ao.png",
+      "channel": "ao",
+      "source": "reference-pixel-extraction"
+    }
+  },
+  "diagnostics": {
+    "sourceWidth": 384,
+    "sourceHeight": 288,
+    "mapSize": 1024,
+    "cropBBoxPixels": {
+      "x": 0,
+      "y": 0,
+      "width": 384,
+      "height": 288
+    },
+    "mask": {
+      "backgroundColor": "#FFFFFF",
+      "backgroundNoise": 141.428,
+      "transparentPixelFraction": 0.0,
+      "foregroundCoverage": 0.9727
+    },
+    "mapStats": {
+      "valueRange": 0.4398,
+      "heightP90Gradient": 0.05163,
+      "roughnessBase": 0.728,
+      "roughnessVariation": 0.085,
+      "normalStrength": 0.217,
+      "blurRadius": 21
+    },
+    "palette": [
+      "#E7140F",
+      "#B10A09",
+      "#CC211E",
+      "#F63F38",
+      "#F7837C"
+    ]
+  },
+  "warnings": [
+    "image is not clearly isolated from background; using most pixels as material evidence",
+    "object/background separation is weak",
+    "single-image inverse rendering cannot prove true physical PBR; confidence is capped"
+  ],
+  "limitation": "single-image PBR extraction is an estimate; 70%+ extraction confidence still needs render screenshot review"
+}

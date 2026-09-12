@@ -1,0 +1,57 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { type LessonContent, NewtonLesson } from "@/components/newton-lesson";
+
+const lesson: LessonContent = {
+  number: "1ª",
+  title: "Princípio da Inércia",
+  subtitle: "Por que um corpo continua como está até que algo o force a mudar?",
+  statement:
+    "Todo corpo permanece em seu estado de repouso, ou de movimento retilíneo uniforme, a menos que seja obrigado a mudar tal estado por forças aplicadas sobre ele.",
+  summary: {
+    keyPoint: "Um corpo só muda de movimento se uma força o empurrar para isso.",
+    bullets: [
+      "Parado fica parado. Em movimento reto e constante, continua assim até que uma força atue.",
+      "Inércia = 'resistência' do corpo a mudar de estado. Mais massa = mais inércia.",
+      "Se a soma das forças é zero, o corpo está em equilíbrio (parado ou com velocidade constante).",
+      "Exemplo rápido: no cinto de segurança, você sente seu corpo 'continuar' no movimento quando o carro freia de repente.",
+    ],
+  },
+  paragraphs: [
+    "A 1ª Lei de Newton, conhecida como Princípio da Inércia, descreve uma propriedade fundamental da matéria: a tendência natural dos corpos de manter o seu estado de movimento. Se um objeto está parado, ele tende a continuar parado. Se está se movendo em linha reta com velocidade constante, ele tende a continuar exatamente assim.",
+    "Para que esse estado mude, fazendo o corpo acelerar, frear ou mudar de direção, é necessário que uma força resultante diferente de zero atue sobre ele. Quando a soma das forças é nula, o corpo está em equilíbrio e mantém sua velocidade.",
+    "A inércia depende da massa: quanto maior a massa de um corpo, maior a sua inércia, e portanto mais difícil é alterar o seu movimento. É por isso que é mais fácil empurrar uma bicicleta do que um caminhão, mesmo que ambos estejam parados.",
+  ],
+  examples: [
+    {
+      title: "Cinto de segurança",
+      desc: "Em uma freada brusca, o carro para mas o seu corpo tende a continuar em movimento. O cinto aplica a força que muda esse estado.",
+    },
+    {
+      title: "Toalha sob copos",
+      desc: "Puxando a toalha rapidamente, os copos quase não se movem: a inércia tende a mantê-los no lugar.",
+    },
+    {
+      title: "Ônibus em curva",
+      desc: "Você sente seu corpo 'jogar' para o lado porque ele tende a seguir em linha reta enquanto o ônibus muda de direção.",
+    },
+    {
+      title: "Estação espacial",
+      desc: "Sem forças significativas atuando, objetos flutuam em movimento retilíneo uniforme indefinidamente.",
+    },
+  ],
+  next: { to: "/lei-2", label: "Próxima: 2ª Lei" },
+};
+
+export const Route = createFileRoute("/lei-1")({
+  head: () => ({
+    meta: [
+      { title: "1ª Lei de Newton, Inércia | GRAVITYMIND" },
+      {
+        name: "description",
+        content:
+          "Aprenda a 1ª Lei de Newton (Princípio da Inércia) com texto narrado em áudio e vídeo-aula.",
+      },
+    ],
+  }),
+  component: () => <NewtonLesson lesson={lesson} />,
+});

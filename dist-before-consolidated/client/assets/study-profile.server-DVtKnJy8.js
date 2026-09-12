@@ -1,0 +1,1 @@
+import{x as e,y as c}from"./index-BXL1TCex.js";const r=e({method:"GET"}).handler(c("90b59c6bd92c28e4b6063b4ca823be7c46c8198f8e5fa1eebf69021826fbc452")),t=e({method:"POST"}).handler(c("7645c34232cca93b40eec405566a5f48e3b921bca38cdc6495231e1819de46f7")),d=e({method:"POST"}).handler(c("26c8a62cc85b683df6a59458a67577251aff47955ade0210cc845d54889aeecc"));export{r as g,d as r,t as u};
