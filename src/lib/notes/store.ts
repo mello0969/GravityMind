@@ -15,8 +15,8 @@
 import { emitProgressUpdated, storageKey } from "@/lib/brand";
 import type { HistoricoEdicao, Nota } from "./types";
 
-const NOTAS_KEY = storageKey("notas");
-const HISTORICO_KEY = storageKey("notas-historico");
+const NOTAS_KEY = () => storageKey("notas");
+const HISTORICO_KEY = () => storageKey("notas-historico");
 const MAX_VERSOES_POR_NOTA = 10;
 
 function gerarId(): string {
@@ -60,7 +60,7 @@ function salvar<T>(key: string, valor: T) {
 // ───────────────────────── CRUD ─────────────────────────
 
 export function listarNotas(): Nota[] {
-  const bruto = ler<unknown>(NOTAS_KEY, []);
+  const bruto = ler<unknown>(NOTAS_KEY(), []);
   const notas = Array.isArray(bruto) ? bruto.filter(notaValida) : [];
   return notas.sort((a, b) => b.atualizadaEm.localeCompare(a.atualizadaEm));
 }
@@ -77,7 +77,7 @@ export function criarNota(assunto: Nota["assunto"] = "geral"): Nota {
   };
   const notas = listarNotas();
   notas.push(nova);
-  salvar(NOTAS_KEY, notas);
+  salvar(NOTAS_KEY(), notas);
   return nova;
 }
 
@@ -109,16 +109,16 @@ export function atualizarNota(
     atualizadaEm: new Date().toISOString(),
   };
   notas[idx] = atualizada;
-  salvar(NOTAS_KEY, notas);
+  salvar(NOTAS_KEY(), notas);
   return atualizada;
 }
 
 export function excluirNota(id: string) {
   const notas = listarNotas().filter((n) => n.id !== id);
-  salvar(NOTAS_KEY, notas);
+  salvar(NOTAS_KEY(), notas);
 
-  const historico = ler<HistoricoEdicao[]>(HISTORICO_KEY, []).filter((h) => h.notaId !== id);
-  salvar(HISTORICO_KEY, historico);
+  const historico = ler<HistoricoEdicao[]>(HISTORICO_KEY(), []).filter((h) => h.notaId !== id);
+  salvar(HISTORICO_KEY(), historico);
 }
 
 // ───────────────────────── Busca e filtro ─────────────────────────
@@ -141,7 +141,7 @@ function registrarVersaoAnterior(notaId: string, conteudoAnterior: string) {
   // Não vale a pena guardar versões vazias (ex: nota recém-criada).
   if (conteudoAnterior.trim().length === 0) return;
 
-  const historico = ler<HistoricoEdicao[]>(HISTORICO_KEY, []);
+  const historico = ler<HistoricoEdicao[]>(HISTORICO_KEY(), []);
   historico.push({
     notaId,
     conteudoAnterior,
@@ -156,14 +156,14 @@ function registrarVersaoAnterior(notaId: string, conteudoAnterior: string) {
     const filtrado = historico.filter(
       (h) => !(h.notaId === notaId && idsParaRemover.has(h.salvoEm)),
     );
-    salvar(HISTORICO_KEY, filtrado);
+    salvar(HISTORICO_KEY(), filtrado);
   } else {
-    salvar(HISTORICO_KEY, historico);
+    salvar(HISTORICO_KEY(), historico);
   }
 }
 
 export function obterHistoricoDaNota(notaId: string): HistoricoEdicao[] {
-  return ler<HistoricoEdicao[]>(HISTORICO_KEY, [])
+  return ler<HistoricoEdicao[]>(HISTORICO_KEY(), [])
     .filter((h) => h.notaId === notaId)
     .sort((a, b) => b.salvoEm.localeCompare(a.salvoEm));
 }

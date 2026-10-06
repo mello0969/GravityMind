@@ -2,6 +2,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef } from "react";
 
+gsap.registerPlugin(useGSAP);
+
 export function StaggeredText({
   children,
   className,
@@ -22,7 +24,7 @@ export function StaggeredText({
       if (reducedMotion) return;
       gsap.fromTo(
         "[data-stagger-word]",
-        { opacity: 0, y: 22 },
+        { opacity: 0.25, y: 16 },
         {
           opacity: 1,
           y: 0,
@@ -33,7 +35,7 @@ export function StaggeredText({
         },
       );
     },
-    { scope: rootRef, dependencies: [reducedMotion] },
+    { scope: rootRef, dependencies: [reducedMotion], revertOnUpdate: true },
   );
 
   return (

@@ -1,16 +1,19 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "gravitymind",
-  "compatibility_date": "2025-09-24",
-  "compatibility_flags": ["nodejs_compat"],
-  "main": "src/server.ts",
-  "d1_databases": [
-    {
-      "binding": "DB",
-      // O nome físico é preservado para manter os dados do D1 já provisionado.
-      "database_name": "fisicafacil-db",
-      "database_id": "COLOQUE_AQUI_O_ID_QUE_O_WRANGLER_GEROU",
-      "migrations_dir": "migrations",
-    },
-  ],
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "gravitymind",
+	"compatibility_date": "2025-09-24",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"main": "src/server.ts",
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "gravitymind-db",
+			"database_id": "522f20f3-f293-4f4f-8215-d807d84e7ed1",
+			// Identidade local legada; mantem os dados existentes. Nao usar --preview remoto.
+			"preview_database_id": "COLOQUE_AQUI_O_ID_QUE_O_WRANGLER_GEROU",
+			"migrations_dir": "migrations",
+		},
+	],
 }

@@ -69,7 +69,7 @@ export function CalculationCard({
             ))}
           </dl>
 
-          <div className="mt-5 border-l-2 border-primary pl-4 font-mono text-lg font-bold text-primary">
+          <div className="mt-5 border-y border-border py-4  font-mono text-lg font-bold text-primary">
             {questao.formula}
           </div>
 
@@ -104,7 +104,7 @@ export function CalculationCard({
           </div>
 
           {fase === "corrigindo" && resultado && (
-            <div className="mt-6 border-l-2 border-warning bg-warning/8 px-4 py-3" role="status">
+            <div className="mt-6 border-y border-border py-4 px-4 py-3" role="status">
               <p className="text-sm font-bold">Revise a montagem e tente novamente</p>
               <p className="reading-copy mt-1 text-sm leading-relaxed text-muted-foreground">
                 {resultado.diagnostico}

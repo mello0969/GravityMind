@@ -150,7 +150,7 @@ export function ContentQuiz({
       </div>
 
       {fase === "revelado" && (
-        <div className="mt-5 border-l-2 border-primary pl-4">
+        <div className="mt-5 border-y border-border py-4 ">
           <p className="reading-copy text-sm leading-relaxed text-muted-foreground">
             {perguntaAtual.explicacao}
           </p>

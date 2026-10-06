@@ -2,9 +2,28 @@ export const BRAND_NAME = "GRAVITYMIND";
 export const STORAGE_PREFIX = "gravitymind:";
 const LEGACY_STORAGE_PREFIX = "fisicafacil:";
 export const PROGRESS_EVENT = "gravitymind:progress-updated";
+let activeAccountId: string | null = null;
+const DEVICE_KEYS = new Set(["settings", "cookie-consent"]);
+
+export function setLocalAccount(userId: string | null) {
+  if (typeof window !== "undefined") activeAccountId = userId;
+}
+
+export function localAccountId() {
+  return activeAccountId;
+}
+
+export function isCurrentStorageKey(key: string) {
+  if (!key.startsWith(STORAGE_PREFIX)) return false;
+  if ([...DEVICE_KEYS].some((suffix) => key === STORAGE_PREFIX + suffix)) return true;
+  return activeAccountId
+    ? key.startsWith(`${STORAGE_PREFIX}account:${activeAccountId}:`)
+    : !key.startsWith(`${STORAGE_PREFIX}account:`);
+}
 
 export function storageKey(suffix: string) {
-  return `${STORAGE_PREFIX}${suffix}`;
+  const owner = activeAccountId && !DEVICE_KEYS.has(suffix) ? `account:${activeAccountId}:` : "";
+  return `${STORAGE_PREFIX}${owner}${suffix}`;
 }
 
 export function migrateLegacyStorage() {

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { migrateLegacyStorage, storageKey } from "@/lib/brand";
 
-export type ThemeMode = "dark";
+export type ThemeMode = "light" | "dark" | "system";
 type MotionMode = "full" | "reduced";
 type ReadingMode = "standard" | "large";
 export type SessionMinutes = 5 | 10 | 15;
@@ -60,7 +60,7 @@ function readSettings(): SiteSettings {
       unknown
     >;
     return {
-      theme: "dark",
+      theme: parsed.theme === "light" || parsed.theme === "system" ? parsed.theme : "dark",
       motion: isMotion(parsed.motion)
         ? parsed.motion
         : window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -87,14 +87,21 @@ function readSettings(): SiteSettings {
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
   const [initialized, setInitialized] = useState(false);
+  const [systemDark, setSystemDark] = useState(false);
 
   useEffect(() => {
     migrateLegacyStorage();
     setSettings(readSettings());
     setInitialized(true);
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    setSystemDark(media.matches);
+    const update = () => setSystemDark(media.matches);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, []);
 
-  const resolvedTheme = "dark";
+  const resolvedTheme =
+    settings.theme === "system" ? (systemDark ? "dark" : "light") : settings.theme;
 
   useEffect(() => {
     if (!initialized) return;
@@ -103,7 +110,11 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     root.dataset.motion = settings.motion;
     root.dataset.reading = settings.reading;
     root.dataset.appReady = "true";
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    } catch {
+      // Preferences still work for this visit when browser storage is unavailable.
+    }
   }, [initialized, settings, resolvedTheme]);
 
   const value = useMemo<SiteSettingsContextValue>(

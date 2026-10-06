@@ -10,7 +10,7 @@ import {
 import { obterHistorico } from "@/lib/questions/engine";
 import { calcularRecompensas } from "@/lib/rewards/engine";
 
-const LOCAL_GOAL_KEY = storageKey("daily-goal");
+const LOCAL_GOAL_KEY = () => storageKey("daily-goal");
 
 function localProfile(): StudyProfile {
   const history = obterHistorico();
@@ -23,7 +23,7 @@ function localProfile(): StudyProfile {
     if (!answer.correta) break;
     correctStreak += 1;
   }
-  const dailyGoal = Number(window.localStorage.getItem(LOCAL_GOAL_KEY) ?? 5);
+  const dailyGoal = Number(window.localStorage.getItem(LOCAL_GOAL_KEY()) ?? 5);
   return {
     dailyGoal: Number.isInteger(dailyGoal) && dailyGoal >= 1 && dailyGoal <= 40 ? dailyGoal : 5,
     currentStreakDays: montarPerfilAprendizagem().streak.atual,
@@ -70,7 +70,7 @@ export function useStudyProfile() {
   const updateDailyGoal = useCallback(
     async (dailyGoal: number) => {
       if (!Number.isInteger(dailyGoal) || dailyGoal < 1 || dailyGoal > 40) return;
-      window.localStorage.setItem(LOCAL_GOAL_KEY, String(dailyGoal));
+      window.localStorage.setItem(LOCAL_GOAL_KEY(), String(dailyGoal));
       setProfile((current) =>
         current ? { ...current, dailyGoal } : { ...localProfile(), dailyGoal },
       );

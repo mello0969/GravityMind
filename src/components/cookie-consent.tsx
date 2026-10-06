@@ -25,7 +25,7 @@ export function CookieConsent() {
 
   return (
     <section
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-border-strong bg-card"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-border-strong bg-card text-foreground"
       aria-label="Preferências de cookies"
     >
       <div className="ff-shell flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:justify-between">

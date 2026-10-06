@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnotacoesRouteImport } from './routes/anotacoes'
+import { Route as AulasRouteImport } from './routes/aulas'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as CalculoRouteImport } from './routes/calculo'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
@@ -38,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
 const AnotacoesRoute = AnotacoesRouteImport.update({
   id: '/anotacoes',
   path: '/anotacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AulasRoute = AulasRouteImport.update({
+  id: '/aulas',
+  path: '/aulas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroRoute = CadastroRouteImport.update({
@@ -134,6 +140,7 @@ const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/anotacoes': typeof AnotacoesRoute
+  '/aulas': typeof AulasRoute
   '/cadastro': typeof CadastroRoute
   '/calculo': typeof CalculoRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/anotacoes': typeof AnotacoesRoute
+  '/aulas': typeof AulasRoute
   '/cadastro': typeof CadastroRoute
   '/calculo': typeof CalculoRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/anotacoes': typeof AnotacoesRoute
+  '/aulas': typeof AulasRoute
   '/cadastro': typeof CadastroRoute
   '/calculo': typeof CalculoRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/anotacoes'
+    | '/aulas'
     | '/cadastro'
     | '/calculo'
     | '/configuracoes'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/anotacoes'
+    | '/aulas'
     | '/cadastro'
     | '/calculo'
     | '/configuracoes'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/anotacoes'
+    | '/aulas'
     | '/cadastro'
     | '/calculo'
     | '/configuracoes'
@@ -270,6 +282,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnotacoesRoute: typeof AnotacoesRoute
+  AulasRoute: typeof AulasRoute
   CadastroRoute: typeof CadastroRoute
   CalculoRoute: typeof CalculoRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/anotacoes'
       fullPath: '/anotacoes'
       preLoaderRoute: typeof AnotacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aulas': {
+      id: '/aulas'
+      path: '/aulas'
+      fullPath: '/aulas'
+      preLoaderRoute: typeof AulasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro': {
@@ -438,6 +458,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnotacoesRoute: AnotacoesRoute,
+  AulasRoute: AulasRoute,
   CadastroRoute: CadastroRoute,
   CalculoRoute: CalculoRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,

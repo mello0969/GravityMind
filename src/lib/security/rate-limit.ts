@@ -1,7 +1,7 @@
 import "@tanstack/react-start/server-only";
 
 import { getRequest } from "@tanstack/react-start/server";
-import { getD1 } from "@/lib/db/context";
+import { getDatabase } from "@/lib/db/supabase.server";
 
 export class RateLimitError extends Error {
   constructor(public readonly retryAfterSeconds: number) {
@@ -27,32 +27,24 @@ export async function aplicarRateLimit(
   limite: number,
   janelaMs: number,
   identidadeExtra = "",
+  porIdentidade = false,
 ) {
   const agora = Date.now();
   const janelaInicioMs = Math.floor(agora / janelaMs) * janelaMs;
   const janelaInicio = new Date(janelaInicioMs).toISOString();
   const expiraEm = new Date(janelaInicioMs + janelaMs).toISOString();
-  const chaveHash = await sha256(`${escopo}:${identificarCliente()}:${identidadeExtra}`);
-  const db = getD1();
+  const chaveHash = await sha256(
+    `${escopo}:${porIdentidade ? identidadeExtra : `${identificarCliente()}:${identidadeExtra}`}`,
+  );
+  const { data: count } = await getDatabase()
+    .rpc("gm_rate_limit", {
+      p_key: chaveHash,
+      p_window: janelaInicio,
+      p_expires: expiraEm,
+    })
+    .throwOnError();
 
-  const linha = await db
-    .prepare(
-      `INSERT INTO rate_limits (chave_hash, janela_inicio, requisicoes, expira_em)
-       VALUES (?, ?, 1, ?)
-       ON CONFLICT(chave_hash, janela_inicio)
-       DO UPDATE SET requisicoes = requisicoes + 1
-       RETURNING requisicoes`,
-    )
-    .bind(chaveHash, janelaInicio, expiraEm)
-    .first<{ requisicoes: number }>();
-
-  if ((linha?.requisicoes ?? limite + 1) > limite) {
+  if ((count ?? limite + 1) > limite) {
     throw new RateLimitError(Math.max(1, Math.ceil((janelaInicioMs + janelaMs - agora) / 1_000)));
-  }
-
-  if (Math.random() < 0.02) {
-    await db
-      .prepare("DELETE FROM rate_limits WHERE datetime(expira_em) < datetime('now', '-1 day')")
-      .run();
   }
 }

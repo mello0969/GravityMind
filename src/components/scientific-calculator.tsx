@@ -78,10 +78,7 @@ export function ScientificCalculator() {
   }
 
   return (
-    <section
-      className="border border-border-strong bg-[#0a1812]"
-      aria-label="Calculadora científica"
-    >
+    <section className="border border-border-strong bg-card" aria-label="Calculadora científica">
       <div className="border-b border-border p-5 text-right">
         <div className="flex items-center justify-between">
           <fieldset className="inline-flex border border-border">
@@ -206,10 +203,10 @@ function CalcButton({
         primary
           ? "bg-primary font-semibold text-primary-foreground hover:bg-[var(--primary-hover)]"
           : operator
-            ? "bg-[#183027] text-primary hover:bg-[#203c31]"
+            ? "bg-secondary text-primary hover:bg-secondary"
             : subtle
-              ? "bg-[#10221a] text-[#b4c1ba] hover:bg-secondary"
-              : "bg-[#0c1b15] text-foreground hover:bg-secondary"
+              ? "bg-card text-muted-foreground hover:bg-secondary"
+              : "bg-card text-foreground hover:bg-secondary"
       }`}
     >
       {icon ?? label}

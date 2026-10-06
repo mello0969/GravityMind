@@ -3,7 +3,7 @@ import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach } from "vitest";
 
 beforeEach(() => {
-  window.localStorage.clear();
+  if (typeof window !== "undefined") window.localStorage.clear();
 });
 
 afterEach(() => {

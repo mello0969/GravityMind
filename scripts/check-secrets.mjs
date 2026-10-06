@@ -12,6 +12,12 @@ const ignoredDirectories = new Set([
   "node_modules",
   "playwright-report",
   "test-results",
+  "artifacts",
+  "backups",
+  "output",
+  ".agents",
+  ".stryker-tmp",
+  "dist-before-consolidated",
 ]);
 const ignoredFiles = new Set(["package-lock.json", ".env.example"]);
 const extensions = new Set([
@@ -30,6 +36,8 @@ const extensions = new Set([
   ".yml",
 ]);
 const secretPatterns = [
+  /\bgsk_[A-Za-z0-9_-]{20,}\b/g,
+  /\bsb_secret_[A-Za-z0-9_-]{20,}\b/g,
   /\bsk_live_[A-Za-z0-9]{20,}\b/g,
   /\bwhsec_[A-Za-z0-9]{20,}\b/g,
   /\b(?:sk-ant-|sk-proj-)[A-Za-z0-9_-]{20,}\b/g,
@@ -41,7 +49,8 @@ const secretPatterns = [
 async function walk(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
-    if (entry.isDirectory() && ignoredDirectories.has(entry.name)) continue;
+    if (entry.isSymbolicLink() || (entry.isDirectory() && ignoredDirectories.has(entry.name)))
+      continue;
     const absolute = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...(await walk(absolute)));
     else if (!ignoredFiles.has(entry.name) && extensions.has(path.extname(entry.name)))
@@ -63,5 +72,7 @@ if (findings.length > 0) {
   console.error(`Potential secrets found in: ${[...new Set(findings)].join(", ")}`);
   process.exitCode = 1;
 } else {
-  console.log("Secret scan passed: no known credential patterns found in tracked source files.");
+  console.log(
+    "Source scan passed: no known credential patterns found. Git history is not scanned.",
+  );
 }

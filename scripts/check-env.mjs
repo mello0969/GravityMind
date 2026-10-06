@@ -1,12 +1,22 @@
 import { readFileSync } from "node:fs";
 import process from "node:process";
+import { loadEnv } from "vite";
+
+const localEnv = loadEnv("development", process.cwd(), "");
+for (const [name, value] of Object.entries(localEnv)) process.env[name] ??= value;
 
 const production = process.argv.includes("--production") || process.env.NODE_ENV === "production";
 const errors = [];
 const warnings = [];
-const requiredServerVariables = ["APP_ORIGIN", "DATA_ENCRYPTION_KEY", "TURNSTILE_SECRET_KEY"];
+const requiredServerVariables = [
+  "APP_ORIGIN",
+  "DATA_ENCRYPTION_KEY",
+  "TURNSTILE_SECRET_KEY",
+  "SUPABASE_URL",
+  "SUPABASE_SECRET_KEY",
+];
 const optionalIntegrations = [
-  ["ANTHROPIC_API_KEY", "Tutor remoto desativado; o tutor local continuará disponível."],
+  ["GROQ_API_KEY", "Tutor de IA indisponível até configurar a chave Groq no servidor."],
   ["STRIPE_SECRET_KEY", "Checkout Plus desativado."],
   ["STRIPE_WEBHOOK_SECRET", "Webhook do Stripe desativado."],
   ["STRIPE_PLUS_PRICE_ID", "Checkout Plus sem produto configurado."],
@@ -49,17 +59,23 @@ const example = readFileSync(new URL("../.env.example", import.meta.url), "utf8"
 const declaredNames = [...example.matchAll(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=/gm)].map(
   (match) => match[1],
 );
-for (const name of declaredNames) {
+for (const name of new Set([...declaredNames, ...Object.keys(localEnv)])) {
   if (name.startsWith("VITE_") && /(SECRET|PRIVATE|TOKEN|API_KEY)/i.test(name)) {
     errors.push(`${name} usa prefixo público para um possível segredo.`);
   }
 }
 
-const wrangler = readFileSync(new URL("../wrangler.jsonc", import.meta.url), "utf8");
-if (wrangler.includes("COLOQUE_AQUI_O_ID_QUE_O_WRANGLER_GEROU")) {
-  const message = "wrangler.jsonc ainda precisa do database_id remoto do D1.";
-  if (production) errors.push(message);
-  else warnings.push(message);
+if (hasValue("SUPABASE_URL")) {
+  try {
+    const url = new URL(process.env.SUPABASE_URL);
+    if (url.protocol !== "https:" || url.username || url.password)
+      errors.push("SUPABASE_URL deve ser uma URL HTTPS sem credenciais.");
+  } catch {
+    errors.push("SUPABASE_URL invalida.");
+  }
+}
+if (hasValue("SUPABASE_SECRET_KEY") && !process.env.SUPABASE_SECRET_KEY.startsWith("sb_secret_")) {
+  errors.push("SUPABASE_SECRET_KEY deve ser a Secret key, nao a Publishable key.");
 }
 
 for (const warning of warnings) console.warn(`AVISO: ${warning}`);

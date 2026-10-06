@@ -16,7 +16,7 @@ import {
   verificarSenha,
 } from "@/lib/auth/hash";
 import type { ResultadoAuth, UsuarioPublico } from "@/lib/auth/types";
-import { getD1 } from "@/lib/db/context";
+import { getDatabase } from "@/lib/db/supabase.server";
 import { validarTurnstile } from "@/lib/security/bot";
 import { aplicarRateLimit, RateLimitError } from "@/lib/security/rate-limit";
 import type { cadastroSchema, loginSchema } from "@/lib/security/schemas";
@@ -52,7 +52,7 @@ function erroPublico(error: unknown): ResultadoAuth {
   if (error instanceof RateLimitError) {
     return { erro: error.message, retryAfter: error.retryAfterSeconds };
   }
-  console.error("Falha de autenticação", error);
+  console.error("Falha de autenticação no servidor.");
   return {
     erro: "Não foi possível concluir agora. Tente novamente em instantes.",
   };
@@ -98,25 +98,18 @@ function limparCookiesSessao() {
 }
 
 async function criarSessao(userId: string) {
-  const db = getD1();
+  const db = getDatabase();
   const token = gerarTokenSessao();
   const tokenHash = await gerarHashTokenSessao(token);
   const expiraEm = new Date(Date.now() + DIAS_EXPIRACAO * 86_400_000).toISOString();
 
-  await db.prepare("DELETE FROM sessoes WHERE datetime(expira_em) <= datetime('now')").run();
   await db
-    .prepare("INSERT INTO sessoes (token, user_id, expira_em) VALUES (?, ?, ?)")
-    .bind(tokenHash, userId, expiraEm)
-    .run();
-  await db
-    .prepare(
-      `DELETE FROM sessoes
-       WHERE user_id = ? AND token NOT IN (
-         SELECT token FROM sessoes WHERE user_id = ? ORDER BY criado_em DESC LIMIT 5
-       )`,
-    )
-    .bind(userId, userId)
-    .run();
+    .rpc("gm_create_session", {
+      p_user_id: userId,
+      p_token: tokenHash,
+      p_expires: expiraEm,
+    })
+    .throwOnError();
 
   setCookie(nomeCookieSessao(), token, {
     httpOnly: true,
@@ -134,17 +127,14 @@ export async function obterUsuarioAtual(): Promise<UsuarioPublico | null> {
     return null;
   }
 
-  const db = getD1();
-  const linha = await db
-    .prepare(
-      `SELECT u.id, u.nome, u.email
-       FROM sessoes AS s
-       INNER JOIN users AS u ON u.id = s.user_id
-       WHERE s.token = ? AND datetime(s.expira_em) > datetime('now')
-       LIMIT 1`,
-    )
-    .bind(await gerarHashTokenSessao(token))
-    .first<UsuarioPublico>();
+  const { data: session } = await getDatabase()
+    .from("sessoes")
+    .select("users!inner(id,nome,email)")
+    .eq("token", await gerarHashTokenSessao(token))
+    .gt("expira_em", new Date().toISOString())
+    .maybeSingle()
+    .throwOnError();
+  const linha = session?.users;
   if (!linha) limparCookiesSessao();
   return linha ?? null;
 }
@@ -157,24 +147,33 @@ export async function cadastrarUsuario(data: DadosCadastro): Promise<ResultadoAu
         erro: "O formulário expirou. Recarregue a página e tente novamente.",
       };
     }
-    await aplicarRateLimit("auth:cadastro", 5, 15 * 60_000, data.email);
+    await aplicarRateLimit("auth:cadastro:ip", 10, 15 * 60_000);
+    await aplicarRateLimit("auth:cadastro:account", 5, 15 * 60_000, data.email, true);
     if (!(await validarTurnstile(data.turnstileToken, "cadastro"))) {
       return { erro: "Não foi possível confirmar que este acesso é legítimo." };
     }
 
-    const db = getD1();
-    const existente = await db
-      .prepare("SELECT id FROM users WHERE email = ? LIMIT 1")
-      .bind(data.email)
-      .first();
+    const db = getDatabase();
+    const { data: existente } = await db
+      .from("users")
+      .select("id")
+      .eq("email", data.email)
+      .maybeSingle()
+      .throwOnError();
     if (existente) return { erro: "Não foi possível criar a conta com esses dados." };
 
     const { hash, salt } = await gerarHashSenha(data.senha);
     const id = gerarId();
     await db
-      .prepare("INSERT INTO users (id, nome, email, senha_hash, senha_salt) VALUES (?, ?, ?, ?, ?)")
-      .bind(id, data.nome, data.email, hash, salt)
-      .run();
+      .from("users")
+      .insert({
+        id,
+        nome: data.nome,
+        email: data.email,
+        senha_hash: hash,
+        senha_salt: salt,
+      })
+      .throwOnError();
     await criarSessao(id);
     return { usuario: { id, nome: data.nome, email: data.email } };
   } catch (error) {
@@ -190,27 +189,36 @@ export async function entrarUsuario(data: DadosLogin): Promise<ResultadoAuth> {
         erro: "O formulário expirou. Recarregue a página e tente novamente.",
       };
     }
-    await aplicarRateLimit("auth:login", 10, 15 * 60_000, data.email);
+    await aplicarRateLimit("auth:login:ip", 30, 15 * 60_000);
+    await aplicarRateLimit("auth:login:account", 10, 15 * 60_000, data.email, true);
     if (!(await validarTurnstile(data.turnstileToken, "login"))) {
       return { erro: "Não foi possível confirmar que este acesso é legítimo." };
     }
 
-    const db = getD1();
-    const usuario = await db
-      .prepare("SELECT id, nome, email, senha_hash, senha_salt FROM users WHERE email = ? LIMIT 1")
-      .bind(data.email)
-      .first<UsuarioPublico & { senha_hash: string; senha_salt: string }>();
+    const db = getDatabase();
+    const { data: usuario } = await db
+      .from("users")
+      .select("id,nome,email,senha_hash,senha_salt")
+      .eq("email", data.email)
+      .maybeSingle()
+      .throwOnError();
 
-    if (!usuario || !(await verificarSenha(data.senha, usuario.senha_hash, usuario.senha_salt))) {
+    const validPassword = await verificarSenha(
+      data.senha,
+      usuario?.senha_hash ?? `pbkdf2-v1$600000$${"0".repeat(128)}`,
+      usuario?.senha_salt ?? "0".repeat(32),
+    );
+    if (!usuario || !validPassword) {
       return { erro: "E-mail ou senha incorretos." };
     }
 
     if (senhaPrecisaRehash(usuario.senha_hash)) {
       const novo = await gerarHashSenha(data.senha);
       await db
-        .prepare("UPDATE users SET senha_hash = ?, senha_salt = ? WHERE id = ?")
-        .bind(novo.hash, novo.salt, usuario.id)
-        .run();
+        .from("users")
+        .update({ senha_hash: novo.hash, senha_salt: novo.salt })
+        .eq("id", usuario.id)
+        .throwOnError();
     }
 
     await criarSessao(usuario.id);
@@ -227,12 +235,13 @@ export async function sairUsuario() {
   const token = lerTokenSessao();
   if (token && /^[a-f0-9]{64}$/i.test(token)) {
     try {
-      await getD1()
-        .prepare("DELETE FROM sessoes WHERE token = ?")
-        .bind(await gerarHashTokenSessao(token))
-        .run();
-    } catch (error) {
-      console.error("Falha ao remover sessão", error);
+      await getDatabase()
+        .from("sessoes")
+        .delete()
+        .eq("token", await gerarHashTokenSessao(token))
+        .throwOnError();
+    } catch {
+      console.error("Falha ao remover sessão no servidor.");
     }
   }
   limparCookiesSessao();

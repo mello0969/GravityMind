@@ -37,7 +37,7 @@ export function getD1(): D1Database {
   const db = request.runtime?.cloudflare?.env?.DB;
   if (!db) {
     throw new Error(
-      "Banco de dados (D1) não disponível. Confira se o binding 'DB' está configurado no wrangler.jsonc e se o deploy foi feito via `wrangler deploy` (não `vite dev`).",
+      "Banco de dados (D1) não disponível. No desenvolvimento execute npm run db:setup e npm run dev. Em produção confira o binding DB no wrangler.jsonc.",
     );
   }
   return db;

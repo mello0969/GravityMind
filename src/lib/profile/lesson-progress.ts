@@ -20,7 +20,7 @@ import type { Assunto } from "@/lib/questions/types";
 export type MarcoLicao = "texto" | "narracao" | "video" | "resumo" | "visual" | "animacao";
 
 export const MARCOS_ATIVOS: MarcoLicao[] = ["texto", "resumo", "visual", "animacao"];
-const STORAGE_KEY = storageKey("progresso-licoes");
+const STORAGE_KEY = () => storageKey("progresso-licoes");
 const TODOS_MARCOS: MarcoLicao[] = ["texto", "narracao", "video", "resumo", "visual", "animacao"];
 
 type EstadoProgresso = Record<Assunto, MarcoLicao[]>;
@@ -29,7 +29,7 @@ function lerEstado(): EstadoProgresso {
   const padrao: EstadoProgresso = { "lei-1": [], "lei-2": [], "lei-3": [] };
   if (typeof window === "undefined") return padrao;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(STORAGE_KEY());
     const parsed = raw ? (JSON.parse(raw) as unknown) : null;
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return padrao;
@@ -55,7 +55,7 @@ function lerEstado(): EstadoProgresso {
 
 function salvarEstado(estado: EstadoProgresso) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+  window.localStorage.setItem(STORAGE_KEY(), JSON.stringify(estado));
   emitProgressUpdated();
 }
 

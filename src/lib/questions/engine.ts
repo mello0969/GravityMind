@@ -3,9 +3,9 @@ import { QUESTOES } from "./bank";
 import { QUESTOES_CALCULO } from "./bank-calculo";
 import type { Assunto, Dificuldade, Questao, Resposta } from "./types";
 
-const STORAGE_KEY = storageKey("respostas");
-const DIFICULDADE_KEY = storageKey("dificuldade-adaptativa");
-const ADAPTACAO_META_KEY = storageKey("adaptacao-meta");
+const STORAGE_KEY = () => storageKey("respostas");
+const DIFICULDADE_KEY = () => storageKey("dificuldade-adaptativa");
+const ADAPTACAO_META_KEY = () => storageKey("adaptacao-meta");
 const MAX_HISTORICO = 2_000;
 const ASSUNTOS: Assunto[] = ["lei-1", "lei-2", "lei-3"];
 const DIFICULDADES: Dificuldade[] = ["facil", "medio", "dificil"];
@@ -56,7 +56,7 @@ function lerJSON<T>(chave: string, padrao: T): T {
 
 function salvarHistorico(historico: Resposta[]) {
   if (!armazenamentoDisponivel()) return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(historico.slice(-MAX_HISTORICO)));
+  window.localStorage.setItem(STORAGE_KEY(), JSON.stringify(historico.slice(-MAX_HISTORICO)));
   emitProgressUpdated();
 }
 
@@ -70,7 +70,7 @@ function nivelPadrao(): Record<Assunto, Dificuldade> {
 }
 
 function lerDificuldades(): Record<Assunto, Dificuldade> {
-  const salvas = lerJSON<Partial<Record<Assunto, Dificuldade>>>(DIFICULDADE_KEY, {});
+  const salvas = lerJSON<Partial<Record<Assunto, Dificuldade>>>(DIFICULDADE_KEY(), {});
   const resultado = nivelPadrao();
   for (const assunto of ASSUNTOS) {
     const dificuldadeSalva = salvas[assunto];
@@ -83,7 +83,7 @@ function lerDificuldades(): Record<Assunto, Dificuldade> {
 
 function salvarDificuldades(niveis: Record<Assunto, Dificuldade>) {
   if (!armazenamentoDisponivel()) return;
-  window.localStorage.setItem(DIFICULDADE_KEY, JSON.stringify(niveis));
+  window.localStorage.setItem(DIFICULDADE_KEY(), JSON.stringify(niveis));
 }
 
 function lerMetaAdaptacao(): MetaAdaptacao {
@@ -92,7 +92,7 @@ function lerMetaAdaptacao(): MetaAdaptacao {
     "lei-2": { respostasAvaliadas: 0 },
     "lei-3": { respostasAvaliadas: 0 },
   };
-  const valor = lerJSON<Partial<MetaAdaptacao>>(ADAPTACAO_META_KEY, {});
+  const valor = lerJSON<Partial<MetaAdaptacao>>(ADAPTACAO_META_KEY(), {});
   for (const assunto of ASSUNTOS) {
     const contagem = valor[assunto]?.respostasAvaliadas;
     if (typeof contagem === "number" && Number.isInteger(contagem) && contagem >= 0) {
@@ -104,11 +104,11 @@ function lerMetaAdaptacao(): MetaAdaptacao {
 
 function salvarMetaAdaptacao(meta: MetaAdaptacao) {
   if (!armazenamentoDisponivel()) return;
-  window.localStorage.setItem(ADAPTACAO_META_KEY, JSON.stringify(meta));
+  window.localStorage.setItem(ADAPTACAO_META_KEY(), JSON.stringify(meta));
 }
 
 export function obterHistorico(): Resposta[] {
-  const bruto = lerJSON<unknown>(STORAGE_KEY, []);
+  const bruto = lerJSON<unknown>(STORAGE_KEY(), []);
   if (!Array.isArray(bruto)) return [];
   return bruto.filter(ehResposta).slice(-MAX_HISTORICO);
 }
@@ -133,9 +133,9 @@ export function marcarRespostaCorrigida(questaoId: string): boolean {
 
 export function limparHistorico() {
   if (!armazenamentoDisponivel()) return;
-  window.localStorage.removeItem(STORAGE_KEY);
-  window.localStorage.removeItem(DIFICULDADE_KEY);
-  window.localStorage.removeItem(ADAPTACAO_META_KEY);
+  window.localStorage.removeItem(STORAGE_KEY());
+  window.localStorage.removeItem(DIFICULDADE_KEY());
+  window.localStorage.removeItem(ADAPTACAO_META_KEY());
   emitProgressUpdated();
 }
 
@@ -191,9 +191,9 @@ export function escolherProximaQuestao(
   assunto: Assunto | "misto",
   dificuldade: Dificuldade,
   excluirIds: string[] = [],
+  historico = obterHistorico(),
 ): Questao | null {
-  const historico = obterHistorico();
-  const assuntoEfetivo = assunto === "misto" ? escolherAssuntoAdaptativo() : assunto;
+  const assuntoEfetivo = assunto === "misto" ? escolherAssuntoAdaptativo(historico) : assunto;
   const doNivel = obterQuestoesPorAssunto(assuntoEfetivo, dificuldade);
   const todasDoAssunto = obterQuestoesPorAssunto(assuntoEfetivo);
   const base = doNivel.length > 0 ? doNivel : todasDoAssunto;
@@ -212,8 +212,8 @@ export function escolherProximaQuestao(
 export function escolherProximaQuestaoMecanica(
   dificuldade: Dificuldade,
   excluirIds: string[] = [],
+  historico = obterHistorico(),
 ): Questao | null {
-  const historico = obterHistorico();
   const mecanica = QUESTOES.filter(
     (questao) => questao.tags.includes("mecânica") && questao.dificuldade === dificuldade,
   );
@@ -241,8 +241,8 @@ export function obterDicasQuestao(questao: Questao): readonly [string, string] {
   ];
 }
 
-export function contarRevisoesPendentes(assunto?: Assunto): number {
-  const historico = obterHistorico().filter(
+export function contarRevisoesPendentes(assunto?: Assunto, respostas = obterHistorico()): number {
+  const historico = respostas.filter(
     (resposta) => !assunto || assuntoDaQuestao(resposta.questaoId) === assunto,
   );
   const ultimas = ultimaRespostaPorQuestao(historico);
@@ -250,16 +250,15 @@ export function contarRevisoesPendentes(assunto?: Assunto): number {
     .length;
 }
 
-export function escolherAssuntoAdaptativo(): Assunto {
-  const historico = obterHistorico();
+export function escolherAssuntoAdaptativo(historico = obterHistorico()): Assunto {
   const pendencias = ASSUNTOS.map((assunto) => ({
     assunto,
-    pendentes: contarRevisoesPendentes(assunto),
+    pendentes: contarRevisoesPendentes(assunto, historico),
   })).sort((a, b) => b.pendentes - a.pendentes);
 
   if (pendencias[0].pendentes > 0) return pendencias[0].assunto;
 
-  const desempenho = calcularDesempenhoPorAssunto();
+  const desempenho = calcularDesempenhoPorAssunto(historico);
   const semPratica = desempenho.find((item) => item.totalRespostas === 0);
   if (semPratica) return semPratica.assunto;
 
@@ -275,8 +274,7 @@ export function escolherAssuntoAdaptativo(): Assunto {
   })[0].assunto;
 }
 
-export function calcularDesempenhoPorAssunto(): DesempenhoAssunto[] {
-  const historico = obterHistorico();
+export function calcularDesempenhoPorAssunto(historico = obterHistorico()): DesempenhoAssunto[] {
   return ASSUNTOS.map((assunto) => {
     const respostas = historico.filter(
       (resposta) => assuntoDaQuestao(resposta.questaoId) === assunto,

@@ -9,7 +9,7 @@ export function CreditCardPreview({ holderName }: { holderName: string }) {
     <div className="mx-auto w-full max-w-[23rem] [perspective:900px]">
       <div
         role="img"
-        className="relative aspect-[1.586/1] overflow-hidden border border-[#5d756a] bg-[#10211a] p-6 text-[#edf2ed] shadow-[0_18px_38px_rgb(0_0_0/35%)] transition-transform duration-150 ease-out"
+        className="relative aspect-[1.586/1] overflow-hidden border border-[#5d756a] bg-[#10211a] p-6 text-foreground shadow-[0_18px_38px_rgb(0_0_0/35%)] transition-transform duration-150 ease-out"
         style={{ transform }}
         onPointerMove={(event) => {
           const rect = event.currentTarget.getBoundingClientRect();
@@ -36,16 +36,16 @@ export function CreditCardPreview({ holderName }: { holderName: string }) {
             <path d="M14 286c78-55 145 35 226-4s113-58 195-8 84 0 112-17" stroke="#9d4132" />
           </g>
         </svg>
-        <span className="relative font-mono text-[0.62rem] tracking-[0.24em] text-[#dbe5df]">
+        <span className="relative font-mono text-[0.62rem] tracking-normal text-[#dbe5df]">
           GRAVITYMIND
         </span>
         <div className="absolute inset-x-6 bottom-6">
-          <p className="font-mono text-xl font-medium tracking-[0.08em]">
+          <p className="font-mono text-xl font-medium tracking-normal">
             •••• &nbsp;•••• &nbsp;•••• &nbsp;4821
           </p>
           <div className="mt-4 flex items-end justify-between gap-4">
             <div className="min-w-0">
-              <p className="truncate font-mono text-xs uppercase text-[#dce5e0]">
+              <p className="truncate font-mono text-xs uppercase text-foreground">
                 {holderName.trim() || "ESTUDANTE GRAVITYMIND"}
               </p>
             </div>

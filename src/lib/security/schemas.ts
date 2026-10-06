@@ -62,7 +62,7 @@ const notaSyncSchema = z
   })
   .strict();
 
-const respostaQuestaoSchema = z
+export const respostaQuestaoSchema = z
   .object({
     questaoId: idSchema,
     letraEscolhida: z.enum(["A", "B", "C", "D", "CALC"]),
@@ -115,6 +115,7 @@ const quizSchema = z
 export const fotoDadosLocaisSchema = z
   .object({
     notas: z.array(notaSyncSchema).max(200),
+    expectedUserId: z.string().uuid().optional(),
     respostasQuestoes: z.array(respostaQuestaoSchema).max(500),
     respostasCalculo: z.array(respostaCalculoSchema).max(300),
     progressoLicoes: z.array(progressoSchema).max(30),
@@ -145,7 +146,11 @@ export const gravityInputSchema = z
           .strict(),
       )
       .min(1)
-      .max(12),
+      .max(12)
+      .refine(
+        (messages) => messages.at(-1)?.role === "user",
+        "A conversa deve terminar com uma pergunta do estudante.",
+      ),
     context: z
       .object({
         leiAtual: z

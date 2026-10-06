@@ -14,14 +14,15 @@ uniform vec2 pointer;
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
   vec2 focus = (pointer * 2.0 - 1.0) * vec2(0.55, -0.45);
-  float radius = length(uv - focus);
-  float ringA = smoothstep(0.035, 0.0, abs(radius - 0.52));
-  float ringB = smoothstep(0.025, 0.0, abs(radius - 0.82));
-  float axis = smoothstep(0.018, 0.0, abs(uv.y + uv.x * 0.23));
+  vec2 p = uv - focus - vec2(1.05, 0.25);
+  float field = length(p * vec2(0.8, 1.0));
+  field += 0.18 * sin(p.x * 2.6 + p.y) + 0.1 * sin(p.y * 3.4 - p.x);
+  float contour = abs(fract(field * 7.0) - 0.5);
+  float line = 1.0 - smoothstep(0.012, 0.04, contour);
+  float visibility = smoothstep(-0.6, 1.4, uv.x);
   vec3 graphite = vec3(0.045, 0.085, 0.068);
   vec3 mineral = vec3(0.34, 0.58, 0.47);
-  vec3 apple = vec3(0.56, 0.12, 0.11);
-  vec3 color = graphite + mineral * ringA * 0.44 + mineral * ringB * 0.2 + apple * axis * 0.14;
+  vec3 color = graphite + mineral * line * visibility * 0.24;
   gl_FragColor = vec4(color, 1.0);
 }`;
 
@@ -108,5 +109,12 @@ export function ShaderPlanSurface() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      tabIndex={-1}
+      aria-hidden="true"
+      className="absolute inset-0 h-full w-full"
+    />
+  );
 }

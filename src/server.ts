@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { limitRequestBody } from "./lib/security/request-limits";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -114,8 +115,10 @@ export default {
     try {
       const redirect = enforceHttps(request);
       if (redirect) return applySecurityHeaders(request, redirect);
+      const bounded = await limitRequestBody(request);
+      if (bounded instanceof Response) return applySecurityHeaders(request, bounded);
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handler.fetch(bounded, env, ctx);
       return applySecurityHeaders(request, await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
       console.error(error);

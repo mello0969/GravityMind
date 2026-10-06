@@ -7,34 +7,22 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("home renders the GRAVITYMIND product and a nonblank 3D canvas", async ({ page }) => {
-  await page.goto("/?visualTest=1");
+test("home presents a clear entry to free study, without plans or embedded questions", async ({
+  page,
+}) => {
+  await page.goto("/");
   await waitForApp(page);
-  await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: /Entenda a força\. Treine o raciocínio\./,
-    }),
-  ).toBeVisible();
-  const canvas = page.locator("[data-apple-scene] canvas");
-  await expect(canvas).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "GRAVITYMIND" })).toBeVisible();
+  const image = page.locator(".gm-welcome-image");
+  await expect(image).toBeVisible();
   await expect
-    .poll(async () =>
-      canvas.evaluate((source) => {
-        const target = document.createElement("canvas");
-        target.width = 80;
-        target.height = 80;
-        const context = target.getContext("2d");
-        context?.drawImage(source, 0, 0, 80, 80);
-        const pixels = context?.getImageData(0, 0, 80, 80).data ?? [];
-        let colored = 0;
-        for (let index = 0; index < pixels.length; index += 4) {
-          if (pixels[index + 3] > 0 && (pixels[index] > 30 || pixels[index + 1] > 30)) colored += 1;
-        }
-        return colored;
-      }),
-    )
-    .toBeGreaterThan(200);
+    .poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth))
+    .toBe(1536);
+  await expect(page.locator("[data-apple-scene], .gm-plan")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Verificar resposta" })).toHaveCount(0);
+  await page.getByRole("link", { name: "Explorar as aulas", exact: true }).click();
+  await expect(page).toHaveURL(/aulas/);
+  await expect(page.getByRole("link", { name: /01 Inércia/ })).toBeVisible();
 });
 
 test("question hints stop at two and filters live in the URL", async ({ page }) => {
@@ -52,15 +40,15 @@ test("question hints stop at two and filters live in the URL", async ({ page }) 
 test("flashcard statistics stay hidden until the session ends", async ({ page }) => {
   await page.goto("/flashcards");
   await waitForApp(page);
-  await expect(page.getByRole("heading", { name: "Resultado do deck" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Sessão concluída" })).toHaveCount(0);
   await page.getByRole("button", { name: "Terminar" }).click();
-  await expect(page.getByRole("heading", { name: "Resultado do deck" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sessão concluída" })).toBeVisible();
 });
 
 test("Plus never asks for raw card credentials", async ({ page }) => {
   await page.goto("/plus");
   await waitForApp(page);
-  await expect(page.getByText(/Esta tela não pede número, validade ou CVC/)).toBeVisible();
+  await expect(page.getByText(/Os dados do cartão são inseridos somente no Stripe/)).toBeVisible();
   await expect(page.locator('input[autocomplete="cc-number"]')).toHaveCount(0);
   await expect(page.locator('input[autocomplete="cc-csc"]')).toHaveCount(0);
 });
@@ -73,7 +61,7 @@ test("theme and larger text apply visibly and persist", async ({ page }) => {
     Number.parseFloat(window.getComputedStyle(element).fontSize),
   );
 
-  await page.getByRole("button", { name: "Escuro" }).click();
+  await page.getByRole("button", { name: "Escuro", exact: true }).click();
   await page.getByRole("switch", { name: "Usar texto maior" }).click();
   await expect(root).toHaveClass(/dark/);
   await expect(root).toHaveAttribute("data-reading", "large");
@@ -92,7 +80,7 @@ test("theme and larger text apply visibly and persist", async ({ page }) => {
 test("focus mode isolates the practice surface", async ({ page }) => {
   await page.goto("/questoes");
   await waitForApp(page);
-  await page.getByRole("button", { name: "Entrar no modo foco" }).click();
+  await page.getByRole("button", { name: "Modo foco", exact: true }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-focus");
   await expect(page.locator(".study-focus-shell")).toHaveAttribute("data-focus", "true");
   await expect(page.locator(".study-focus-surface")).toBeVisible();
@@ -193,7 +181,8 @@ test("mobile layout does not create horizontal overflow", async ({ page }, testI
 });
 
 async function waitForApp(page: Page) {
-  await expect(page.locator("html")).toHaveAttribute("data-app-ready", "true");
+  await expect(page.locator("html")).toHaveAttribute("data-app-ready", "true", { timeout: 15000 });
+  await expect(page.getByRole("status", { name: "Carregando estudo" })).toHaveCount(0);
 }
 
 async function pixelAlpha(canvas: Locator, x: number, y: number) {

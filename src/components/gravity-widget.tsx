@@ -2,14 +2,27 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Bot, Maximize2, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
+import { COOKIE_CONSENT_EVENT } from "@/components/cookie-consent";
 import { GravityChat } from "@/components/gravity-chat";
+import { useAuth } from "@/lib/auth/use-auth";
 import { gerarResumoPerfilParaGravity } from "@/lib/gravity/perfil-resumo";
 import { useSiteSettings } from "@/lib/settings/use-site-settings";
 
 export function GravityWidget() {
+  const { usuario } = useAuth();
   const location = useLocation();
   const [aberto, setAberto] = useState(false);
-  const { motion: motionPreference } = useSiteSettings();
+  const { motion: motionPreference, focusMode } = useSiteSettings();
+  const [consented, setConsented] = useState(false);
+  useEffect(() => {
+    const update = () =>
+      setConsented(
+        ["essential", "metrics"].includes(document.documentElement.dataset.cookieConsent ?? ""),
+      );
+    update();
+    window.addEventListener(COOKIE_CONSENT_EVENT, update);
+    return () => window.removeEventListener(COOKIE_CONSENT_EVENT, update);
+  }, []);
   const movimentoReduzido = motionPreference === "reduced";
 
   useEffect(() => {
@@ -21,10 +34,16 @@ export function GravityWidget() {
     return () => window.removeEventListener("keydown", fecharComEscape);
   }, [aberto]);
 
-  if (location.pathname.startsWith("/tutor")) return null;
+  if (
+    !consented ||
+    !usuario ||
+    ["/", "/tutor", "/login", "/cadastro"].includes(location.pathname) ||
+    (focusMode && ["/questoes", "/quadro"].includes(location.pathname))
+  )
+    return null;
 
   return (
-    <div className="focus-optional">
+    <div className="focus-optional hidden min-[1360px]:block">
       <AnimatePresence>
         {aberto && (
           <motion.aside
@@ -61,6 +80,7 @@ export function GravityWidget() {
               </div>
             </div>
             <GravityChat
+              key={usuario?.id ?? "guest"}
               context={{ resumoPerfil: gerarResumoPerfilParaGravity() }}
               alturaMensagens="320px"
             />

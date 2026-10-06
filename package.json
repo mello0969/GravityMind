@@ -4,7 +4,19 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+    "predev": "node scripts/setup-local.mjs",
     "dev": "vite dev",
+    "db:check": "node scripts/supabase-database.mjs check",
+    "db:backup": "node scripts/supabase-database.mjs backup",
+    "db:verify": "node scripts/supabase-database.mjs verify",
+    "db:import:d1": "node scripts/supabase-database.mjs import-d1",
+    "db:d1:setup": "node scripts/database.mjs setup",
+    "db:d1:check": "node scripts/database.mjs check",
+    "db:d1:check:remote": "node scripts/database.mjs check --remote",
+    "db:d1:backup": "node scripts/database.mjs backup",
+    "db:d1:backup:remote": "node scripts/database.mjs backup --remote",
+    "db:d1:login": "wrangler login --scopes account:read user:read d1:write",
+    "db:d1:migrate:remote": "wrangler d1 migrations apply DB --remote --config wrangler.jsonc",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
@@ -13,12 +25,14 @@
     "lint:eslint": "eslint .",
     "format": "biome format --write .",
     "test": "vitest run",
+    "test:tutor:live": "vitest run tests/tutor-live.test.ts --mode tutor-live",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:mutation": "stryker run",
     "knip": "knip",
     "security:config": "node scripts/check-env.mjs",
     "security:secrets": "node scripts/check-secrets.mjs",
+    "security:client": "node scripts/check-client-bundle.mjs",
     "security:dependencies": "npm audit --audit-level=high",
     "commitlint": "commitlint"
   },
@@ -30,6 +44,7 @@
     "@radix-ui/react-slider": "^1.3.6",
     "@radix-ui/react-switch": "^1.2.6",
     "@sentry/tanstackstart-react": "^10.74.0",
+    "@supabase/supabase-js": "2.117.2",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-router": "^1.168.25",
@@ -80,7 +95,8 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1",
-    "vitest": "4.1.11"
+    "vitest": "4.1.11",
+    "wrangler": "^4.131.0"
   },
   "overrides": {
     "qs": "6.16.0"

@@ -17,18 +17,17 @@ import { Whiteboard } from "@/components/whiteboard";
 import { useAuth } from "@/lib/auth/use-auth";
 import { emitProgressUpdated } from "@/lib/brand";
 import { recordStudyActivityServerFn } from "@/lib/profile/study-profile.server";
+import { selecionarAdaptativa } from "@/lib/questions/adaptive";
+import { QUESTOES } from "@/lib/questions/bank";
+import { QUESTOES_CALCULO } from "@/lib/questions/bank-calculo";
 import {
-  atualizarDificuldadeAdaptativa,
   calcularDesempenhoPorAssunto,
-  escolherAssuntoAdaptativo,
-  escolherProximaQuestao,
-  escolherProximaQuestaoMecanica,
   marcarRespostaCorrigida,
   obterDicasQuestao,
-  obterDificuldadeAtual,
+  obterHistorico,
   registrarResposta,
 } from "@/lib/questions/engine";
-import { escolherProximaQuestaoCalculo } from "@/lib/questions/engine-calculo";
+import { escolherQuestaoFixa } from "@/lib/questions/fixed";
 import type { Dificuldade, Questao, QuestaoCalculo, QuestionScope } from "@/lib/questions/types";
 import { ASSUNTO_LABEL } from "@/lib/questions/types";
 import { useSiteSettings } from "@/lib/settings/use-site-settings";
@@ -53,32 +52,6 @@ function formatarRelogio(segundos: number) {
     .padStart(2, "0");
   const resto = (segundos % 60).toString().padStart(2, "0");
   return `${minutos}:${resto}`;
-}
-
-function assuntoParaProxima(selecao: QuestionScope) {
-  return selecao === "misto" || selecao === "mecanica" ? escolherAssuntoAdaptativo() : selecao;
-}
-
-function escolherQuestaoMultipla(
-  assunto: QuestionScope,
-  modo: PracticeMode,
-  idsExcluidos: string[],
-) {
-  const assuntoEfetivo = assuntoParaProxima(assunto);
-  const dificuldade = modo === "adaptativo" ? obterDificuldadeAtual(assuntoEfetivo) : modo;
-  return assunto === "mecanica"
-    ? escolherProximaQuestaoMecanica(dificuldade, idsExcluidos)
-    : escolherProximaQuestao(assuntoEfetivo, dificuldade, idsExcluidos);
-}
-
-function escolherQuestaoCalculo(
-  assunto: QuestionScope,
-  modo: PracticeMode,
-  idsExcluidos: string[],
-) {
-  const assuntoEfetivo = assuntoParaProxima(assunto);
-  const dificuldade = modo === "adaptativo" ? obterDificuldadeAtual(assuntoEfetivo) : modo;
-  return escolherProximaQuestaoCalculo(assuntoEfetivo, dificuldade, idsExcluidos);
 }
 
 function pedagogicalAnalysis({
@@ -129,6 +102,8 @@ export function QuestionPractice({
   const [respondidoIds, setRespondidoIds] = useState<string[]>([]);
   const [respondidoIdsCalculo, setRespondidoIdsCalculo] = useState<string[]>([]);
   const [calcKey, setCalcKey] = useState(0);
+  const [requestIds, setRequestIds] = useState<string[]>([]);
+  const adaptiveAccountId = usuario?.id;
   const [selecionada, setSelecionada] = useState<Letra | null>(null);
   const [primeiroErro, setPrimeiroErro] = useState<Letra | null>(null);
   const [confianca, setConfianca] = useState<Confianca>("media");
@@ -147,40 +122,56 @@ export function QuestionPractice({
   const duracaoMovimento = settings.motion === "reduced" ? 0 : 0.24;
 
   function carregarMultipla() {
-    const proxima = escolherQuestaoMultipla(assunto, modo, respondidoIds);
-    setQuestaoAtual(proxima);
+    setRequestIds([...respondidoIds]);
+  }
+
+  function carregarCalculo() {
+    setRequestIds([...respondidoIdsCalculo, ...(questaoCalculo ? [questaoCalculo.id] : [])]);
+  }
+
+  const selectionScope = `${assunto}:${modo}:${tipo}:${adaptiveAccountId ?? ""}`;
+  const previousScope = useRef(selectionScope);
+  useEffect(() => {
+    if (previousScope.current === selectionScope) return;
+    previousScope.current = selectionScope;
+    setRespondidoIds([]);
+    setRespondidoIdsCalculo([]);
+    setRequestIds([]);
+  }, [selectionScope]);
+
+  useEffect(() => {
+    // History is scoped to the active account; reselect when that account changes.
+    void adaptiveAccountId;
+    setQuestaoAtual(null);
+    setQuestaoCalculo(null);
     setSelecionada(null);
     setPrimeiroErro(null);
     setConfianca("media");
     setEtapa("responder");
     setDicasAtuais([]);
     setAvisoAdaptativo(null);
-    inicioQuestaoRef.current = Date.now();
-  }
-
-  function carregarCalculo() {
-    const proxima = escolherQuestaoCalculo(assunto, modo, respondidoIdsCalculo);
-    setQuestaoCalculo(proxima);
-    setCalcKey((valor) => valor + 1);
-  }
-
-  useEffect(() => {
-    setRespondidoIds([]);
-    setRespondidoIdsCalculo([]);
-    if (tipo === "multipla") {
-      setQuestaoAtual(escolherQuestaoMultipla(assunto, modo, []));
-      setSelecionada(null);
-      setPrimeiroErro(null);
-      setConfianca("media");
-      setEtapa("responder");
-      setDicasAtuais([]);
-      setAvisoAdaptativo(null);
-      inicioQuestaoRef.current = Date.now();
+    if (modo !== "adaptativo") {
+      if (tipo === "multipla")
+        setQuestaoAtual(escolherQuestaoFixa(QUESTOES, assunto, modo, requestIds));
+      else {
+        setQuestaoCalculo(escolherQuestaoFixa(QUESTOES_CALCULO, assunto, modo, requestIds));
+        setCalcKey((current) => current + 1);
+      }
     } else {
-      setQuestaoCalculo(escolherQuestaoCalculo(assunto, modo, []));
-      setCalcKey((valor) => valor + 1);
+      const result = selecionarAdaptativa({
+        assunto,
+        tipo,
+        excluirIds: requestIds,
+        historico: obterHistorico(),
+      });
+      if (result.tipo === "multipla") setQuestaoAtual(result.questao);
+      else {
+        setQuestaoCalculo(result.questao);
+        setCalcKey((current) => current + 1);
+      }
     }
-  }, [assunto, modo, tipo]);
+    inicioQuestaoRef.current = Date.now();
+  }, [assunto, modo, tipo, requestIds, adaptiveAccountId]);
 
   useEffect(() => {
     const intervalo = window.setInterval(() => {
@@ -204,16 +195,8 @@ export function QuestionPractice({
 
   function concluirQuestao(acertou: boolean, corrigiu: boolean) {
     if (!questaoAtual) return;
-    const resultado = atualizarDificuldadeAdaptativa(questaoAtual.assunto);
-    if (modo === "adaptativo" && resultado.mudou) {
-      setAvisoAdaptativo(
-        resultado.nivelNovo === "dificil"
-          ? "As próximas questões vão exigir mais integração entre conceitos."
-          : resultado.nivelNovo === "medio"
-            ? "A sequência avançou para questões de aplicação."
-            : "A sequência voltou aos fundamentos para consolidar a base.",
-      );
-    }
+    if (modo === "adaptativo")
+      setAvisoAdaptativo("Seu resultado será considerado na próxima questão.");
     setRespondidoIds((atuais) => [...atuais, questaoAtual.id]);
     setSessao((atual) => ({
       acertos: atual.acertos + (acertou ? 1 : 0),
@@ -372,8 +355,29 @@ export function QuestionPractice({
       )}
 
       {workspace ? (
-        <div className="grid gap-4 border-b border-border pb-5 sm:grid-cols-[1fr_minmax(14rem,24rem)_auto] sm:items-center">
-          <p className="font-mono text-xs tracking-[0.17em] text-muted-foreground">
+        <fieldset className="ff-tabs focus-optional">
+          <legend className="sr-only">Formato da questão</legend>
+          <button
+            type="button"
+            className={`ff-tab ${tipo === "multipla" ? "active" : ""}`}
+            aria-pressed={tipo === "multipla"}
+            onClick={() => setTipo("multipla")}
+          >
+            Conceitos
+          </button>
+          <button
+            type="button"
+            className={`ff-tab ${tipo === "calculo" ? "active" : ""}`}
+            aria-pressed={tipo === "calculo"}
+            onClick={() => setTipo("calculo")}
+          >
+            Cálculo aplicado
+          </button>
+        </fieldset>
+      ) : null}
+      {workspace ? (
+        <div className="gm-session-progress grid gap-4 border-b border-border pb-5 sm:grid-cols-[1fr_minmax(14rem,24rem)_auto] sm:items-center">
+          <p className="font-mono text-xs tracking-normal text-muted-foreground">
             QUESTÃO {Math.min(sessao.total + 1, metaSessao)} DE {metaSessao}
           </p>
           <div className="ff-progress-track">
@@ -490,8 +494,8 @@ export function QuestionPractice({
                     <div
                       className={
                         workspace
-                          ? "mt-7 text-center font-[Georgia,serif] text-4xl italic text-foreground sm:text-5xl"
-                          : "mt-4 border-l-2 border-primary pl-4 font-mono text-lg font-bold text-primary"
+                          ? "mt-7 text-center font-[Georgia,serif] text-4xl italic text-foreground "
+                          : "mt-4 border-y border-border py-4  font-mono text-lg font-bold text-primary"
                       }
                     >
                       {questaoAtual.formula}
@@ -551,7 +555,7 @@ export function QuestionPractice({
                   </fieldset>
 
                   {etapa === "responder" && (
-                    <div className="mt-5 flex flex-wrap items-center gap-2">
+                    <div className="gm-confidence">
                       <span className="mr-1 text-xs font-semibold text-muted-foreground">
                         Antes de responder, sua confiança:
                       </span>
@@ -559,6 +563,7 @@ export function QuestionPractice({
                         <button
                           type="button"
                           key={valor}
+                          aria-pressed={confianca === valor}
                           onClick={() => setConfianca(valor)}
                           className={`min-h-9 border px-3 text-xs font-semibold capitalize ${
                             confianca === valor
@@ -597,7 +602,7 @@ export function QuestionPractice({
                         transition={{ duration: duracaoMovimento }}
                         className="mt-6 overflow-hidden"
                       >
-                        <div className="border-l-2 border-warning bg-warning/8 px-4 py-3">
+                        <div className="border-y border-border py-4 px-4 py-3">
                           <p className="text-sm font-bold text-foreground">Tente mais uma vez</p>
                           <p className="reading-copy mt-1 text-sm leading-relaxed text-muted-foreground">
                             {
@@ -617,7 +622,7 @@ export function QuestionPractice({
                         transition={{ duration: duracaoMovimento }}
                         className="mt-6"
                       >
-                        <div className="border-t border-border pt-5">
+                        <div className="border-t border-border pt-5" role="status">
                           <p className="ff-kicker">
                             {selecionada === questaoAtual.correta
                               ? primeiroErro
@@ -743,7 +748,14 @@ export function ResetHistoricoButton({ onReset }: { onReset: () => void }) {
   return (
     <button
       type="button"
-      onClick={onReset}
+      onClick={() => {
+        if (
+          window.confirm(
+            "Apagar o histórico de questões deste aparelho? Essa ação não pode ser desfeita.",
+          )
+        )
+          onReset();
+      }}
       className="inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
     >
       <RotateCcw className="h-4 w-4" aria-hidden="true" /> Reiniciar histórico de questões

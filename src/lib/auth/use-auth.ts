@@ -6,6 +6,7 @@ import {
   type UsuarioPublico,
   usuarioAtualServerFn,
 } from "@/lib/auth/server";
+import { setLocalAccount } from "@/lib/brand";
 
 type EstadoAuth = {
   usuario: UsuarioPublico | null;
@@ -22,6 +23,7 @@ let ouvintes: ((estado: EstadoAuth) => void)[] = [];
 let estadoGlobal: EstadoAuth = { usuario: null, carregando: true };
 
 function emitir(novoEstado: EstadoAuth) {
+  setLocalAccount(novoEstado.usuario?.id ?? null);
   estadoGlobal = novoEstado;
   ouvintes.forEach((fn) => {
     fn(estadoGlobal);

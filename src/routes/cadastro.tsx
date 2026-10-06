@@ -19,6 +19,7 @@ function CadastroPage() {
   const [website, setWebsite] = useState("");
   const [aceitouTermos, setAceitouTermos] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [verificationAttempt, setVerificationAttempt] = useState(0);
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   const formularioIniciadoEm = useRef(Date.now());
@@ -54,35 +55,34 @@ function CadastroPage() {
       setErro("Não foi possível criar a conta agora. Revise os dados e tente novamente.");
     } finally {
       setEnviando(false);
+      setTurnstileToken("");
+      setVerificationAttempt((attempt) => attempt + 1);
     }
   }
 
   return (
     <main className="ff-page">
-      <div className="ff-shell grid gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(20rem,1.2fr)] md:items-start">
-        <section className="max-w-sm md:sticky md:top-24">
-          <p className="ff-kicker">Conta do estudante</p>
+      <div className="gm-shell gm-auth-layout">
+        <section className="gm-auth-intro">
+          <Link to="/" className="gm-text-link">
+            Voltar ao estudo
+          </Link>
           <h1 className="mt-3 text-4xl">Criar conta</h1>
           <p className="reading-copy mt-4 text-muted-foreground">
             O cadastro guarda seu progresso no banco para que você possa retomar em outra sessão.
           </p>
-          <div className="mt-8 border-y border-border py-2 text-sm">
-            <SecurityLine text="Nome, e-mail e senha são validados no servidor" />
-            <SecurityLine text="A senha exige pelo menos dez caracteres" />
-            <SecurityLine text="Anotações sensíveis usam criptografia na aplicação" />
-          </div>
+          <p className="gm-auth-formula" aria-hidden="true">
+            F = m · a
+          </p>
         </section>
 
-        <section className="ff-card max-w-xl p-5 sm:p-8" aria-labelledby="cadastro-form-title">
-          <h2 id="cadastro-form-title" className="text-2xl">
+        <section className="pt-2" aria-labelledby="cadastro-form-title">
+          <h2 id="cadastro-form-title" className="sr-only">
             Dados da conta
           </h2>
-          <form className="mt-7 space-y-5" onSubmit={handleSubmit} noValidate>
+          <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
             {erro && (
-              <div
-                role="alert"
-                className="border-l-2 border-destructive bg-destructive/8 px-4 py-3 text-sm text-destructive"
-              >
+              <div role="alert" className="border border-border px-4 py-3 text-sm text-destructive">
                 {erro}
               </div>
             )}
@@ -129,6 +129,7 @@ function CadastroPage() {
                   id="cadastro-email"
                   name="email"
                   type="email"
+                  spellCheck={false}
                   value={email}
                   onChange={(evento) => setEmail(evento.target.value.slice(0, 254))}
                   autoComplete="email"
@@ -196,7 +197,11 @@ function CadastroPage() {
               </span>
             </label>
 
-            <TurnstileWidget action="cadastro" onTokenChange={atualizarToken} />
+            <TurnstileWidget
+              key={verificationAttempt}
+              action="cadastro"
+              onTokenChange={atualizarToken}
+            />
 
             <button
               type="submit"
@@ -217,8 +222,4 @@ function CadastroPage() {
       </div>
     </main>
   );
-}
-
-function SecurityLine({ text }: { text: string }) {
-  return <p className="border-b border-border py-2.5 last:border-b-0">{text}</p>;
 }

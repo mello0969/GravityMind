@@ -1,16 +1,4 @@
-/**
- * Agente IA Tutor "Gravity", Cliente
- * ----------------------------------------------------------------
- * A chamada à API da Anthropic acontece no SERVIDOR (ver server-fn.ts),
- * não direto do navegador. Isso é necessário por dois motivos: (1) a API
- * da Anthropic não permite chamadas CORS de um browser para um domínio
- * arbitrário, só funciona em ambientes com proxy próprio (como artifacts
- * dentro do claude.ai); (2) mesmo que permitisse, expor a chave de API no
- * código do cliente seria um risco de segurança grave. Esta função
- * client-side só invoca a server function, do ponto de vista de quem usa,
- * é idêntico a uma chamada de API qualquer.
- */
-
+// Provider credentials and requests stay in the server function.
 import type { GravityContext, GravityMessage } from "@/lib/gravity/server-fn";
 import { gravityServerFn } from "@/lib/gravity/server-fn";
 

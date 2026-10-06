@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeaders } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { obterUsuarioAtual } from "@/lib/auth/session.server";
+import { serverEnv } from "@/lib/security/env.server";
 import { aplicarRateLimit } from "@/lib/security/rate-limit";
 
 const checkoutSchema = z
@@ -45,9 +46,9 @@ export const createPlusCheckoutServerFn = createServerFn({ method: "POST" })
       if (!user) return { error: "Entre na sua conta antes de continuar." };
       await aplicarRateLimit("billing:checkout", 5, 15 * 60_000, user.id);
 
-      const secretKey = process.env.STRIPE_SECRET_KEY;
-      const priceId = process.env.STRIPE_PLUS_PRICE_ID;
-      const appOrigin = safeAppOrigin(process.env.APP_ORIGIN ?? process.env.PUBLIC_APP_ORIGIN);
+      const secretKey = serverEnv("STRIPE_SECRET_KEY");
+      const priceId = serverEnv("STRIPE_PLUS_PRICE_ID");
+      const appOrigin = safeAppOrigin(serverEnv("APP_ORIGIN"));
       if (!secretKey || !priceId || !appOrigin) {
         return {
           error: "O checkout ainda não foi configurado neste ambiente.",
@@ -85,7 +86,11 @@ export const createPlusCheckoutServerFn = createServerFn({ method: "POST" })
         console.error("Falha ao criar Checkout Session", response.status);
         return { error: "Não foi possível abrir o checkout agora." };
       }
-      return { url: payload.url.slice(0, 2_048) };
+      const checkoutUrl = new URL(payload.url);
+      if (checkoutUrl.protocol !== "https:" || checkoutUrl.hostname !== "checkout.stripe.com") {
+        return { error: "O provedor não retornou um endereço de checkout válido." };
+      }
+      return { url: checkoutUrl.href.slice(0, 2_048) };
     } catch (error) {
       console.error("Falha no checkout Plus", error);
       return { error: "Não foi possível abrir o checkout agora." };

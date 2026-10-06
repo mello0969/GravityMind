@@ -17,17 +17,25 @@ O estudante resolve uma questao antes de receber a resposta, informa sua confian
 ## Capacidades confirmadas
 
 - Aulas das Tres Leis de Newton com diagramas e simulacoes.
-- Questoes adaptativas e modo de dificuldade fixa.
+- Essencial gratuito: aulas, simulacoes, questoes adaptativas e de dificuldade
+  fixa, correcao, ferramentas e Flash Cards de fundamentos.
+- Tutor de IA disponivel para contas gratuitas, com limites de uso no servidor.
+- Plus: deck avancado, alem dos recursos do Essencial.
 - Quadro de resolucao com desenho, formas, texto, importacao segura e exportacao.
-- Notas criptografadas, progresso e respostas sincronizados pelo Cloudflare D1 para usuarios autenticados.
+- Notas criptografadas e dados de estudo em Supabase/Postgres para usuarios autenticados.
+  A sincronizacao existente ocorre no login; nao e um autosave completo.
 - Tema claro e escuro, texto maior, movimento reduzido e modo foco.
 - Flash cards, metas de estudo, ofensiva diaria e sequencia de acertos.
-- Tutor virtual em tela cheia e em formato compacto nas demais rotas.
+- Tutor virtual em tela cheia e compacto nas rotas de estudo para usuarios com conta.
 - Plano Plus com liberacao de recursos por permissao persistida no servidor.
 
 ## Posicionamento
 
-GRAVITYMIND deve parecer uma bancada de estudo bem editada: preciso, concentrado e util. O produto se diferencia por usar confianca, segunda tentativa e analise pedagogica para transformar o erro em proximo passo concreto.
+As paginas de estudo devem ser precisas, concentradas e uteis. O produto usa confianca,
+segunda tentativa e analise pedagogica para transformar o erro em proximo passo concreto.
+A home apresenta a proposta, os acessos de estudo e o cadastro gratuito.
+A navegacao completa aparece no topo de todas as rotas. Planos ficam em /plus;
+questoes, explicacoes das leis e simulacoes ficam nas respectivas areas de estudo.
 
 ## Identidade e referencias aprovadas
 
@@ -36,7 +44,7 @@ GRAVITYMIND deve parecer uma bancada de estudo bem editada: preciso, concentrado
 - Navegacao: limpeza e previsibilidade inspiradas nos menus da Apple, sem copiar sua marca.
 - Marca geometrica: construcao modular inspirada na clareza da identidade da Alura.
 - Contraste: profundidade de verdes inspirada no uso de cor da Starbucks, sem reproduzir seus elementos proprietarios.
-- Objeto central da home: maca tridimensional procedural baseada na referencia fornecida pelo usuario.
+- Imagem da home: prisma optico em raster gerado, sem maca ou cena 3D.
 - Regras detalhadas: `DESIGN.md` e as skills locais citadas no pedido.
 
 ## Verdade e limites
@@ -51,9 +59,9 @@ GRAVITYMIND deve parecer uma bancada de estudo bem editada: preciso, concentrado
 ## Stack e restricoes tecnicas
 
 - TanStack Start, React 19, TypeScript e Tailwind CSS v4.
-- Cloudflare Workers e D1.
+- Cloudflare Workers e Supabase/Postgres. D1 permanece apenas como infraestrutura legada de migracao.
 - Animacao com GSAP e Motion, respeitando `prefers-reduced-motion` e a preferencia interna.
-- Three.js para a maca procedural, isolado do restante da arvore React e pausado fora da viewport.
+- A home usa imagem estatica e dispensa o carregamento do modelo GLB legado.
 - Validacao no servidor, cookies de sessao inacessiveis ao JavaScript, queries parametrizadas e autorizacao por proprietario.
 - Layout responsivo desde 320 px, navegacao por teclado e sem dependencia de movimento para compreender a interface.
 

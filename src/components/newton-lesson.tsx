@@ -83,7 +83,7 @@ export function NewtonLesson({ lesson }: { lesson: LessonContent }) {
         <header className="grid gap-7 border-b border-border pb-8 md:grid-cols-[1fr_15rem] md:items-end">
           <div>
             <p className="ff-kicker">{lesson.number} Lei de Newton</p>
-            <h1 className="mt-3 max-w-3xl text-4xl sm:text-5xl">{lesson.title}</h1>
+            <h1 className="mt-3 max-w-3xl text-4xl ">{lesson.title}</h1>
             <p className="reading-copy mt-4 max-w-2xl text-lg text-muted-foreground">
               {lesson.subtitle}
             </p>
@@ -281,7 +281,7 @@ function LessonText({
     <article>
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(15rem,0.65fr)]">
         <div>
-          <blockquote className="border-l-2 border-primary pl-5 text-xl font-semibold leading-relaxed">
+          <blockquote className="border-y border-border py-4  text-xl font-semibold leading-relaxed">
             {lesson.statement}
           </blockquote>
           <div className="reading-copy mt-8 space-y-5 text-muted-foreground">
@@ -292,9 +292,7 @@ function LessonText({
           {lesson.formula && (
             <div className="mt-8 border-y border-border py-8 text-center">
               <p className="ff-kicker">Equação central</p>
-              <p className="mt-3 font-mono text-4xl font-bold text-primary sm:text-5xl">
-                {lesson.formula}
-              </p>
+              <p className="mt-3 font-mono text-4xl font-bold text-primary ">{lesson.formula}</p>
             </div>
           )}
         </div>
@@ -332,7 +330,7 @@ function LessonSummary({
   return (
     <article className="max-w-3xl">
       <p className="ff-kicker">Leitura curta</p>
-      <h2 className="mt-3 border-l-2 border-accent pl-5 text-2xl leading-snug sm:text-3xl">
+      <h2 className="mt-3 border-y border-border py-4  text-2xl leading-snug sm:text-3xl">
         {lesson.summary.keyPoint}
       </h2>
       <ol className="mt-8 border-y border-border">

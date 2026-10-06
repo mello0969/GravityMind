@@ -1,11 +1,8 @@
 import "@tanstack/react-start/server-only";
+import { serverEnv } from "./env.server";
 
 const PREFIXO_V1 = "enc:v1:";
 const PREFIXO_V2 = "enc:v2:";
-
-function emProducao() {
-  return process.env.NODE_ENV === "production";
-}
 
 function bytesParaBase64(bytes: Uint8Array) {
   let binary = "";
@@ -21,10 +18,9 @@ function base64ParaBytes(value: string) {
 }
 
 async function obterChave() {
-  const encoded = process.env.DATA_ENCRYPTION_KEY;
+  const encoded = serverEnv("DATA_ENCRYPTION_KEY");
   if (!encoded) {
-    if (emProducao()) throw new Error("DATA_ENCRYPTION_KEY ausente em produção.");
-    return null;
+    throw new Error("DATA_ENCRYPTION_KEY ausente. Sincronização de notas bloqueada.");
   }
 
   const bytes = base64ParaBytes(encoded);
@@ -35,7 +31,6 @@ async function obterChave() {
 
 export async function criptografarTexto(value: string, contexto: string) {
   const key = await obterChave();
-  if (!key) return value;
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const cipher = await crypto.subtle.encrypt(
     { name: "AES-GCM", iv, additionalData: new TextEncoder().encode(contexto) },

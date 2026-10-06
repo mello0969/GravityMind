@@ -12,7 +12,7 @@ function ContatoPage() {
       <div className="ff-shell max-w-4xl">
         <header className="max-w-2xl border-b border-border pb-9">
           <p className="ff-kicker">Contato</p>
-          <h1 className="mt-3 text-4xl sm:text-5xl">Fale com o projeto pelo CIMOL</h1>
+          <h1 className="mt-3 text-4xl ">Fale com o projeto pelo CIMOL</h1>
           <p className="reading-copy mt-5 text-muted-foreground">
             Para não simular um canal de atendimento que ainda não existe, esta página direciona aos
             meios oficiais da escola responsável pelo contexto do projeto.

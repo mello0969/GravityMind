@@ -17,15 +17,22 @@ const SUGESTOES_PADRAO = [
 
 type ChatEntry = GravityMessage & { id: string };
 
-export function GravityChat({
-  context,
-  sugestoes = SUGESTOES_PADRAO,
-  alturaMensagens = "360px",
-}: {
+type GravityChatProps = {
   context?: GravityContext;
   sugestoes?: string[];
   alturaMensagens?: string;
-}) {
+};
+
+export function GravityChat(props: GravityChatProps) {
+  const { usuario } = useAuth();
+  return <GravityChatSession key={usuario?.id ?? "guest"} {...props} />;
+}
+
+function GravityChatSession({
+  context,
+  sugestoes = SUGESTOES_PADRAO,
+  alturaMensagens = "360px",
+}: GravityChatProps) {
   const { usuario, carregando: carregandoAuth } = useAuth();
   const [mensagens, setMensagens] = useState<ChatEntry[]>([]);
   const [input, setInput] = useState("");
@@ -44,7 +51,7 @@ export function GravityChat({
 
   async function enviar(texto: string) {
     const textoLimpo = texto.trim().slice(0, 1_500);
-    if (!textoLimpo || carregando) return;
+    if (!textoLimpo || carregando || !usuario) return;
     const novoHistorico: ChatEntry[] = [
       ...mensagens,
       { id: crypto.randomUUID(), role: "user", content: textoLimpo },
@@ -54,7 +61,9 @@ export function GravityChat({
     setErro(null);
     setCarregando(true);
     try {
-      const historicoDaApi = novoHistorico.map(({ role, content }) => ({ role, content }));
+      const historicoDaApi = novoHistorico
+        .slice(-11)
+        .map(({ role, content }) => ({ role, content: content.slice(0, 1500) }));
       const resposta = await enviarMensagemGravity(historicoDaApi, context);
       setMensagens((atuais) => [
         ...atuais,
@@ -69,18 +78,30 @@ export function GravityChat({
     }
   }
 
-  if (!carregandoAuth && !usuario) {
+  if (carregandoAuth) {
     return (
-      <div className="flex min-h-64 flex-col justify-center border-y border-border py-8">
-        <p className="text-sm font-bold">O tutor usa uma sessão autenticada</p>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Entre para proteger o limite de uso e vincular apenas o resumo necessário do seu
-          progresso.
+      <div role="status" aria-label="Carregando Tutor" className="space-y-4 py-16">
+        <div className="ff-skeleton h-7 w-2/3" />
+        <div className="ff-skeleton h-4 w-full" />
+        <div className="ff-skeleton h-4 w-4/5" />
+      </div>
+    );
+  }
+  if (!usuario) {
+    return (
+      <section className="gm-tutor-signin">
+        <h2>Suas dúvidas têm espaço aqui.</h2>
+        <p>
+          Entre na sua conta gratuita para conversar com o Tutor. O acesso tem limites de uso e
+          depende da disponibilidade do serviço.
         </p>
-        <Link to="/login" className="ff-btn-primary mt-5 w-fit">
+        <Link to="/login" className="ff-btn-primary">
           Entrar para conversar
         </Link>
-      </div>
+        <Link to="/cadastro" className="gm-text-link">
+          Criar conta gratuita
+        </Link>
+      </section>
     );
   }
 
@@ -88,11 +109,17 @@ export function GravityChat({
     <div className="flex flex-col">
       <div
         ref={scrollRef}
+        role="log"
+        aria-label="Mensagens da conversa"
+        aria-live="polite"
         className="space-y-3 overflow-y-auto"
         style={{ height: alturaMensagens }}
       >
         {mensagens.length === 0 && (
-          <div className="flex h-full flex-col justify-center">
+          <div className="gm-chat-empty flex h-full flex-col justify-center">
+            <span className="gm-chat-emblem mx-auto" aria-hidden="true">
+              G
+            </span>
             <p className="text-sm font-bold">Comece com uma dúvida específica</p>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
               Não envie senhas, documentos ou outros dados pessoais.
@@ -118,7 +145,7 @@ export function GravityChat({
             className={mensagem.role === "user" ? "flex justify-end" : "flex justify-start"}
           >
             <div
-              className={`max-w-[88%] whitespace-pre-wrap border px-3 py-2.5 text-sm leading-relaxed ${
+              className={`gm-chat-message max-w-[88%] whitespace-pre-wrap break-words border px-3 py-2.5 text-sm leading-relaxed ${
                 mensagem.role === "user"
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-secondary text-foreground"
@@ -143,7 +170,7 @@ export function GravityChat({
         {erro && (
           <div
             role="alert"
-            className="flex items-start gap-2 border-l-2 border-destructive bg-destructive/8 px-3 py-2.5 text-xs text-destructive"
+            className="flex items-start gap-2 border border-destructive px-3 py-2.5 text-sm text-destructive"
           >
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> {erro}
           </div>
@@ -159,6 +186,7 @@ export function GravityChat({
               setErro(null);
             }}
             title="Reiniciar conversa"
+            disabled={carregando}
             aria-label="Reiniciar conversa"
             className="grid h-10 w-10 shrink-0 place-items-center border border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
@@ -166,6 +194,7 @@ export function GravityChat({
           </button>
         )}
         <input
+          aria-label="Sua pergunta de Física"
           value={input}
           onChange={(evento) => setInput(evento.target.value.slice(0, 1_500))}
           onKeyDown={(evento) => {

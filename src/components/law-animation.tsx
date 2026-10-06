@@ -1,5 +1,5 @@
 import { Pause, Play, RotateCcw, SlidersHorizontal } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 
 type AssuntoAnimacao = "lei-1" | "lei-2" | "lei-3";
 
@@ -86,7 +86,6 @@ function Slider({
   max,
   step,
   unidade,
-  cor,
   onChange,
 }: {
   label: string;
@@ -95,26 +94,26 @@ function Slider({
   max: number;
   step: number;
   unidade: string;
-  cor: string;
   onChange: (v: number) => void;
 }) {
   return (
     <div className="mb-3 last:mb-0">
       <div className="mb-1.5 flex items-center justify-between text-xs font-bold">
         <span className="text-foreground">{label}</span>
-        <span style={{ color: cor }}>
+        <span className="text-primary">
           {valor} {unidade}
         </span>
       </div>
       <input
         type="range"
+        aria-label={label}
         min={min}
         max={max}
         step={step}
         value={valor}
         onChange={(e) => onChange(parseFloat(e.target.value))}
         className="ff-slider w-full"
-        style={{ color: "var(--primary)" }}
+        style={{ accentColor: "var(--primary)" }}
       />
     </div>
   );
@@ -137,6 +136,32 @@ function useLoop(tocando: boolean, duracao: number, onTick: (t: number) => void)
     frameRef.current = requestAnimationFrame(passo);
     return () => cancelAnimationFrame(frameRef.current);
   }, [duracao, onTick, tocando]);
+}
+
+function prepareCanvas(canvas: HTMLCanvasElement) {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  const width = Math.round(w * ratio);
+  const height = Math.round(h * ratio);
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+  const ctx = canvas.getContext("2d");
+  ctx?.setTransform(ratio, 0, 0, ratio, 0, 0);
+  return { ctx, w, h };
+}
+
+function useCanvasResize(ref: RefObject<HTMLCanvasElement | null>, draw: (t: number) => void) {
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+    const observer = new ResizeObserver(() => draw(0));
+    observer.observe(canvas);
+    draw(0);
+    return () => observer.disconnect();
+  }, [draw, ref]);
 }
 
 function desenharBloco(
@@ -196,10 +221,10 @@ function desenharGrade(ctx: CanvasRenderingContext2D, w: number, h: number) {
 }
 
 function rotuloCanvas(ctx: CanvasRenderingContext2D, texto: string) {
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.fillStyle = "#c4d5ce";
   ctx.font = "12px sans-serif";
   ctx.textAlign = "left";
-  ctx.fillText(texto, 20, 24);
+  ctx.fillText(texto, 20, 24, ctx.canvas.clientWidth - 40);
 }
 
 // ───────────────────────── Lei 1, Inércia ─────────────────────────
@@ -216,10 +241,9 @@ function AnimacaoLei1() {
   const desenhar = useCallback(
     (t: number) => {
       const canvas = canvasRef.current;
-      const ctx = canvas?.getContext("2d");
-      if (!canvas || !ctx) return;
-      const w = canvas.width;
-      const h = canvas.height;
+      if (!canvas) return;
+      const { ctx, w, h } = prepareCanvas(canvas);
+      if (!ctx) return;
       desenharGrade(ctx, w, h);
 
       const y = h / 2;
@@ -254,9 +278,7 @@ function AnimacaoLei1() {
   );
 
   useLoop(tocando, DURACAO, desenhar);
-  useEffect(() => {
-    desenhar(0);
-  }, [desenhar]);
+  useCanvasResize(canvasRef, desenhar);
 
   return (
     <Shell
@@ -275,7 +297,6 @@ function AnimacaoLei1() {
           max={60}
           step={5}
           unidade="N·s"
-          cor="#7FB39F"
           onChange={setImpulso}
         />
       }
@@ -284,7 +305,9 @@ function AnimacaoLei1() {
         ref={canvasRef}
         width={680}
         height={260}
-        className="w-full border border-[#52635D] bg-[#1C2B26]"
+        role="img"
+        aria-label="Simulação de forças e movimento"
+        className="block min-h-52 w-full border border-[#52635D] bg-[#1C2B26]"
         style={{ aspectRatio: "680 / 260" }}
       />
     </Shell>
@@ -309,10 +332,9 @@ function AnimacaoLei2() {
   const desenhar = useCallback(
     (t: number) => {
       const canvas = canvasRef.current;
-      const ctx = canvas?.getContext("2d");
-      if (!canvas || !ctx) return;
-      const w = canvas.width;
-      const h = canvas.height;
+      if (!canvas) return;
+      const { ctx, w, h } = prepareCanvas(canvas);
+      if (!ctx) return;
       desenharGrade(ctx, w, h);
 
       const inicioX = 90;
@@ -338,9 +360,7 @@ function AnimacaoLei2() {
   );
 
   useLoop(tocando, DURACAO, desenhar);
-  useEffect(() => {
-    desenhar(0);
-  }, [desenhar]);
+  useCanvasResize(canvasRef, desenhar);
 
   return (
     <Shell
@@ -360,7 +380,6 @@ function AnimacaoLei2() {
             max={40}
             step={1}
             unidade="N"
-            cor="#7FB39F"
             onChange={setForca}
           />
           <Slider
@@ -370,7 +389,6 @@ function AnimacaoLei2() {
             max={10}
             step={0.5}
             unidade="kg"
-            cor="#7FB39F"
             onChange={setMassa}
           />
         </>
@@ -380,7 +398,9 @@ function AnimacaoLei2() {
         ref={canvasRef}
         width={680}
         height={260}
-        className="w-full border border-[#52635D] bg-[#1C2B26]"
+        role="img"
+        aria-label="Simulação de forças e movimento"
+        className="block min-h-52 w-full border border-[#52635D] bg-[#1C2B26]"
         style={{ aspectRatio: "680 / 260" }}
       />
     </Shell>
@@ -404,10 +424,9 @@ function AnimacaoLei3() {
   const desenhar = useCallback(
     (t: number) => {
       const canvas = canvasRef.current;
-      const ctx = canvas?.getContext("2d");
-      if (!canvas || !ctx) return;
-      const w = canvas.width;
-      const h = canvas.height;
+      if (!canvas) return;
+      const { ctx, w, h } = prepareCanvas(canvas);
+      if (!ctx) return;
       desenharGrade(ctx, w, h);
 
       const y = h / 2;
@@ -442,9 +461,7 @@ function AnimacaoLei3() {
   );
 
   useLoop(tocando, DURACAO, desenhar);
-  useEffect(() => {
-    desenhar(0);
-  }, [desenhar]);
+  useCanvasResize(canvasRef, desenhar);
 
   return (
     <Shell
@@ -464,7 +481,6 @@ function AnimacaoLei3() {
             max={8}
             step={0.5}
             unidade="kg"
-            cor="#C77962"
             onChange={setMassaA}
           />
           <Slider
@@ -474,7 +490,6 @@ function AnimacaoLei3() {
             max={8}
             step={0.5}
             unidade="kg"
-            cor="#6F98C3"
             onChange={setMassaB}
           />
         </>
@@ -484,7 +499,9 @@ function AnimacaoLei3() {
         ref={canvasRef}
         width={680}
         height={260}
-        className="w-full border border-[#52635D] bg-[#1C2B26]"
+        role="img"
+        aria-label="Simulação de forças e movimento"
+        className="block min-h-52 w-full border border-[#52635D] bg-[#1C2B26]"
         style={{ aspectRatio: "680 / 260" }}
       />
     </Shell>

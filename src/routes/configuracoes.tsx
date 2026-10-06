@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus } from "lucide-react";
 import { useCallback } from "react";
+import { PageHeading } from "@/components/page-heading";
 import { Switch } from "@/components/ui/switch";
-import { STORAGE_PREFIX, storageKey } from "@/lib/brand";
+import { isCurrentStorageKey, storageKey } from "@/lib/brand";
 import { useStudyProfile } from "@/lib/profile/use-study-profile";
 import { type SessionMinutes, useSiteSettings } from "@/lib/settings/use-site-settings";
 
@@ -28,7 +29,7 @@ function ConfiguracoesPage() {
     const data: Record<string, unknown> = {};
     for (let index = 0; index < window.localStorage.length; index += 1) {
       const key = window.localStorage.key(index);
-      if (!key?.startsWith(STORAGE_PREFIX)) continue;
+      if (!key || !isCurrentStorageKey(key)) continue;
       try {
         data[key] = JSON.parse(window.localStorage.getItem(key) ?? "null");
       } catch {
@@ -49,14 +50,7 @@ function ConfiguracoesPage() {
   return (
     <main className="ff-page overflow-x-hidden">
       <div className="ff-shell">
-        <header className="max-w-3xl border-b border-border pb-10">
-          <p className="ff-kicker">Preferências do estudo</p>
-          <h1 className="mt-3 text-4xl md:text-5xl">Um ambiente que respeita seu ritmo.</h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Ajustes visuais ficam neste aparelho. O modo foco reduz distrações durante as sessões de
-            questões, sem limitar o conteúdo.
-          </p>
-        </header>
+        <PageHeading title="Configurações" description="Um espaço de estudo no seu ritmo." />
 
         <div className="grid gap-12 py-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
           <aside className="focus-optional lg:sticky lg:top-24 lg:self-start">
@@ -79,6 +73,31 @@ function ConfiguracoesPage() {
                 Aparência e leitura
               </h2>
               <div className="ff-divider-list mt-5 border-b border-t border-border">
+                <SettingRow
+                  title="Tema"
+                  description="Escolha uma aparência ou acompanhe o tema do aparelho."
+                >
+                  <fieldset className="flex flex-wrap">
+                    <legend className="sr-only">Tema do site</legend>
+                    {(
+                      [
+                        ["light", "Claro"],
+                        ["dark", "Escuro"],
+                        ["system", "Sistema"],
+                      ] as const
+                    ).map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        aria-pressed={settings.theme === value}
+                        onClick={() => settings.setTheme(value)}
+                        className={`min-h-11 border px-4 text-sm ${settings.theme === value ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card"}`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </fieldset>
+                </SettingRow>
                 <SettingRow
                   title="Texto maior"
                   description="Aumenta a escala tipográfica de toda a interface, incluindo títulos, controles e textos de leitura."
@@ -152,7 +171,7 @@ function ConfiguracoesPage() {
 
                 <SettingRow
                   title="Meta diária"
-                  description="Define quantas questões formam o objetivo do dia. Em uma conta, a meta fica salva no D1."
+                  description="Define quantas questões formam o objetivo do dia. Em uma conta, a meta fica salva no Supabase."
                 >
                   <div className="grid grid-cols-[2.75rem_5.5rem_2.75rem] border border-border">
                     <button

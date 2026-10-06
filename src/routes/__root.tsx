@@ -11,13 +11,14 @@ import { useEffect } from "react";
 import { GravityWidget } from "@/components/gravity-widget";
 import { ObservabilityBridge } from "@/components/observability-bridge";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { useAuth } from "@/lib/auth/use-auth";
 import { BRAND_NAME } from "@/lib/brand";
 import { captureClientError } from "@/lib/observability/client";
 import { SiteSettingsProvider } from "@/lib/settings/use-site-settings";
 import appCss from "../styles.css?url";
 
 const INITIAL_PREFERENCES_SCRIPT =
-  "try{var p='fisicafacil:',q='gravitymind:',a=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(p)===0)a.push(k)}for(var j=0;j<a.length;j++){var n=a[j].replace(p,q);if(localStorage.getItem(n)===null)localStorage.setItem(n,localStorage.getItem(a[j]))}var s=JSON.parse(localStorage.getItem(q+'settings')||'{}');var m=s.motion==='reduced'||(s.motion!=='full'&&matchMedia('(prefers-reduced-motion: reduce)').matches);document.documentElement.classList.add('dark');document.documentElement.dataset.motion=m?'reduced':'full';document.documentElement.dataset.reading=s.reading==='large'?'large':'standard';document.documentElement.dataset.cookieConsent=localStorage.getItem(q+'cookie-consent')||'unset'}catch(e){}";
+  "try{var p='fisicafacil:',q='gravitymind:',a=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(p)===0)a.push(k)}for(var j=0;j<a.length;j++){var n=a[j].replace(p,q);if(localStorage.getItem(n)===null)localStorage.setItem(n,localStorage.getItem(a[j]))}var s=JSON.parse(localStorage.getItem(q+'settings')||'{}');var m=s.motion==='reduced'||(s.motion!=='full'&&matchMedia('(prefers-reduced-motion: reduce)').matches);document.documentElement.classList.toggle('dark',(s.theme!=='light'&&s.theme!=='system')||(s.theme==='system'&&matchMedia('(prefers-color-scheme: dark)').matches));document.documentElement.dataset.motion=m?'reduced':'full';document.documentElement.dataset.reading=s.reading==='large'?'large':'standard';document.documentElement.dataset.cookieConsent=localStorage.getItem(q+'cookie-consent')||'unset'}catch(e){}";
 
 function NotFoundComponent() {
   return (
@@ -74,7 +75,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Plataforma de Física para ensino médio com estudo guiado, questões adaptativas e quadro de resolução.",
       },
       { property: "og:type", content: "website" },
-      { name: "theme-color", content: "#12201a" },
+      { name: "theme-color", content: "#101c19" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -87,7 +88,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap",
+      },
+      {
+        rel: "preload",
+        href: "/fonts/outfit-400.ttf",
+        as: "font",
+        type: "font/ttf",
+        crossOrigin: "anonymous",
       },
     ],
   }),
@@ -99,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className="dark" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <HeadContent />
         <script>{INITIAL_PREFERENCES_SCRIPT}</script>
@@ -124,7 +132,7 @@ function RootComponent() {
           </a>
           <SiteHeader />
           <div id="main-content" tabIndex={-1} className="flex-1 outline-none">
-            <Outlet />
+            <AccountContent />
           </div>
           <SiteFooter />
           <GravityWidget />
@@ -132,4 +140,17 @@ function RootComponent() {
       </SiteSettingsProvider>
     </QueryClientProvider>
   );
+}
+
+function AccountContent() {
+  const { usuario, carregando } = useAuth();
+  if (carregando)
+    return (
+      <div role="status" aria-label="Carregando estudo" className="gm-shell space-y-6 py-12">
+        <div className="ff-skeleton h-10 w-64" />
+        <div className="ff-skeleton h-5 w-2/3" />
+        <div className="ff-skeleton h-72 w-full" />
+      </div>
+    );
+  return <Outlet key={usuario?.id ?? "guest"} />;
 }

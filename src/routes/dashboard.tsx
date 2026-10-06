@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { PageHeading } from "@/components/page-heading";
 import { PROGRESS_EVENT } from "@/lib/brand";
 import {
   formatarDuracao,
@@ -96,14 +97,9 @@ function DashboardContent({ perfil, recompensas, marcos, revisoes, studyProfile 
   return (
     <main className="ff-page">
       <div className="ff-shell">
-        <header className="grid gap-6 border-b border-border pb-8 md:grid-cols-[1fr_auto] md:items-end">
-          <div className="max-w-3xl">
-            <p className="ff-kicker">Seu estudo</p>
-            <h1 className="mt-3 text-3xl sm:text-4xl">O próximo passo está definido</h1>
-            <p className="reading-copy mt-3 text-muted-foreground">{perfil.recomendacao.motivo}</p>
-          </div>
+        <PageHeading title="Meu progresso" description={perfil.recomendacao.motivo}>
           <RecommendationLink perfil={perfil} />
-        </header>
+        </PageHeading>
 
         <section
           className="grid gap-px overflow-hidden border-x border-b border-border bg-border sm:grid-cols-2 lg:grid-cols-4"

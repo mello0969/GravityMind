@@ -17,7 +17,7 @@ import { QUESTOES_CALCULO } from "./bank-calculo";
 import { registrarResposta } from "./engine";
 import type { Assunto, Dificuldade, QuestaoCalculo } from "./types";
 
-const STORAGE_CALCULO_KEY = storageKey("respostas-calculo");
+const STORAGE_CALCULO_KEY = () => storageKey("respostas-calculo");
 const MAX_HISTORICO_CALCULO = 1_000;
 
 export type RespostaCalculo = {
@@ -54,7 +54,7 @@ function respostaCalculoValida(valor: unknown): valor is RespostaCalculo {
 function lerRespostasCalculo(): RespostaCalculo[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(STORAGE_CALCULO_KEY);
+    const raw = window.localStorage.getItem(STORAGE_CALCULO_KEY());
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
     return Array.isArray(parsed)
       ? parsed.filter(respostaCalculoValida).slice(-MAX_HISTORICO_CALCULO)
@@ -67,7 +67,7 @@ function lerRespostasCalculo(): RespostaCalculo[] {
 function salvarRespostasCalculo(respostas: RespostaCalculo[]) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(
-    STORAGE_CALCULO_KEY,
+    STORAGE_CALCULO_KEY(),
     JSON.stringify(respostas.slice(-MAX_HISTORICO_CALCULO)),
   );
 }

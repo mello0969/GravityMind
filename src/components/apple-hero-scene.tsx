@@ -86,8 +86,10 @@ export function AppleHeroScene({ reducedMotion }: { reducedMotion: boolean }) {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       const mobile = width < 720;
-      apple.position.set(0, mobile ? -0.27 : 0.14, 0);
-      apple.scale.setScalar(mobile ? 0.7 : 1.05);
+      apple.position.set(mobile ? 0 : 0.9, mobile ? -0.6 : 0.05, 0);
+      apple.scale.setScalar(
+        mobile ? Math.min(0.53, (width / height) * 0.98) : width < 1024 ? 0.62 : 0.87,
+      );
       renderer.render(scene, camera);
     };
 

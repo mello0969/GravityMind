@@ -13,7 +13,7 @@
  *   pessoa já tinha usado como visitante antes de criar conta).
  */
 
-import { emitProgressUpdated, storageKey } from "@/lib/brand";
+import { emitProgressUpdated, localAccountId, storageKey } from "@/lib/brand";
 import { listarNotas } from "@/lib/notes/store";
 import type { Nota } from "@/lib/notes/types";
 import { type MarcoLicao, marcosConcluidos } from "@/lib/profile/lesson-progress";
@@ -22,13 +22,13 @@ import { obterHistoricoCalculo } from "@/lib/questions/engine-calculo";
 import type { Assunto, Dificuldade, Resposta } from "@/lib/questions/types";
 import { baixarDaNuvemServerFn, enviarParaNuvemServerFn, type FotoDadosLocais } from "./server-fn";
 
-const CHAVES = {
+const CHAVES = () => ({
   respostas: storageKey("respostas"),
   respostasCalculo: storageKey("respostas-calculo"),
   dificuldade: storageKey("dificuldade-adaptativa"),
   progresso: storageKey("progresso-licoes"),
   notas: storageKey("notas"),
-};
+});
 
 const ASSUNTOS: Assunto[] = ["lei-1", "lei-2", "lei-3"];
 
@@ -98,6 +98,7 @@ function montarFotoLocal(): FotoDadosLocais {
 
   return {
     notas: selecionarPorOrcamento(notasParaEnvio, 200, 430_000),
+    expectedUserId: localAccountId() ?? undefined,
     respostasQuestoes: selecionarPorOrcamento(respostasParaEnvio, 500, 180_000),
     respostasCalculo: selecionarPorOrcamento(calculosParaEnvio, 300, 180_000),
     progressoLicoes,
@@ -123,7 +124,7 @@ function aplicarFotoNoLocal(foto: FotoDadosLocais) {
       });
     }
   }
-  window.localStorage.setItem(CHAVES.notas, JSON.stringify([...notasPorId.values()]));
+  window.localStorage.setItem(CHAVES().notas, JSON.stringify([...notasPorId.values()]));
 
   // Respostas de questões: une por (questaoId + respondidoEm), sem duplicar
   const respostasLocais = obterHistorico();
@@ -158,7 +159,7 @@ function aplicarFotoNoLocal(foto: FotoDadosLocais) {
   const respostasMescladas = [...respostasPorEvento.values()]
     .sort((a, b) => a.respondidoEm.localeCompare(b.respondidoEm))
     .slice(-2_000);
-  window.localStorage.setItem(CHAVES.respostas, JSON.stringify(respostasMescladas));
+  window.localStorage.setItem(CHAVES().respostas, JSON.stringify(respostasMescladas));
 
   // Respostas de cálculo: mesma lógica
   const calculosPorEvento = new Map(
@@ -170,7 +171,7 @@ function aplicarFotoNoLocal(foto: FotoDadosLocais) {
   const calculosMesclados = [...calculosPorEvento.values()]
     .sort((a, b) => a.respondidoEm.localeCompare(b.respondidoEm))
     .slice(-1_000);
-  window.localStorage.setItem(CHAVES.respostasCalculo, JSON.stringify(calculosMesclados));
+  window.localStorage.setItem(CHAVES().respostasCalculo, JSON.stringify(calculosMesclados));
 
   // Progresso de lições: união de marcos (nunca remove, só adiciona)
   const progressoLocal: Record<Assunto, MarcoLicao[]> = {
@@ -184,7 +185,7 @@ function aplicarFotoNoLocal(foto: FotoDadosLocais) {
     if (!progressoLocal[assunto]) progressoLocal[assunto] = [];
     if (!progressoLocal[assunto].includes(marco)) progressoLocal[assunto].push(marco);
   }
-  window.localStorage.setItem(CHAVES.progresso, JSON.stringify(progressoLocal));
+  window.localStorage.setItem(CHAVES().progresso, JSON.stringify(progressoLocal));
 
   // Dificuldade adaptativa: nuvem só sobrescreve se local ainda está no padrão "facil"
   // (evita a nuvem "rebaixar" um progresso que só existe localmente ainda não sincronizado)
@@ -199,7 +200,7 @@ function aplicarFotoNoLocal(foto: FotoDadosLocais) {
       dificuldadeLocal[assunto] = d.nivel as Dificuldade;
     }
   }
-  window.localStorage.setItem(CHAVES.dificuldade, JSON.stringify(dificuldadeLocal));
+  window.localStorage.setItem(CHAVES().dificuldade, JSON.stringify(dificuldadeLocal));
   emitProgressUpdated();
 }
 
@@ -208,9 +209,13 @@ export type ResultadoSync = { ok: boolean; mensagem: string };
 /** Roda uma vez após login/cadastro: baixa o que já existe na nuvem e envia o que havia localmente. */
 export async function sincronizarAposLogin(): Promise<ResultadoSync> {
   if (typeof window === "undefined") return { ok: false, mensagem: "Ambiente sem navegador." };
+  const owner = localAccountId();
+  if (!owner) return { ok: false, mensagem: "Entre na conta para sincronizar." };
   try {
     const daNuvem = await baixarDaNuvemServerFn();
     if ("erro" in daNuvem) return { ok: false, mensagem: daNuvem.erro };
+    if (daNuvem.expectedUserId !== owner || localAccountId() !== owner)
+      return { ok: false, mensagem: "A conta mudou. Recarregue a página." };
     aplicarFotoNoLocal(daNuvem);
 
     const foto = montarFotoLocal();

@@ -10,7 +10,7 @@ function TermsPage() {
     <main className="ff-page">
       <article className="ff-shell max-w-3xl">
         <p className="ff-kicker">Atualizados em 10 de setembro de 2026</p>
-        <h1 className="mt-3 text-4xl md:text-5xl">Termos de uso</h1>
+        <h1 className="mt-3 text-4xl ">Termos de uso</h1>
         <p className="mt-5 text-base leading-relaxed text-muted-foreground">
           Ao usar o GRAVITYMIND, você concorda com as condições abaixo. O texto foi escrito para ser
           direto e compreensível para estudantes.

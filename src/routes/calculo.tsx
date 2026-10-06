@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { CalculationCard } from "@/components/calculation-card";
+import { PageHeading } from "@/components/page-heading";
 import { ScientificCalculator } from "@/components/scientific-calculator";
 import { QUESTOES_CALCULO } from "@/lib/questions/bank-calculo";
 
@@ -24,15 +25,10 @@ function CalculationPage() {
   return (
     <main className="gm-reference-page py-10">
       <div className="gm-shell">
-        <header className="max-w-3xl border-b border-border pb-6">
-          <p className="font-mono text-xs tracking-[0.18em] text-muted-foreground">
-            FERRAMENTA DE ESTUDO
-          </p>
-          <h1 className="mt-3 text-4xl font-normal sm:text-5xl">Calculadora científica</h1>
-          <p className="mt-3 text-base text-muted-foreground">
-            Faça operações básicas, trigonometria, logaritmos e exponenciação sem sair da resolução.
-          </p>
-        </header>
+        <PageHeading
+          title="Calculadora científica"
+          description="Do raciocínio ao resultado. Confira suas contas."
+        />
 
         <div className="mt-8 grid gap-8 xl:grid-cols-[31rem_minmax(0,1fr)] xl:items-start">
           <ScientificCalculator />

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-03T00:00:00-03:00",
+  "title": "Design System: GRAVITYMIND",
+  "extensions": {
+    "shadows": [],
+    "motion": [
+      {
+        "name": "title-reveal",
+        "value": "0.68s; stagger 0.045s",
+        "purpose": "Entrada unica da frase da home; respeita movimento reduzido."
+      },
+      {
+        "name": "flash-reveal",
+        "value": "0.25s ease-out",
+        "purpose": "Revelacao do cartao."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "640px"
+      },
+      {
+        "name": "stacked-study",
+        "value": "768px"
+      },
+      {
+        "name": "navigation",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acao principal de estudo.",
+      "html": "<button class=\"ds-primary\">Verificar resposta</button>",
+      "css": ".ds-primary{background:var(--primary,#9bd4bf);color:var(--primary-foreground,#07130e);border:1px solid transparent;border-radius:4px;min-height:44px;padding:10px 16px;font:500 16px Outfit,sans-serif}.ds-primary:hover{filter:brightness(1.06)}.ds-primary:focus-visible{outline:2px solid var(--ring,#9de7cb);outline-offset:3px}.ds-primary:active{filter:brightness(.95)}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "description": "Acao secundaria.",
+      "html": "<button class=\"ds-outline\">Modo foco</button>",
+      "css": ".ds-outline{background:transparent;color:var(--foreground,#eef3ef);border:1px solid var(--border-strong,#617d6e);border-radius:4px;min-height:44px;padding:10px 16px;font:500 16px Outfit,sans-serif}.ds-outline:hover{background:var(--secondary,#1d3029)}.ds-outline:focus-visible{outline:2px solid var(--ring,#9de7cb);outline-offset:3px}"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "description": "Campo rotulado.",
+      "html": "<label class=\"ds-label\" for=\"ds-email\">E-mail</label><input class=\"ds-input\" id=\"ds-email\" type=\"email\" autocomplete=\"email\">",
+      "css": ".ds-label{display:block;color:var(--foreground,#eef3ef);font:500 14px Outfit,sans-serif;margin-bottom:8px}.ds-input{background:var(--card,#15221e);color:var(--foreground,#eef3ef);border:1px solid var(--input,#4d655a);border-radius:4px;min-height:44px;padding:0 12px;font:16px Outfit,sans-serif}.ds-input:focus-visible{outline:2px solid var(--ring,#9de7cb);outline-offset:2px}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "description": "Acessos diretos presentes na home e nas rotas de estudo; ferramentas e Plus ficam em Explorar.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Navegacao principal\"><a aria-current=\"page\" href=\"/\">Inicio</a><a href=\"/aulas\">Estudar</a><a href=\"/questoes\">Pratica</a><a href=\"/flashcards\">Flash Cards</a><a href=\"/tutor\">Tutor</a></nav>",
+      "css": ".ds-nav{display:flex;gap:24px;background:#101c19;padding:0 16px}.ds-nav a{display:flex;align-items:center;min-height:64px;font:400 14px Outfit,sans-serif;color:#eef3ef;text-decoration:none;border-bottom:2px solid transparent}.ds-nav a[aria-current]{border-color:#9bd4bf}.ds-nav a:hover{color:#9bd4bf}.ds-nav a:focus-visible{outline:2px solid #9bd4bf;outline-offset:2px}"
+    },
+    {
+      "name": "Study Card",
+      "kind": "card",
+      "description": "Conteudo real de uma questao ou flashcard.",
+      "html": "<article class=\"ds-study\"><h2>O que muda quando a massa dobra?</h2><p>Considere a mesma forca resultante.</p></article>",
+      "css": ".ds-study{background:var(--card,#15221e);color:var(--foreground,#eef3ef);border:1px solid var(--border-strong,#617d6e);border-radius:6px;padding:24px}.ds-study h2{font:400 24px/1.4 Outfit,sans-serif;margin:0}.ds-study p{font:400 16px/1.6 Outfit,sans-serif;color:var(--muted-foreground,#a9bbb1)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Fisica em primeiro plano",
+    "overview": "Atualizado em 03/10/2026. A identidade e as ferramentas existentes permanecem. A home oferece um caminho claro para estudar, com navegacao completa e cadastro gratuito. O uso e sofisticado e simples, com hierarquia contida e acessos previsiveis.\n\nA home apresenta GRAVITYMIND, \"Sua curiosidade vai mais longe.\" e a acao \"Explorar as aulas\", que leva a /aulas. O prisma optico em raster gerado tem estilo fotografico e funciona como ilustracao cientifica decorativa, sem alegar um experimento real ou um curso de optica. Quatro links sem moldura levam ao estudo; o convite a conta gratuita e o rodape institucional completam o percurso. As telas de estudo usam divisorias, filtros legiveis e o conteudo como prioridade. Nao ha estatisticas, depoimentos, conversas ou resultados inventados.\n\nPratica adaptativa e gratuita para visitantes e contas, com historico local validado e separado por conta. Tutor e gratuito para contas autenticadas, com limites no servidor e sujeito a disponibilidade. Sem OPENAI_API_KEY no ambiente informado, respostas reais ainda nao estao ativas. O deck avancado de Flash Cards mantem acesso Plus verificado no servidor; planos aparecem somente em /plus.",
+    "keyCharacteristics": [
+      "Fundo verde-grafite, contraste mineral e prisma raster como imagem cientifica.",
+      "Tipografia geometrica de peso moderado, sem espacamento artificial.",
+      "Logo de contorno fino, navegacao completa e ferramentas agrupadas.",
+      "Estudo gratuito, progressao pessoal, revisao e experimentos reais nas aulas."
+    ],
+    "rules": [
+      {
+        "name": "The Local Focus Rule",
+        "body": "Foco pertence ao wrapper da rota. Nunca aplicar data-focus ao html ou esconder globalmente header e footer.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Mostrar o produto funcionando, com dados do proprio estudante.",
+      "Preservar claro, escuro, leitura ampliada e movimento reduzido."
+    ],
+    "donts": [
+      "Copiar logos de Alura, Apple ou Starbucks.",
+      "Inventar evidencias de aprendizagem ou apresentar Tutor sem chave como IA ativa."
+    ]
+  }
+}

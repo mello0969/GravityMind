@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getD1 } from "@/lib/db/context";
+import { getDatabase } from "@/lib/db/supabase.server";
+import { serverEnv } from "@/lib/security/env.server";
 
 type StripeObject = {
   id?: string;
@@ -67,25 +68,26 @@ function subscriptionState(status?: string) {
 async function processEvent(event: StripeEvent) {
   const object = event.data?.object;
   if (!object || !event.type) return;
-  const db = getD1();
+  const db = getDatabase();
 
   if (event.type === "checkout.session.completed") {
     const userId = object.metadata?.user_id ?? object.client_reference_id;
     const subscriptionId = stringId(object.subscription);
     if (!userId || !subscriptionId) return;
     await db
-      .prepare(
-        `INSERT INTO assinaturas
-         (user_id, plano, status, provider_customer_id, provider_subscription_id, atualizado_em)
-         VALUES (?, 'plus', 'active', ?, ?, datetime('now'))
-         ON CONFLICT(user_id) DO UPDATE SET
-           plano = 'plus', status = 'active',
-           provider_customer_id = excluded.provider_customer_id,
-           provider_subscription_id = excluded.provider_subscription_id,
-           atualizado_em = datetime('now')`,
+      .from("assinaturas")
+      .upsert(
+        {
+          user_id: userId,
+          plano: "plus",
+          status: "active",
+          provider_customer_id: stringId(object.customer),
+          provider_subscription_id: subscriptionId,
+          atualizado_em: new Date().toISOString(),
+        },
+        { onConflict: "user_id" },
       )
-      .bind(userId, stringId(object.customer), subscriptionId)
-      .run();
+      .throwOnError();
     return;
   }
 
@@ -97,13 +99,13 @@ async function processEvent(event: StripeEvent) {
     if (!subscriptionId) return;
     let userId = object.metadata?.user_id ?? null;
     if (!userId) {
-      const existing = await db
-        .prepare(
-          `SELECT user_id FROM assinaturas
-           WHERE provider_subscription_id = ? LIMIT 1`,
-        )
-        .bind(subscriptionId)
-        .first<{ user_id: string }>();
+      const { data: existing } = await db
+        .from("assinaturas")
+        .select("user_id")
+        .eq("provider_subscription_id", subscriptionId)
+        .limit(1)
+        .maybeSingle()
+        .throwOnError();
       userId = existing?.user_id ?? null;
     }
     if (!userId) return;
@@ -114,20 +116,22 @@ async function processEvent(event: StripeEvent) {
     const validUntil = object.current_period_end
       ? new Date(object.current_period_end * 1_000).toISOString()
       : null;
+    const customerId = stringId(object.customer);
     await db
-      .prepare(
-        `INSERT INTO assinaturas
-         (user_id, plano, status, provider_customer_id, provider_subscription_id, valida_ate, atualizado_em)
-         VALUES (?, 'plus', ?, ?, ?, ?, datetime('now'))
-         ON CONFLICT(user_id) DO UPDATE SET
-           plano = 'plus', status = excluded.status,
-           provider_customer_id = COALESCE(excluded.provider_customer_id, assinaturas.provider_customer_id),
-           provider_subscription_id = excluded.provider_subscription_id,
-           valida_ate = excluded.valida_ate,
-           atualizado_em = datetime('now')`,
+      .from("assinaturas")
+      .upsert(
+        {
+          user_id: userId,
+          plano: "plus",
+          status,
+          ...(customerId ? { provider_customer_id: customerId } : {}),
+          provider_subscription_id: subscriptionId,
+          valida_ate: validUntil,
+          atualizado_em: new Date().toISOString(),
+        },
+        { onConflict: "user_id" },
       )
-      .bind(userId, status, stringId(object.customer), subscriptionId, validUntil)
-      .run();
+      .throwOnError();
   }
 }
 
@@ -135,7 +139,7 @@ export const Route = createFileRoute("/api/stripe-webhook")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.STRIPE_WEBHOOK_SECRET;
+        const secret = serverEnv("STRIPE_WEBHOOK_SECRET");
         const signature = request.headers.get("stripe-signature");
         const contentLength = Number(request.headers.get("content-length") ?? 0);
         if (!secret || !signature || contentLength > 262_144) {

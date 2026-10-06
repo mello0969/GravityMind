@@ -20,7 +20,7 @@ function SobrePage() {
       <div className="ff-shell max-w-5xl">
         <header className="max-w-3xl border-b border-border pb-9">
           <p className="ff-kicker">Projeto educacional</p>
-          <h1 className="mt-3 text-4xl sm:text-5xl">GRAVITYMIND</h1>
+          <h1 className="mt-3 text-4xl ">GRAVITYMIND</h1>
           <p className="reading-copy mt-5 text-lg leading-relaxed text-muted-foreground">
             Um sistema de apoio ao estudo das Leis de Newton desenvolvido no contexto da Escola
             Técnica Estadual Monteiro Lobato, o CIMOL, em Taquara, Rio Grande do Sul.

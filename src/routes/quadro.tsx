@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Focus, X } from "lucide-react";
+import { PageHeading } from "@/components/page-heading";
 import { Whiteboard } from "@/components/whiteboard";
 import { useSiteSettings } from "@/lib/settings/use-site-settings";
 
@@ -22,34 +23,21 @@ function QuadroPage() {
   return (
     <main className="ff-page study-focus-shell" data-focus={settings.focusMode ? "true" : "false"}>
       <div className="ff-shell relative">
-        {settings.focusMode && (
-          <button
-            type="button"
-            className="ff-btn-outline absolute right-0 top-0 z-10"
-            onClick={() => settings.setFocusMode(false)}
-          >
-            <X className="h-4 w-4" aria-hidden="true" />
-            Sair do foco
-          </button>
-        )}
-        <header className="focus-optional grid gap-6 border-b border-border pb-7 md:grid-cols-[1fr_auto] md:items-end">
-          <div className="max-w-3xl">
-            <p className="ff-kicker">Ferramenta de estudo</p>
-            <h1 className="mt-3 text-3xl sm:text-4xl">Quadro de resolução</h1>
-            <p className="reading-copy mt-3 text-muted-foreground">
-              Desenhe diagramas de força, escreva cálculos e exporte a resolução. Imagens ficam
-              limitadas a formatos e dimensões seguros.
-            </p>
-          </div>
+        <PageHeading title="Quadro de resolução" description="Dê forma ao que você está pensando.">
           <button
             type="button"
             className="ff-btn-outline w-fit"
-            onClick={() => settings.setFocusMode(true)}
+            aria-pressed={settings.focusMode}
+            onClick={() => settings.setFocusMode(!settings.focusMode)}
           >
-            <Focus className="h-4 w-4" aria-hidden="true" />
-            Entrar no modo foco
+            {settings.focusMode ? (
+              <X className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <Focus className="h-4 w-4" aria-hidden="true" />
+            )}
+            {settings.focusMode ? "Sair do foco" : "Entrar no modo foco"}
           </button>
-        </header>
+        </PageHeading>
 
         <div className="study-focus-surface mt-8">
           <Whiteboard />
