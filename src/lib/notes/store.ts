@@ -29,6 +29,9 @@ function notaValida(valor: unknown): valor is Nota {
   return (
     typeof nota.id === "string" &&
     nota.id.length <= 96 &&
+    (nota.conversaId === undefined ||
+      (typeof nota.conversaId === "string" &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(nota.conversaId))) &&
     typeof nota.titulo === "string" &&
     nota.titulo.length <= 160 &&
     typeof nota.conteudo === "string" &&
@@ -79,6 +82,23 @@ export function criarNota(assunto: Nota["assunto"] = "geral"): Nota {
   notas.push(nova);
   salvar(NOTAS_KEY(), notas);
   return nova;
+}
+
+export function guardarNota(nota: Nota) {
+  if (!notaValida(nota)) throw new Error("Anotação inválida.");
+  const notas = listarNotas();
+  const existente = notas.find((item) => item.id === nota.id);
+  if (existente && existente.atualizadaEm > nota.atualizadaEm) return;
+  salvar(NOTAS_KEY(), [nota, ...notas.filter((item) => item.id !== nota.id)]);
+}
+
+export function desvincularNotasConversa(conversaId: string) {
+  salvar(
+    NOTAS_KEY(),
+    listarNotas().map((nota) =>
+      nota.conversaId === conversaId ? { ...nota, conversaId: undefined } : nota,
+    ),
+  );
 }
 
 /** Atualiza título/conteúdo/assunto de uma nota e registra a versão anterior no histórico. */

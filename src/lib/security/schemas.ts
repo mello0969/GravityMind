@@ -54,6 +54,7 @@ export const loginSchema = z
 const notaSyncSchema = z
   .object({
     id: idSchema,
+    conversaId: z.string().uuid().optional(),
     titulo: z.string().trim().min(1).max(160),
     conteudo: z.string().max(40_000),
     assunto: z.enum(["geral", "lei-1", "lei-2", "lei-3"]),

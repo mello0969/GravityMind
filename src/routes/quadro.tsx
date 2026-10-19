@@ -23,7 +23,7 @@ function QuadroPage() {
   return (
     <main className="ff-page study-focus-shell" data-focus={settings.focusMode ? "true" : "false"}>
       <div className="ff-shell relative">
-        <PageHeading title="Quadro de resolução" description="Dê forma ao que você está pensando.">
+        <PageHeading title="Quadro de resolução">
           <button
             type="button"
             className="ff-btn-outline w-fit"

@@ -292,7 +292,7 @@ textarea {
   color: inherit;
 }
 .gm-brand > svg {
-  color: #a9ddc9;
+  color: var(--chrome-accent);
   width: 2rem;
   height: 2rem;
 }
@@ -303,11 +303,11 @@ textarea {
   gap: 1.5rem;
 }
 .gm-brand-tagline {
-  border-left: 1px solid #33493f;
+  border-left: 1px solid var(--chrome-border);
   padding-left: 1.25rem;
   font-size: 0.7rem;
   line-height: 1.5;
-  color: #b7c7c0;
+  color: var(--chrome-muted);
 }
 .gm-header-nav {
   display: flex;
@@ -319,7 +319,7 @@ textarea {
   min-height: 4.5rem;
 }
 .gm-nav-link:hover {
-  color: #f2f7f4;
+  color: var(--chrome-text);
 }
 .gm-tools-menu {
   position: absolute;
@@ -338,18 +338,18 @@ textarea {
   color: var(--primary);
 }
 .gm-account-link {
-  color: #d7eee3;
-  border: 1px solid #50695d;
+  color: var(--chrome-text);
+  border: 1px solid var(--chrome-border);
   border-radius: 4px;
   padding: 0.6rem 1rem;
   font-size: 0.875rem;
 }
 .gm-account-link:hover {
-  background: #243d32;
+  background: var(--chrome-hover);
 }
 .site-footer {
   margin-top: 3rem;
-  border-top: 1px solid #33493f;
+  border-top: 1px solid var(--chrome-border);
 }
 .site-footer a:hover {
   text-decoration: underline;
@@ -802,23 +802,6 @@ textarea {
 }
 .gm-practice-main .study-focus-surface fieldset > div > button {
   border-radius: 4px;
-}
-.gm-practice-main .study-focus-surface aside {
-  grid-template-columns: auto 1fr 1fr;
-  align-items: center;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--card);
-  gap: 1.5rem;
-  padding: 0.75rem 1rem;
-}
-.gm-practice-main .study-focus-surface aside button {
-  margin: 0;
-  border: 0;
-  font-size: 0.8rem;
-}
-.gm-practice-main .study-focus-surface aside ol {
-  grid-column: 1 / -1;
 }
 .gm-confidence {
   border-top: 1px solid var(--border);
@@ -1358,13 +1341,6 @@ textarea {
   }
   .gm-practice-main .study-focus-surface h2 {
     font-size: 1.45rem;
-  }
-  .gm-practice-main .study-focus-surface aside {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-  .gm-practice-main .study-focus-surface aside > p {
-    display: none;
   }
   .gm-flash-decks {
     display: flex;

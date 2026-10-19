@@ -27,9 +27,14 @@ function CadastroPage() {
   const navigate = useNavigate();
   const atualizarToken = useCallback((token: string) => setTurnstileToken(token), []);
 
-  async function handleSubmit(evento: React.FormEvent) {
+  async function handleSubmit(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     setErro(null);
+    if (!evento.currentTarget.checkValidity()) {
+      setErro("Confira seu nome, e-mail e senha antes de continuar.");
+      evento.currentTarget.querySelector<HTMLInputElement>("input:invalid")?.focus();
+      return;
+    }
     if (!aceitouTermos) {
       setErro("Leia e aceite os Termos de Uso e a Política de Privacidade.");
       return;
@@ -80,7 +85,7 @@ function CadastroPage() {
           <h2 id="cadastro-form-title" className="sr-only">
             Dados da conta
           </h2>
-          <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
+          <form className="mt-7 space-y-5" onSubmit={handleSubmit} noValidate>
             {erro && (
               <div role="alert" className="border border-border px-4 py-3 text-sm text-destructive">
                 {erro}

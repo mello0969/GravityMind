@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gravitymind",
+  "account_id": "2bb98455711c6415e2aa7c8312b52ba1",
+  "main": "dist/server/index.mjs",
+  "compatibility_date": "2026-10-06",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": { "APP_ORIGIN": "https://gravitymind.frostmello09.workers.dev" },
+  "assets": { "binding": "ASSETS", "directory": "dist/client" },
+  "no_bundle": true,
+  "rules": [{ "type": "ESModule", "globs": ["**/*.mjs", "**/*.js"] }]
+}

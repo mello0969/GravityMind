@@ -8,6 +8,13 @@ function SettingsHarness() {
   return (
     <div>
       <output data-testid="theme">{settings.resolvedTheme}</output>
+      <output data-testid="theme-mode">{settings.theme}</output>
+      <button type="button" onClick={() => settings.setTheme("gravity")}>
+        Gravity Mind
+      </button>
+      <button type="button" onClick={() => settings.setTheme("light")}>
+        Claro
+      </button>
       <button type="button" onClick={() => settings.setTheme("dark")}>
         Tema escuro
       </button>
@@ -64,6 +71,7 @@ describe("SiteSettingsProvider", () => {
 
     await waitFor(() => expect(screen.getByTestId("theme")).toHaveTextContent("dark"));
     expect(document.documentElement).toHaveClass("dark");
+    expect(document.documentElement.dataset.theme).toBe("gravity");
     expect(document.documentElement.dataset.motion).toBe("reduced");
     expect(document.documentElement.dataset.reading).toBe("large");
     expect(document.documentElement.dataset.focus).toBeUndefined();
@@ -94,5 +102,30 @@ describe("SiteSettingsProvider", () => {
       focusMode?: boolean;
     };
     expect(saved).toMatchObject({ theme: "dark", reading: "large", focusMode: true });
+  });
+
+  it("separates all three themes and restores neutral dark without legacy remapping", async () => {
+    window.localStorage.setItem(
+      "gravitymind:settings",
+      JSON.stringify({ theme: "dark", themeVersion: 2 }),
+    );
+    const user = userEvent.setup();
+    render(
+      <SiteSettingsProvider>
+        <SettingsHarness />
+      </SiteSettingsProvider>,
+    );
+    await waitFor(() => expect(screen.getByTestId("theme-mode")).toHaveTextContent("dark"));
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    await user.click(screen.getByRole("button", { name: "Gravity Mind" }));
+    expect(document.documentElement.dataset.theme).toBe("gravity");
+    expect(document.documentElement).toHaveClass("dark");
+    await user.click(screen.getByRole("button", { name: "Claro" }));
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(document.documentElement).not.toHaveClass("dark");
+    expect(JSON.parse(window.localStorage.getItem("gravitymind:settings") ?? "{}")).toMatchObject({
+      theme: "light",
+      themeVersion: 2,
+    });
   });
 });

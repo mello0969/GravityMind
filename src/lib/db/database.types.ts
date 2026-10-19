@@ -8,6 +8,36 @@ export type Database = {
   };
   public: {
     Tables: {
+      tutor_conversas: {
+        Row: {
+          id: string;
+          user_id: string;
+          titulo: string;
+          pasta: string;
+          mensagens: string;
+          versao: number;
+          criada_em: string;
+          atualizada_em: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          titulo: string;
+          pasta: string;
+          mensagens: string;
+          versao?: number;
+          criada_em?: string;
+          atualizada_em?: string;
+        };
+        Update: {
+          titulo?: string;
+          pasta?: string;
+          mensagens?: string;
+          versao?: number;
+          atualizada_em?: string;
+        };
+        Relationships: [];
+      };
       assinaturas: {
         Row: {
           atualizado_em: string;
@@ -141,6 +171,7 @@ export type Database = {
       };
       notas: {
         Row: {
+          tutor_conversa_id: string | null;
           assunto: string;
           atualizada_em: string;
           conteudo: string;
@@ -150,6 +181,7 @@ export type Database = {
           user_id: string;
         };
         Insert: {
+          tutor_conversa_id?: string | null;
           assunto: string;
           atualizada_em: string;
           conteudo?: string;
@@ -159,6 +191,7 @@ export type Database = {
           user_id: string;
         };
         Update: {
+          tutor_conversa_id?: string | null;
           assunto?: string;
           atualizada_em?: string;
           conteudo?: string;

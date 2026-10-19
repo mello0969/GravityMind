@@ -50,7 +50,7 @@ function ConfiguracoesPage() {
   return (
     <main className="ff-page overflow-x-hidden">
       <div className="ff-shell">
-        <PageHeading title="Configurações" description="Um espaço de estudo no seu ritmo." />
+        <PageHeading title="Configurações" />
 
         <div className="grid gap-12 py-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
           <aside className="focus-optional lg:sticky lg:top-24 lg:self-start">
@@ -73,17 +73,14 @@ function ConfiguracoesPage() {
                 Aparência e leitura
               </h2>
               <div className="ff-divider-list mt-5 border-b border-t border-border">
-                <SettingRow
-                  title="Tema"
-                  description="Escolha uma aparência ou acompanhe o tema do aparelho."
-                >
-                  <fieldset className="flex flex-wrap">
+                <SettingRow title="Tema">
+                  <fieldset className="gm-theme-picker">
                     <legend className="sr-only">Tema do site</legend>
                     {(
                       [
+                        ["dark", "Dark"],
+                        ["gravity", "Gravity Mind"],
                         ["light", "Claro"],
-                        ["dark", "Escuro"],
-                        ["system", "Sistema"],
                       ] as const
                     ).map(([value, label]) => (
                       <button
@@ -91,17 +88,19 @@ function ConfiguracoesPage() {
                         type="button"
                         aria-pressed={settings.theme === value}
                         onClick={() => settings.setTheme(value)}
-                        className={`min-h-11 border px-4 text-sm ${settings.theme === value ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card"}`}
+                        className="gm-theme-option"
                       >
+                        <span className="gm-theme-swatch" data-swatch={value} aria-hidden="true">
+                          <span />
+                          <span />
+                          <span />
+                        </span>
                         {label}
                       </button>
                     ))}
                   </fieldset>
                 </SettingRow>
-                <SettingRow
-                  title="Texto maior"
-                  description="Aumenta a escala tipográfica de toda a interface, incluindo títulos, controles e textos de leitura."
-                >
+                <SettingRow title="Texto maior" description="Aumenta textos e controles.">
                   <Switch
                     aria-label="Usar texto maior"
                     checked={settings.reading === "large"}
@@ -128,10 +127,6 @@ function ConfiguracoesPage() {
               <h2 id="titulo-foco" className="text-2xl">
                 Apoio ao foco
               </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                Sessões curtas, uma tarefa de cada vez, progresso visível e pausas sugeridas. Esse
-                ajuste pode ajudar quem se distrai com facilidade, com ou sem diagnóstico de TDAH.
-              </p>
 
               <div className="ff-divider-list mt-5 border-b border-t border-border">
                 <SettingRow
@@ -171,7 +166,7 @@ function ConfiguracoesPage() {
 
                 <SettingRow
                   title="Meta diária"
-                  description="Define quantas questões formam o objetivo do dia. Em uma conta, a meta fica salva no Supabase."
+                  description="Questões que você pretende resolver por dia."
                 >
                   <div className="grid grid-cols-[2.75rem_5.5rem_2.75rem] border border-border">
                     <button
@@ -273,14 +268,18 @@ function SettingRow({
   children,
 }: {
   title: string;
-  description: string;
+  description?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="grid gap-5 py-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div>
         <h3 className="text-base font-semibold">{title}</h3>
-        <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted-foreground">{description}</p>
+        {description && (
+          <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            {description}
+          </p>
+        )}
       </div>
       <div className="justify-self-start sm:justify-self-end">{children}</div>
     </div>

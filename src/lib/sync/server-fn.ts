@@ -57,7 +57,7 @@ export const baixarDaNuvemServerFn = createServerFn({ method: "GET" }).handler(
       const [notasRes, respQRes, respCRes, progRes, difRes, quizRes] = await Promise.all([
         db
           .from("notas")
-          .select("id,titulo,conteudo,assunto,criada_em,atualizada_em")
+          .select("id,titulo,conteudo,assunto,criada_em,atualizada_em,tutor_conversa_id")
           .eq("user_id", userId)
           .order("atualizada_em", { ascending: false })
           .limit(200)
@@ -101,6 +101,7 @@ export const baixarDaNuvemServerFn = createServerFn({ method: "GET" }).handler(
       const notas = await Promise.all(
         notasRes.data.map(async (nota) => ({
           id: nota.id,
+          conversaId: nota.tutor_conversa_id ?? undefined,
           titulo: await descriptografarTexto(nota.titulo, `${userId}:${nota.id}:titulo`),
           conteudo: await descriptografarTexto(nota.conteudo, `${userId}:${nota.id}:conteudo`),
           assunto: nota.assunto,

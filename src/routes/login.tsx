@@ -24,9 +24,14 @@ function LoginPage() {
   const navigate = useNavigate();
   const atualizarToken = useCallback((token: string) => setTurnstileToken(token), []);
 
-  async function handleSubmit(evento: React.FormEvent) {
+  async function handleSubmit(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     setErro(null);
+    if (!evento.currentTarget.checkValidity()) {
+      setErro("Confira seu e-mail e preencha a senha.");
+      evento.currentTarget.querySelector<HTMLInputElement>("input:invalid")?.focus();
+      return;
+    }
     if (!turnstileToken) {
       setErro("Conclua a verificação de segurança.");
       return;
@@ -73,7 +78,7 @@ function LoginPage() {
           <h2 id="login-form-title" className="sr-only">
             Seus dados
           </h2>
-          <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
+          <form className="mt-7 space-y-5" onSubmit={handleSubmit} noValidate>
             {erro && (
               <div role="alert" className="border border-border px-4 py-3 text-sm text-destructive">
                 {erro}

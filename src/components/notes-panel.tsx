@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { FileText, History, Plus, RotateCcw, Search, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import {
@@ -29,9 +30,17 @@ function formatarData(iso: string) {
   return `${data.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}, ${data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
 }
 
-export function NotesPanel({ assuntoInicial }: { assuntoInicial?: Assunto } = {}) {
+export function NotesPanel({
+  assuntoInicial,
+  notaInicialId,
+}: {
+  assuntoInicial?: Assunto;
+  notaInicialId?: string;
+} = {}) {
   const [notas, setNotas] = useState(() => listarNotas());
-  const [selecionadaId, setSelecionadaId] = useState<string | null>(notas[0]?.id ?? null);
+  const [selecionadaId, setSelecionadaId] = useState<string | null>(
+    notas.find((item) => item.id === notaInicialId)?.id ?? notas[0]?.id ?? null,
+  );
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState<FiltroAssunto>(assuntoInicial ?? "todas");
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
@@ -64,6 +73,7 @@ export function NotesPanel({ assuntoInicial }: { assuntoInicial?: Assunto } = {}
           <Search aria-hidden="true" />
           <input
             type="search"
+            aria-label="Buscar anotações"
             value={busca}
             onChange={(evento) => setBusca(evento.target.value.slice(0, 120))}
             maxLength={120}
@@ -185,6 +195,7 @@ function EditorNota({
     <div className="flex h-full min-h-[31rem] flex-col">
       <div className="flex items-start justify-between gap-3 border-b border-border pb-3">
         <input
+          aria-label="Título da anotação"
           value={titulo}
           onChange={(evento) => setTitulo(evento.target.value.slice(0, 160))}
           maxLength={160}
@@ -197,6 +208,15 @@ function EditorNota({
         </div>
       </div>
 
+      {nota.conversaId && (
+        <Link
+          to="/tutor"
+          search={{ conversa: nota.conversaId }}
+          className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-primary"
+        >
+          Abrir conversa no Tutor
+        </Link>
+      )}
       <div className="mt-3 flex flex-wrap gap-1">
         {(["geral", "lei-1", "lei-2", "lei-3"] as const).map((item) => (
           <button
@@ -216,6 +236,7 @@ function EditorNota({
       </div>
 
       <textarea
+        aria-label="Conteúdo da anotação"
         value={conteudo}
         onChange={(evento) => setConteudo(evento.target.value.slice(0, 40_000))}
         maxLength={40_000}

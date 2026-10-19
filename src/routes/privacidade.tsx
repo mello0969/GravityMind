@@ -9,7 +9,7 @@ function PrivacyPage() {
   return (
     <main className="ff-page">
       <article className="ff-shell max-w-3xl">
-        <p className="ff-kicker">Atualizada em 6 de outubro de 2026</p>
+        <p className="ff-kicker">Atualizada em 11 de outubro de 2026</p>
         <h1 className="mt-3 text-4xl ">Política de privacidade</h1>
         <p className="mt-5 text-base leading-relaxed text-muted-foreground">
           Esta política explica quais dados o GRAVITYMIND usa para manter contas, progresso e
@@ -34,8 +34,11 @@ function PrivacyPage() {
           serviço de API da Groq para gerar a resposta, com o armazenamento de respostas desativado
           na requisição (store: false). Isso não elimina os registros de segurança que o provedor
           pode manter conforme sua política. Senha e cookie de sessão não fazem parte desse envio. A
-          conversa não é gravada no banco do GRAVITYMIND. Evite inserir informações pessoais ou
-          sensíveis.
+          página Tutor guarda suas conversas, títulos e assuntos criptografados no banco do
+          GRAVITYMIND, vinculados à sua conta. Você pode excluí-las pelo próprio Tutor. Respostas
+          salvas como anotações permanecem mesmo após excluir a conversa. O painel compacto das
+          aulas mantém a conversa apenas enquanto está aberto, salvo as respostas que você envia às
+          Anotações. Evite inserir informações pessoais ou sensíveis.
         </LegalSection>
 
         <LegalSection title="Proteção contra abuso">

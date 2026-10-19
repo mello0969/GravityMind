@@ -10,6 +10,7 @@ import type { Assunto } from "@/lib/questions/types";
 
 export type Nota = {
   id: string;
+  conversaId?: string;
   titulo: string;
   conteudo: string;
   /** Assunto ao qual a nota está vinculada, ou "geral" se não for específica de uma Lei */

@@ -25,10 +25,7 @@ function CalculationPage() {
   return (
     <main className="gm-reference-page py-10">
       <div className="gm-shell">
-        <PageHeading
-          title="Calculadora científica"
-          description="Do raciocínio ao resultado. Confira suas contas."
-        />
+        <PageHeading title="Calculadora científica" />
 
         <div className="mt-8 grid gap-8 xl:grid-cols-[31rem_minmax(0,1fr)] xl:items-start">
           <ScientificCalculator />

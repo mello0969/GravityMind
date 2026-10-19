@@ -91,9 +91,11 @@ acesso Plus verificado no servidor; planos aparecem somente em /plus.
 
 ## Colors
 
-Os tokens do frontmatter descrevem o tema escuro, agora padrao para novas visitas.
-Preferencias anteriores de tema claro ou sistema sao respeitadas. Os dois temas
-usam header e footer escuros. As variacoes completas, incluindo estados
+Os tokens do frontmatter descrevem Gravity Mind, verde escuro e padrao para novas visitas.
+Configuracoes oferece exatamente Claro, Dark (preto/cinza) e Gravity Mind.
+O antigo dark migra para Gravity Mind; o novo Dark usa preferencias versionadas.
+Header e footer continuam escuros, neutros no Dark. Nao ha troca de tema no header.
+As variacoes completas, incluindo estados
 semanticos, continuam em src/styles.css.
 
 **The Semantic Color Rule.** Erro, aviso e sucesso mantem papeis distintos.
@@ -122,9 +124,12 @@ Sem maca, cena 3D, interface de exercicios, explicacoes de aula, laboratorio,
 estatisticas ou chat flutuante na pagina inicial.
 Pratica: filtros laterais e questao principal; no celular objetivo e ferramentas
 podem ser expandidos. Flash Cards mantem selecao de deck e um cartao por vez.
-Tutor usa contexto lateral no desktop e fluxo vertical no celular para contas
-autenticadas, inclusive gratuitas. Visitantes veem o convite para entrar ou criar
-uma conta gratuita, sem campo de conversa.
+Tutor usa biblioteca de conversas a esquerda e chat a direita no desktop. No celular,
+a biblioteca abre em Conversas, sem empurrar o chat para baixo. Conversas sao salvas
+na conta, podem receber nome e assunto; respostas tem Salvar em Anotacoes e link de retorno.
+Visitantes veem o convite para entrar ou criar uma conta gratuita, sem campo de conversa.
+Dicas usam botao de 48px e texto legivel, inclusive no modo foco. Confirmacoes usam
+dialogos do site, com Escape e foco restrito; nao usar alert, confirm ou prompt nativos.
 
 ## Elevation & Depth
 

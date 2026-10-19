@@ -38,7 +38,7 @@ function QuestoesPage() {
       className="study-focus-shell gm-practice-page gm-shell py-10"
       data-focus={String(settings.focusMode)}
     >
-      <PageHeading title="Prática" description="Um desafio de cada vez. Um conceito que fica.">
+      <PageHeading title="Prática">
         <button
           type="button"
           className="ff-btn-outline"
@@ -148,11 +148,6 @@ function QuestoesPage() {
             workspace
             onModeChange={setMode}
           />
-          <p className="focus-optional mt-6 text-sm text-muted-foreground">
-            {modo === "adaptativo"
-              ? "Nível adaptativo: o próximo desafio considera seus acertos, erros e correções."
-              : "Você está praticando em um nível fixo."}
-          </p>
           <div className="focus-optional mt-6 border-t border-border pt-4">
             <ResetHistoricoButton
               onReset={() => {

@@ -24,9 +24,10 @@ O estudante resolve uma questao antes de receber a resposta, informa sua confian
 - Quadro de resolucao com desenho, formas, texto, importacao segura e exportacao.
 - Notas criptografadas e dados de estudo em Supabase/Postgres para usuarios autenticados.
   A sincronizacao existente ocorre no login; nao e um autosave completo.
-- Tema claro e escuro, texto maior, movimento reduzido e modo foco.
+- Temas Claro, Dark neutro e Gravity Mind (verde escuro), disponiveis nas Configuracoes; texto maior, movimento reduzido e modo foco.
 - Flash cards, metas de estudo, ofensiva diaria e sequencia de acertos.
 - Tutor virtual em tela cheia e compacto nas rotas de estudo para usuarios com conta.
+- Conversas do Tutor persistentes, criptografadas, renomeaveis e organizadas por assunto. Respostas podem virar anotacoes com link para a conversa.
 - Plano Plus com liberacao de recursos por permissao persistida no servidor.
 
 ## Posicionamento

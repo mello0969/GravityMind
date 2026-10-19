@@ -10,8 +10,9 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CalculationCard } from "@/components/calculation-card";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { HighScoreDialog } from "@/components/high-score-dialog";
 import { Whiteboard } from "@/components/whiteboard";
 import { useAuth } from "@/lib/auth/use-auth";
@@ -21,7 +22,6 @@ import { selecionarAdaptativa } from "@/lib/questions/adaptive";
 import { QUESTOES } from "@/lib/questions/bank";
 import { QUESTOES_CALCULO } from "@/lib/questions/bank-calculo";
 import {
-  calcularDesempenhoPorAssunto,
   marcarRespostaCorrigida,
   obterDicasQuestao,
   obterHistorico,
@@ -282,20 +282,6 @@ export function QuestionPractice({
     setDicasAtuais((current) => [...current, nextHint]);
     setDicasUsadas((current) => current + 1);
   }
-
-  const desempenho = useMemo(() => {
-    void sessao.total;
-    const todos = calcularDesempenhoPorAssunto();
-    if (assunto === "misto") {
-      const total = todos.reduce((soma, item) => soma + item.totalRespostas, 0);
-      const acertos = todos.reduce((soma, item) => soma + item.acertos, 0);
-      return {
-        totalRespostas: total,
-        taxaAcerto: total ? Math.round((acertos / total) * 100) : 0,
-      };
-    }
-    return todos.find((item) => item.assunto === assunto);
-  }, [assunto, sessao.total]);
 
   const sessaoConcluida = sessao.total >= metaSessao;
   const horaDaPausa = settings.breakReminders && segundosSessao >= settings.sessionMinutes * 60;
@@ -602,9 +588,11 @@ export function QuestionPractice({
                         transition={{ duration: duracaoMovimento }}
                         className="mt-6 overflow-hidden"
                       >
-                        <div className="border-y border-border py-4 px-4 py-3">
-                          <p className="text-sm font-bold text-foreground">Tente mais uma vez</p>
-                          <p className="reading-copy mt-1 text-sm leading-relaxed text-muted-foreground">
+                        <div className="border-y border-border px-4 py-4" role="status">
+                          <p className="text-base font-semibold text-foreground">
+                            Tente mais uma vez
+                          </p>
+                          <p className="reading-copy mt-2 text-base leading-relaxed text-foreground">
                             {
                               questaoAtual.alternativas.find(
                                 (alternativa) => alternativa.letra === primeiroErro,
@@ -642,8 +630,10 @@ export function QuestionPractice({
                               {avisoAdaptativo}
                             </p>
                           )}
-                          <div className="mt-4 border-y border-border py-3">
-                            <p className="text-xs font-bold text-foreground">Análise pedagógica</p>
+                          <details className="mt-4 border-y border-border py-3">
+                            <summary className="cursor-pointer text-sm font-semibold text-foreground">
+                              Sobre esta resposta
+                            </summary>
                             <p className="reading-copy mt-1 text-sm leading-relaxed text-muted-foreground">
                               {pedagogicalAnalysis({
                                 confidence: confianca,
@@ -651,7 +641,7 @@ export function QuestionPractice({
                                 correct: selecionada === questaoAtual.correta,
                               })}
                             </p>
-                          </div>
+                          </details>
                           <button
                             type="button"
                             onClick={proximaQuestao}
@@ -665,64 +655,61 @@ export function QuestionPractice({
                   </AnimatePresence>
                 </div>
 
-                <aside
-                  className={
-                    workspace
-                      ? "focus-optional grid gap-6 border-t border-border bg-secondary/25 p-5 sm:grid-cols-2"
-                      : "focus-optional border-t border-border bg-secondary/45 p-5 md:border-l md:border-t-0"
-                  }
-                >
-                  <p className="ff-kicker">Apoio</p>
-                  <button
-                    type="button"
-                    onClick={useHint}
-                    disabled={dicasUsadas >= 2 || dicasAtuais.length >= 2}
-                    className="mt-3 flex min-h-11 w-full items-center justify-between gap-2 border-b border-border py-3 text-left text-sm font-semibold text-foreground disabled:cursor-not-allowed disabled:text-muted-foreground"
-                  >
-                    <span className="inline-flex items-center gap-2">
-                      <Lightbulb className="h-4 w-4" aria-hidden="true" />
-                      Usar dica
-                    </span>
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {Math.max(0, 2 - dicasUsadas)} restantes
-                    </span>
-                  </button>
-                  {dicasAtuais.length > 0 && (
-                    <ol className="mt-3 grid gap-3 text-sm leading-relaxed text-muted-foreground">
-                      {dicasAtuais.map((hint, index) => (
-                        <li key={hint} className="border-b border-border pb-3 last:border-b-0">
-                          <span className="mr-2 font-mono text-xs text-primary">{index + 1}</span>
-                          {hint}
-                        </li>
-                      ))}
-                    </ol>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => setQuadroAberto((aberto) => !aberto)}
-                    className="mt-2 flex w-full items-center justify-between gap-2 border-b border-border py-3 text-left text-sm font-semibold text-foreground"
-                  >
-                    <span className="inline-flex items-center gap-2">
-                      <PenLine className="h-4 w-4" aria-hidden="true" /> Quadro de rascunho
-                    </span>
-                    {quadroAberto ? (
-                      <ChevronUp className="h-4 w-4" aria-hidden="true" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                <aside className="gm-practice-support" aria-label="Dicas e rascunho">
+                  <div className="gm-practice-hints">
+                    <h3>Dicas</h3>
+                    <button
+                      type="button"
+                      onClick={useHint}
+                      disabled={dicasUsadas >= 2 || dicasAtuais.length >= 2}
+                      className="gm-hint-button"
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <Lightbulb className="h-5 w-5" aria-hidden="true" />
+                        Usar dica
+                      </span>
+                      <span className="text-sm">
+                        {Math.max(0, 2 - dicasUsadas)}{" "}
+                        {dicasUsadas === 1 ? "restante" : "restantes"}
+                      </span>
+                    </button>
+                    {dicasAtuais.length > 0 && (
+                      <ol className="gm-hint-list" aria-live="polite">
+                        {dicasAtuais.map((hint, index) => (
+                          <li key={hint}>
+                            <span className="mr-2 font-semibold text-primary">{index + 1}.</span>
+                            {hint}
+                          </li>
+                        ))}
+                      </ol>
                     )}
-                  </button>
-                  {desempenho && desempenho.totalRespostas > 0 && (
-                    <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
-                      Histórico deste recorte: <strong>{desempenho.taxaAcerto}%</strong> de acerto
-                      em {desempenho.totalRespostas} tentativas.
-                    </p>
-                  )}
+                  </div>
+                  <div className="gm-practice-scratch">
+                    <button
+                      type="button"
+                      onClick={() => setQuadroAberto((aberto) => !aberto)}
+                      aria-expanded={quadroAberto}
+                      aria-controls={`practice-whiteboard-${assunto}`}
+                      className="mt-2 flex w-full items-center justify-between gap-2 border-b border-border py-3 text-left text-sm font-semibold text-foreground"
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <PenLine className="h-4 w-4" aria-hidden="true" /> Quadro de rascunho
+                      </span>
+                      {quadroAberto ? (
+                        <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                      )}
+                    </button>
+                  </div>
                 </aside>
               </div>
 
               {quadroAberto && (
-                <div className="border-t border-border p-3 sm:p-5">
+                <div
+                  id={`practice-whiteboard-${assunto}`}
+                  className="border-t border-border p-3 sm:p-5"
+                >
                   <Whiteboard compact />
                 </div>
               )}
@@ -745,20 +732,28 @@ function EmptyPractice() {
 }
 
 export function ResetHistoricoButton({ onReset }: { onReset: () => void }) {
+  const [open, setOpen] = useState(false);
   return (
-    <button
-      type="button"
-      onClick={() => {
-        if (
-          window.confirm(
-            "Apagar o histórico de questões deste aparelho? Essa ação não pode ser desfeita.",
-          )
-        )
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+      >
+        <RotateCcw className="h-4 w-4" aria-hidden="true" /> Reiniciar histórico de questões
+      </button>
+      <ConfirmDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Reiniciar histórico?"
+        description="As respostas de questões salvas neste aparelho serão apagadas. Essa ação não pode ser desfeita."
+        confirmLabel="Apagar histórico"
+        destructive
+        onConfirm={() => {
           onReset();
-      }}
-      className="inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
-    >
-      <RotateCcw className="h-4 w-4" aria-hidden="true" /> Reiniciar histórico de questões
-    </button>
+          setOpen(false);
+        }}
+      />
+    </>
   );
 }

@@ -131,7 +131,7 @@ function FlashcardsPage() {
   });
   return (
     <main className="gm-shell py-10">
-      <PageHeading title="Flash Cards" description="O que você consegue lembrar sem olhar?">
+      <PageHeading title="Flash Cards">
         {!finished && (
           <button type="button" onClick={() => finish()} className="ff-btn-outline">
             Terminar

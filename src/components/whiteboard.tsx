@@ -455,9 +455,6 @@ export function Whiteboard({ compact = false }: { compact?: boolean }) {
       <div className="flex flex-col gap-3 border-b border-border px-3 py-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h2 className="text-base">Quadro de resolução</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            A borracha remove o desenho e revela o fundo original.
-          </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button

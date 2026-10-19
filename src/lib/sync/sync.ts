@@ -72,6 +72,7 @@ function montarFotoLocal(): FotoDadosLocais {
 
   const notasParaEnvio = notas.map((nota) => ({
     id: nota.id,
+    conversaId: nota.conversaId,
     titulo: nota.titulo,
     conteudo: nota.conteudo,
     assunto: nota.assunto,
@@ -113,9 +114,13 @@ function aplicarFotoNoLocal(foto: FotoDadosLocais) {
   const notasPorId = new Map(notasLocais.map((n) => [n.id, n]));
   for (const n of foto.notas) {
     const local = notasPorId.get(n.id);
+    if (local && n.atualizadaEm === local.atualizadaEm && local.conversaId !== n.conversaId) {
+      notasPorId.set(n.id, { ...local, conversaId: n.conversaId });
+    }
     if (!local || n.atualizadaEm > local.atualizadaEm) {
       notasPorId.set(n.id, {
         id: n.id,
+        conversaId: n.conversaId,
         titulo: n.titulo,
         conteudo: n.conteudo,
         assunto: n.assunto as Nota["assunto"],

@@ -1,10 +1,9 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { BrandLockup } from "@/components/brand-mark";
 import { CookieConsent } from "@/components/cookie-consent";
 import { useAuth } from "@/lib/auth/use-auth";
-import { useSiteSettings } from "@/lib/settings/use-site-settings";
 
 const mainLinks = [
   { to: "/", label: "Início" },
@@ -26,7 +25,6 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const { usuario, sair } = useAuth();
-  const { resolvedTheme, setTheme } = useSiteSettings();
   const more = useRef<HTMLDetailsElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
   const lastPath = useRef(location.pathname);
@@ -91,15 +89,6 @@ export function SiteHeader() {
           </details>
         </nav>
         <div className="ml-auto flex items-center gap-3 lg:ml-2">
-          <button
-            type="button"
-            onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-            className="grid h-11 w-11 place-items-center"
-            aria-label={resolvedTheme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
-            title={resolvedTheme === "dark" ? "Tema claro" : "Tema escuro"}
-          >
-            {resolvedTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
           {usuario ? (
             <button
               type="button"
@@ -167,7 +156,7 @@ export function SiteFooter() {
         <div>
           <BrandLockup />
           <p className="mt-3 text-base">Estude Física. Pense mais longe.</p>
-          <p className="mt-6 text-sm leading-relaxed text-[#a9beb5]">
+          <p className="gm-footer-school mt-6 text-sm leading-relaxed">
             Escola Técnica Estadual Monteiro Lobato · CIMOL
             <br />
             Taquara, Rio Grande do Sul

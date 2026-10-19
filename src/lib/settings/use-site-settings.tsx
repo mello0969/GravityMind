@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { migrateLegacyStorage, storageKey } from "@/lib/brand";
 
-export type ThemeMode = "light" | "dark" | "system";
+export type ThemeMode = "light" | "dark" | "gravity";
 type MotionMode = "full" | "reduced";
 type ReadingMode = "standard" | "large";
 export type SessionMinutes = 5 | 10 | 15;
@@ -29,7 +29,7 @@ type SiteSettingsContextValue = SiteSettings & {
 
 const STORAGE_KEY = storageKey("settings");
 const DEFAULT_SETTINGS: SiteSettings = {
-  theme: "dark",
+  theme: "gravity",
   motion: "full",
   reading: "standard",
   focusMode: false,
@@ -60,7 +60,15 @@ function readSettings(): SiteSettings {
       unknown
     >;
     return {
-      theme: parsed.theme === "light" || parsed.theme === "system" ? parsed.theme : "dark",
+      theme:
+        parsed.theme === "light" || parsed.theme === "gravity"
+          ? parsed.theme
+          : parsed.theme === "dark" && parsed.themeVersion === 2
+            ? "dark"
+            : parsed.theme === "system" &&
+                !window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "light"
+              : "gravity",
       motion: isMotion(parsed.motion)
         ? parsed.motion
         : window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -87,31 +95,25 @@ function readSettings(): SiteSettings {
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
   const [initialized, setInitialized] = useState(false);
-  const [systemDark, setSystemDark] = useState(false);
 
   useEffect(() => {
     migrateLegacyStorage();
     setSettings(readSettings());
     setInitialized(true);
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    setSystemDark(media.matches);
-    const update = () => setSystemDark(media.matches);
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
   }, []);
 
-  const resolvedTheme =
-    settings.theme === "system" ? (systemDark ? "dark" : "light") : settings.theme;
+  const resolvedTheme = settings.theme === "light" ? "light" : "dark";
 
   useEffect(() => {
     if (!initialized) return;
     const root = document.documentElement;
     root.classList.toggle("dark", resolvedTheme === "dark");
+    root.dataset.theme = settings.theme;
     root.dataset.motion = settings.motion;
     root.dataset.reading = settings.reading;
     root.dataset.appReady = "true";
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...settings, themeVersion: 2 }));
     } catch {
       // Preferences still work for this visit when browser storage is unavailable.
     }
