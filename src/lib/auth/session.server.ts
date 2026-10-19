@@ -8,13 +8,12 @@ import {
 } from "@tanstack/react-start/server";
 import type { z } from "zod";
 import {
-  gerarHashSenha,
   gerarHashTokenSessao,
   gerarId,
   gerarTokenSessao,
   senhaPrecisaRehash,
-  verificarSenha,
 } from "@/lib/auth/hash";
+import { gerarHashSenha, verificarSenha } from "@/lib/auth/password.server";
 import type { ResultadoAuth, UsuarioPublico } from "@/lib/auth/types";
 import { getDatabase } from "@/lib/db/supabase.server";
 import { validarTurnstile } from "@/lib/security/bot";
