@@ -61,7 +61,7 @@ test("theme and larger text apply visibly and persist", async ({ page }) => {
     Number.parseFloat(window.getComputedStyle(element).fontSize),
   );
 
-  await page.getByRole("button", { name: "Escuro", exact: true }).click();
+  await page.getByRole("button", { name: "Dark", exact: true }).click();
   await page.getByRole("switch", { name: "Usar texto maior" }).click();
   await expect(root).toHaveClass(/dark/);
   await expect(root).toHaveAttribute("data-reading", "large");

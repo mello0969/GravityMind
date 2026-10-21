@@ -1,6 +1,6 @@
 import "@tanstack/react-start/server-only";
-import { gerarHashSenha as gerarLocal, verificarSenha as verificarLocal } from "./hash";
 import { serverEnv } from "@/lib/security/env.server";
+import { gerarHashSenha as gerarLocal, verificarSenha as verificarLocal } from "./hash";
 
 async function comFallback<T>(local: () => Promise<T>, input: Record<string, string>): Promise<T> {
   try {

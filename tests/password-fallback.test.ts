@@ -1,11 +1,14 @@
 // @vitest-environment node
 import { afterEach, describe, expect, it, vi } from "vitest";
+
 vi.mock("@tanstack/react-start/server-only", () => ({}));
 vi.mock("@/lib/security/env.server", () => ({
   serverEnv: (name: string) =>
     ({ SUPABASE_URL: "https://example.supabase.co", SUPABASE_SECRET_KEY: "sb_secret_test" })[name],
 }));
+
 import { gerarHashSenha, verificarSenha } from "@/lib/auth/password.server";
+
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
