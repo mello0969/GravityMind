@@ -40,7 +40,7 @@ Nao usa Supabase Auth: as contas aparecem em Table Editor > users, nao em Authen
 Senhas continuam como PBKDF2 com salt; sessoes como hashes de tokens e cookies HttpOnly.
 Nao foi necessario alterar as senhas ou os UUIDs, que tambem identificam o cache local de cada conta.
 
-As 14 tabelas tem RLS ativada e privilegios de anon/authenticated revogados, com politica deny-all.
+As 15 tabelas atuais tem RLS ativada e privilegios de anon/authenticated revogados, com politica deny-all.
 Todas as funcoes RPC sao SECURITY INVOKER, sem EXECUTE para PUBLIC/anon/authenticated.
 O servidor usa a Secret key com service_role, que ignora RLS. Por isso a autorizacao por estudante
 e feita obrigatoriamente no servidor: usuario obtido da sessao, filtros por user_id e schemas estritos.
@@ -62,6 +62,7 @@ O arquivo docs/database-schema.sql e um retrato LEGADO do D1, nao deve ser execu
 | Notas e aulas | notas, notas_historico, progresso_licoes |
 | Recompensas | perfis_estudo, atividade_estudo, eventos_recompensa |
 | Plus | assinaturas |
+| Tutor | tutor_conversas |
 
 ## Comandos
 Na pasta com package.json:
@@ -74,7 +75,7 @@ npm run security:config
 npm run dev -- --host 127.0.0.1 --port 4173
 ```
 
-db:check confere as 14 tabelas com a chave do servidor.
+db:check confere as 15 tabelas com a chave do servidor.
 db:verify cria duas contas tecnicas temporarias, testa bloqueio publico e RPCs, colisao de notas,
 rollback de upload e eventos simultaneos. Remove somente essas contas ao terminar.
 db:import:d1 cria um backup D1 local antes da leitura e outro do destino antes de importar.
@@ -84,6 +85,7 @@ Se houver interrupcao, o comando pode ser repetido; registros existentes sao pre
 
 Backups Supabase sao JSON em backups/, ignorados pelo Git. Nao sao snapshots transacionais:
 rode com as gravacoes do site suspensas para consistencia entre tabelas.
+O backup inclui `tutor_conversas`, adicionada apos o schema inicial de 14 tabelas.
 Nao publique backups; podem conter dados privados e hashes de senha.
 Guarde a chave de criptografia separadamente. Antes de restaurar, valide em um projeto de teste.
 Este projeto nao tem um comando de restore automatico; o JSON exige importacao controlada e validada.

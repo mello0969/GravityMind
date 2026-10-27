@@ -27,6 +27,7 @@ const tables = [
   "atividade_estudo",
   "eventos_recompensa",
   "assinaturas",
+  "tutor_conversas",
 ];
 const keys = {
   users: "id",
@@ -43,6 +44,7 @@ const keys = {
   atividade_estudo: "user_id,data_local",
   eventos_recompensa: "user_id,id",
   assinaturas: "user_id",
+  tutor_conversas: "id",
 };
 const mode = process.argv[2];
 assert(
@@ -63,7 +65,9 @@ const check = async () => {
     const { error } = await db.from(table).select("*", { count: "exact", head: true });
     assert(!error, `Falha ao verificar a tabela ${table}. Confira a chave e as migrations.`);
   }
-  console.log("Supabase: 14 tabelas acessiveis pelo servidor. Nenhum dado pessoal exibido.");
+  console.log(
+    `Supabase: ${tables.length} tabelas acessiveis pelo servidor. Nenhum dado pessoal exibido.`,
+  );
 };
 
 async function backup() {
@@ -144,8 +148,8 @@ async function importD1() {
     }
     await backup();
     for (const table of tables) {
-      // Old sessions and throttling windows are not copied. Users sign in again.
-      if (table === "sessoes" || table === "rate_limits") continue;
+      // Sessions expire; Tutor conversations do not exist in the legacy D1 schema.
+      if (["sessoes", "rate_limits", "tutor_conversas"].includes(table)) continue;
       const rows = sqlite
         .prepare(`SELECT * FROM "${table}"`)
         .all()
