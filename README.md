@@ -3,7 +3,7 @@
 Plataforma de estudo de Física com aulas, questões, Flash Cards, quadro de resolução,
 calculadora, anotações, progresso e Tutor.
 
-- [Aplicação online](https://gravitymind.frostmello09.workers.dev)
+- [Aplicação online](https://gravitymind.estudefisica.workers.dev)
 - [Quadro Kanban público](https://trello.com/b/BZjw4a2F/tcc)
 - [Arquitetura e responsabilidades do código](docs/arquitetura.md)
 - [Banco de dados](docs/banco-de-dados.md)

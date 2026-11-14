@@ -7,7 +7,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": false,
-  "vars": { "APP_ORIGIN": "https://gravitymind.frostmello09.workers.dev" },
+  "vars": { "APP_ORIGIN": "https://gravitymind.estudefisica.workers.dev" },
   "assets": { "binding": "ASSETS", "directory": "dist/client" },
   "no_bundle": true,
   "rules": [{ "type": "ESModule", "globs": ["**/*.mjs", "**/*.js"] }]
