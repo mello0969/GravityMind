@@ -18,6 +18,8 @@ export default defineConfig({
       include: [
         "src/lib/questions/engine.ts",
         "src/lib/questions/engine-calculo.ts",
+        "src/lib/questions/calculation.ts",
+        "src/lib/questions/practice-service.ts",
         "src/lib/security/schemas.ts",
         "src/lib/settings/use-site-settings.tsx",
       ],

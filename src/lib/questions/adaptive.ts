@@ -1,11 +1,12 @@
 import { QUESTOES } from "./bank";
 import { QUESTOES_CALCULO } from "./bank-calculo";
+import { escolherProximaQuestaoCalculo } from "./calculation";
 import {
   escolherAssuntoAdaptativo,
   escolherProximaQuestao,
   escolherProximaQuestaoMecanica,
+  proximoNivel,
 } from "./engine";
-import { escolherProximaQuestaoCalculo } from "./engine-calculo";
 import type { Assunto, Dificuldade, QuestionScope, Resposta } from "./types";
 
 export function nivelDoHistorico(assunto: Assunto, historico: Resposta[]): Dificuldade {
@@ -17,12 +18,7 @@ export function nivelDoHistorico(assunto: Assunto, historico: Resposta[]): Dific
   // Recompute the level at five-response checkpoints from the student's local history.
   for (let end = 5; end <= respostas.length; end += 5) {
     const janela = respostas.slice(Math.max(0, end - 8), end);
-    const taxa = janela.filter((r) => r.correta).length / janela.length;
-    const tempo = janela.reduce((sum, r) => sum + r.tempoSegundos, 0) / janela.length;
-    if (nivel === "facil" && taxa >= 0.8 && tempo <= 120) nivel = "medio";
-    else if (nivel === "medio" && taxa >= 0.75 && tempo <= 150) nivel = "dificil";
-    else if (nivel === "medio" && taxa < 0.45) nivel = "facil";
-    else if (nivel === "dificil" && taxa < 0.5) nivel = "medio";
+    nivel = proximoNivel(nivel, janela);
   }
   return nivel;
 }

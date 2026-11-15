@@ -2,6 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { QUESTOES } from "@/lib/questions/bank";
 import { QUESTOES_CALCULO } from "@/lib/questions/bank-calculo";
 import {
+  escolherProximaQuestaoCalculo,
+  obterHistoricoCalculo,
+  registrarRespostaCalculo,
+} from "@/lib/questions/engine-calculo";
+import {
   atualizarDificuldadeAdaptativa,
   calcularDesempenhoPorAssunto,
   contarRevisoesPendentes,
@@ -15,12 +20,7 @@ import {
   obterDificuldadeAtual,
   obterHistorico,
   registrarResposta,
-} from "@/lib/questions/engine";
-import {
-  escolherProximaQuestaoCalculo,
-  obterHistoricoCalculo,
-  registrarRespostaCalculo,
-} from "@/lib/questions/engine-calculo";
+} from "@/lib/questions/practice-service";
 
 function responder({
   questaoId = "lei1-f-01",

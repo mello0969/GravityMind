@@ -8,7 +8,7 @@ import {
   ResetHistoricoButton,
 } from "@/components/question-practice";
 import { useStudyProfile } from "@/lib/profile/use-study-profile";
-import { limparHistorico } from "@/lib/questions/engine";
+import { limparHistorico } from "@/lib/questions/practice-service";
 import type { QuestionScope } from "@/lib/questions/types";
 import { useSiteSettings } from "@/lib/settings/use-site-settings";
 

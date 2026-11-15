@@ -1,6 +1,6 @@
 import { listarNotas } from "@/lib/notes/store";
 import { MARCOS_ATIVOS, marcosConcluidos } from "@/lib/profile/lesson-progress";
-import { obterHistorico } from "@/lib/questions/engine";
+import { obterHistorico } from "@/lib/questions/practice-service";
 import type { Assunto } from "@/lib/questions/types";
 
 const ASSUNTOS: Assunto[] = ["lei-1", "lei-2", "lei-3"];

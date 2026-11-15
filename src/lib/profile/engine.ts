@@ -24,7 +24,7 @@ import {
   calcularDesempenhoPorAssunto,
   identificarPontosFortesEFracos,
   obterHistorico,
-} from "@/lib/questions/engine";
+} from "@/lib/questions/practice-service";
 import type { Assunto, Resposta } from "@/lib/questions/types";
 import { ASSUNTO_LABEL } from "@/lib/questions/types";
 

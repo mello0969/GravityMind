@@ -65,4 +65,83 @@ describe("responsibility boundaries", () => {
       imports.filter((name) => name.startsWith("@/routes/") || name.includes("routeTree.gen")),
     ).toEqual([]);
   });
+
+  it.each([
+    "question-practice",
+    "calculation-card",
+    "gravity-chat",
+    "tutor-workspace",
+    "notes-panel",
+  ])("%s presents the interface without calling persistence or external services", (name) => {
+    const source = parse(`src/components/${name}.tsx`);
+    const imports = source.statements
+      .filter(ts.isImportDeclaration)
+      .map((node) => (node.moduleSpecifier as ts.StringLiteral).text);
+    expect(
+      imports.filter(
+        (module) =>
+          /\.server(?:$|\/)|\/server(?:$|\/)|\/db\/|\/store$|\/practice-service$|\/engine-calculo$|gravity\/client$/.test(
+            module,
+          ) || module === "@tanstack/react-query",
+      ),
+    ).toEqual([]);
+    const calls: string[] = [];
+    function inspect(node: ts.Node) {
+      if (
+        ts.isCallExpression(node) &&
+        /^(fetch|localStorage\.|sessionStorage\.|window\.(localStorage|sessionStorage)\.)/.test(
+          node.expression.getText(source),
+        )
+      )
+        calls.push(node.expression.getText(source));
+      ts.forEachChild(node, inspect);
+    }
+    inspect(source);
+    expect(calls).toEqual([]);
+  });
+
+  it.each(["engine", "calculation", "adaptive", "fixed", "session"])(
+    "questions/%s and its dependencies are independent of React, storage and server APIs",
+    (name) => {
+      const visited = new Set<string>();
+      const violations: string[] = [];
+      function inspectFile(file: string) {
+        if (visited.has(file)) return;
+        visited.add(file);
+        const source = parse(file);
+        function inspect(node: ts.Node) {
+          if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
+            const module = node.moduleSpecifier && (node.moduleSpecifier as ts.StringLiteral).text;
+            if (module) {
+              if (
+                /react|@tanstack|\.server|\/store$|\/practice-service$|\/engine-calculo$|\/brand$/.test(
+                  module,
+                )
+              )
+                violations.push(`${file}: ${module}`);
+              else if (module.startsWith(".") || module.startsWith("@/")) {
+                const target = ts.resolveModuleName(
+                  module,
+                  file,
+                  { baseUrl: process.cwd(), paths: { "@/*": ["src/*"] } },
+                  ts.sys,
+                ).resolvedModule;
+                expect(target, `${file}: unresolved local import ${module}`).toBeDefined();
+                if (target) inspectFile(path.resolve(target.resolvedFileName));
+              }
+            }
+          }
+          if (
+            ts.isIdentifier(node) &&
+            /^(window|document|localStorage|sessionStorage|fetch)$/.test(node.text)
+          )
+            violations.push(`${file}: ${node.text}`);
+          ts.forEachChild(node, inspect);
+        }
+        inspect(source);
+      }
+      inspectFile(path.resolve(`src/lib/questions/${name}.ts`));
+      expect(violations).toEqual([]);
+    },
+  );
 });

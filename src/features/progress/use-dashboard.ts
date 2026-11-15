@@ -3,7 +3,7 @@ import { PROGRESS_EVENT } from "@/lib/brand";
 import { montarPerfilAprendizagem, type PerfilAprendizagem } from "@/lib/profile/engine";
 import type { StudyProfile } from "@/lib/profile/study-profile.server";
 import { useStudyProfile } from "@/lib/profile/use-study-profile";
-import { contarRevisoesPendentes } from "@/lib/questions/engine";
+import { contarRevisoesPendentes } from "@/lib/questions/practice-service";
 import {
   calcularRecompensas,
   listarMarcosReais,

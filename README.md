@@ -6,6 +6,7 @@ calculadora, anotações, progresso e Tutor.
 - [Aplicação online](https://gravitymind.estudefisica.workers.dev)
 - [Quadro Kanban público](https://trello.com/b/BZjw4a2F/tcc)
 - [Arquitetura e responsabilidades do código](docs/arquitetura.md)
+- [Revisão preparada dos cartões do Kanban](docs/kanban-revisao.md)
 - [Banco de dados](docs/banco-de-dados.md)
 - [Segurança](SECURITY.md)
 

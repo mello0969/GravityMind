@@ -1,21 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { FileText, History, Plus, RotateCcw, Search, Trash2, X } from "lucide-react";
-import { useState } from "react";
 import {
-  atualizarNota,
-  buscarNotas,
-  criarNota,
-  excluirNota,
-  listarNotas,
-  obterHistoricoDaNota,
-  restaurarVersao,
-} from "@/lib/notes/store";
+  type FiltroAssunto,
+  useNoteEditor,
+  useNoteHistory,
+  useNotes,
+} from "@/features/notes/use-notes";
 import type { Nota } from "@/lib/notes/types";
-import { useAutosave } from "@/lib/notes/use-autosave";
-import type { Assunto } from "@/lib/questions/types";
-import { ASSUNTO_LABEL } from "@/lib/questions/types";
-
-type FiltroAssunto = Assunto | "geral" | "todas";
+import { ASSUNTO_LABEL, type Assunto } from "@/lib/questions/types";
 
 const FILTROS: { id: FiltroAssunto; label: string }[] = [
   { id: "todas", label: "Todas" },
@@ -37,34 +29,21 @@ export function NotesPanel({
   assuntoInicial?: Assunto;
   notaInicialId?: string;
 } = {}) {
-  const [notas, setNotas] = useState(() => listarNotas());
-  const [selecionadaId, setSelecionadaId] = useState<string | null>(
-    notas.find((item) => item.id === notaInicialId)?.id ?? notas[0]?.id ?? null,
-  );
-  const [busca, setBusca] = useState("");
-  const [filtro, setFiltro] = useState<FiltroAssunto>(assuntoInicial ?? "todas");
-  const [mostrarHistorico, setMostrarHistorico] = useState(false);
-  // `notas` mantém o componente sincronizado com o armazenamento após cada operação.
-  const notasFiltradas = buscarNotas(busca, filtro === "todas" ? undefined : filtro);
-  const notaSelecionada = notas.find((nota) => nota.id === selecionadaId) ?? null;
-
-  function recarregar() {
-    setNotas(listarNotas());
-  }
-
-  function criar() {
-    const nova = criarNota(filtro === "todas" ? "geral" : filtro);
-    recarregar();
-    setSelecionadaId(nova.id);
-    setMostrarHistorico(false);
-  }
-
-  function excluir(id: string) {
-    excluirNota(id);
-    const restantes = listarNotas();
-    setNotas(restantes);
-    if (selecionadaId === id) setSelecionadaId(restantes[0]?.id ?? null);
-  }
+  const {
+    notasFiltradas,
+    notaSelecionada,
+    selecionadaId,
+    setSelecionadaId,
+    busca,
+    setBusca,
+    filtro,
+    setFiltro,
+    mostrarHistorico,
+    setMostrarHistorico,
+    recarregar,
+    criar,
+    excluir,
+  } = useNotes(assuntoInicial, notaInicialId);
 
   return (
     <div className="grid min-h-[36rem] overflow-hidden border border-border bg-card md:grid-cols-[18rem_minmax(0,1fr)]">
@@ -177,13 +156,10 @@ function EditorNota({
   onExcluir: () => void;
   onAbrirHistorico: () => void;
 }) {
-  const [titulo, setTitulo] = useState(nota.titulo);
-  const [conteudo, setConteudo] = useState(nota.conteudo);
-  const [assunto, setAssunto] = useState<Nota["assunto"]>(nota.assunto);
-  const status = useAutosave({ titulo, conteudo, assunto }, (dados) => {
-    atualizarNota(nota.id, dados);
-    onAtualizar();
-  });
+  const { titulo, setTitulo, conteudo, setConteudo, assunto, setAssunto, status } = useNoteEditor(
+    nota,
+    onAtualizar,
+  );
   const statusLabel = {
     ocioso: "",
     digitando: "Alterações locais",
@@ -263,7 +239,7 @@ function HistoricoNota({
   onFechar: () => void;
   onRestaurado: () => void;
 }) {
-  const versoes = obterHistoricoDaNota(nota.id);
+  const { versoes, restaurar } = useNoteHistory(nota.id, onRestaurado);
   return (
     <div>
       <div className="flex items-start justify-between gap-3 border-b border-border pb-4">
@@ -284,8 +260,7 @@ function HistoricoNota({
               <button
                 type="button"
                 onClick={() => {
-                  restaurarVersao(nota.id, versao.conteudoAnterior);
-                  onRestaurado();
+                  restaurar(versao.conteudoAnterior);
                 }}
                 className="inline-flex min-h-9 items-center gap-2 text-xs font-bold text-primary"
               >

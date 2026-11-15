@@ -7,7 +7,7 @@ import {
   type StudyProfile,
   updateDailyGoalServerFn,
 } from "@/lib/profile/study-profile.server";
-import { obterHistorico } from "@/lib/questions/engine";
+import { obterHistorico } from "@/lib/questions/practice-service";
 import { calcularRecompensas } from "@/lib/rewards/engine";
 
 const LOCAL_GOAL_KEY = () => storageKey("daily-goal");

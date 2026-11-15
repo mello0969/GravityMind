@@ -1,6 +1,7 @@
 # Arquitetura do GRAVITYMIND
 
-Revisão estrutural de 21/10/2026. Mantida a stack React 19, TanStack Start,
+Revisão estrutural de 15/11/2026, complementando a separação iniciada em outubro.
+Mantida a stack React 19, TanStack Start,
 TypeScript, Tailwind v4, Cloudflare Workers e Supabase/PostgreSQL.
 
 ## Responsabilidades
@@ -11,7 +12,9 @@ TypeScript, Tailwind v4, Cloudflare Workers e Supabase/PostgreSQL.
 | Telas por funcionalidade | `src/features/` | Apresentação e interação de cada área. |
 | Controles da interface | Hooks em `src/features/` | Estado, ciclo de vida, envio de formulários e ações de sessão. |
 | Componentes compartilhados | `src/components/` | Quadro, questões, calculadora, navegação e controles reutilizáveis. |
-| Regras de domínio | `src/lib/questions/`, `profile/`, `rewards/`, `calculator/`, `flashcards/` | Cálculos e decisões independentes das rotas. |
+| Regras de questões | `src/lib/questions/engine.ts`, `calculation.ts`, `adaptive.ts`, `fixed.ts`, `session.ts` | Seleção, correção e decisões pedagógicas sem React, navegador ou persistência. |
+| Serviço de prática | `src/lib/questions/practice-service.ts`, `engine-calculo.ts` | Leitura e gravação do histórico da conta e chamada das regras. |
+| Outros domínios | `src/lib/profile/`, `rewards/`, `calculator/`, `flashcards/` | Cálculos, decisões e serviços específicos de cada recurso. |
 | Serviços do servidor | `src/lib/**/server*.ts`, `*.server.ts` | Autenticação, validação, limites e integração com provedores. |
 | Persistência | `src/lib/db/` e módulos de armazenamento | Acesso ao banco ou armazenamento local, conforme o recurso. |
 
@@ -23,6 +26,57 @@ As telas não importam definições de `src/routes/`. Parâmetros já validados 
 como propriedades. Isso evita dependência circular entre roteamento e interface.
 
 ## Exemplos Para Auditoria
+
+### Prática e questões de cálculo
+
+A revisão anterior deixou as rotas pequenas, mas o componente de questões ainda
+controlava a sessão, gravava respostas e escolhia a próxima questão. Além disso,
+`questions/engine.ts` combinava decisões pedagógicas com `localStorage`. A revisão
+atual separa essas responsabilidades:
+
+1. `src/routes/questoes.tsx` define URL e parâmetros; `practice-page.tsx` compõe a página.
+2. `question-practice.tsx` e `calculation-card.tsx` apresentam enunciados, alternativas,
+   dicas, correção e controles acessíveis.
+3. `use-question-practice.ts` e `use-calculation-question.ts`, em `src/features/practice/`,
+   controlam etapas, tentativas, tempo e ações da sessão.
+4. `questions/engine.ts` seleciona questões a partir do histórico recebido;
+   `calculation.ts` verifica respostas numéricas; `adaptive.ts` reconstitui o nível.
+5. `practice-service.ts` lê e valida o histórico local da conta antes de chamar as
+   regras. `engine-calculo.ts` registra respostas numéricas e o histórico unificado.
+
+Os dois caminhos de adaptação usam `proximoNivel`, com os mesmos critérios e a
+mesma janela de respostas. As regras podem ser executadas em Node sem simular
+`window`. As chaves de armazenamento, o limite de histórico e os critérios de
+correção existentes foram preservados; não há migração ou exclusão de dados.
+
+Para localizar uma alteração:
+
+- Critérios de dificuldade e seleção: `engine.ts` e `adaptive.ts`.
+- Tolerância da resposta numérica: `calculation.ts`.
+- Chaves, validação e limites do histórico: `practice-service.ts` e `engine-calculo.ts`.
+- Etapas, tentativas e ações da sessão: hooks em `src/features/practice/`.
+- Texto, controles e apresentação: componentes de questões em `src/components/`.
+
+### Tutor e anotações
+
+`tutor-workspace.tsx` apresenta a biblioteca, os filtros e os diálogos do site.
+`use-tutor-workspace.ts` coordena a criação, carregamento, alteração de título/pasta,
+exclusão e cache das conversas. O controle de versão evita sobrescrever uma
+conversa que foi alterada em outra sessão.
+
+`gravity-chat.tsx` apresenta mensagens, campo de pergunta e ações. O hook
+`use-gravity-chat.ts` controla envio, tentativa de salvar novamente, estado de erro e
+vínculo da resposta com as anotações. A chamada ao provedor e a autorização
+permanecem nos módulos de servidor existentes de `src/lib/gravity/`.
+
+`notes-panel.tsx` apresenta lista, editor e histórico. Os hooks `useNotes`,
+`useNoteEditor` e `useNoteHistory`, em `src/features/notes/use-notes.ts`, coordenam
+CRUD, salvamento automático e restauração. A persistência continua nos serviços
+existentes de notas; não foi copiada para os componentes visuais.
+
+Esses hooks são controles da aplicação, não uma nova camada de banco. Autorização,
+validação confiável e criptografia continuam no servidor. As telas não são usadas
+como mecanismo de proteção dos registros.
 
 ### Flash Cards
 
@@ -74,8 +128,14 @@ metadados e pelo contexto do roteador, não pelo controle de sessão de uma pág
 
 ## Verificação e Manutenção
 
-- `tests/architecture.test.ts`: impede acesso direto a banco, armazenamento e estado
-  de aplicação nas rotas; impede importar rotas nas telas de funcionalidades.
+- `tests/architecture.test.ts`: mantém as restrições nas rotas e nas telas; impede
+  acesso direto a persistência/provedores nos cinco componentes refatorados; percorre
+  imports e reexports locais, inclusive aliases `@/`, das regras de questões para
+  detectar dependências de React, armazenamento e serviços.
+- `tests/question-rules.test.ts`: executa decisões de nível, prioridade de revisão e
+  correção numérica sem navegador, com entradas explícitas.
+- `tests/practice-controller.test.tsx`: verifica o limite de dicas, as etapas de erro
+  e correção, a atualização do histórico e o encerramento da resposta numérica.
 - `tests/auth-form.test.tsx`: verifica prova humana, termos, erros, sincronização e
   bloqueio de envio duplicado, sem criar contas reais.
 - `tests/flashcard-session.test.tsx`: verifica resumo, navegação, avanço, cancelamento,
@@ -90,28 +150,30 @@ simuladas não comprovam disponibilidade dos serviços externos nem testes de pr
 O histórico Git deve registrar alterações reais; esta refatoração não reescreve datas
 ou simula um desenvolvimento anterior.
 
-### Resultado Local de 21/10/2026
+### Resultado local de 15/11/2026
 
 | Verificação | Resultado |
 | --- | --- |
-| `npm test` | 157 testes aprovados; 2 ignorados. |
+| `npm run test:coverage` | 177 testes aprovados; 2 ignorados. Cobertura de linhas de 92,74% no recorte configurado, não na aplicação inteira. |
 | `npm run typecheck` | Aprovado. |
 | `npm run lint` | Aprovado. |
 | `npm run build` | Aprovado, com avisos de tamanho de chunk e de dependências. |
+| `npm run test:mutation` | 86,82% no recorte configurado: decisão de nível, regras numéricas e tempo mínimo/máximo do formulário. Não representa o código inteiro. |
 | `npm run security:secrets` | Nenhum padrão conhecido encontrado no código examinado; não examina o histórico Git. |
 | `npm run security:client` | Nenhum segredo configurado ou marcador de deck protegido no bundle examinado. |
-| Playwright: `study-flow.spec.ts` e `study-hub.spec.ts` | 22 testes aprovados; 2 ignorados, em desktop e mobile. |
+| Playwright: `study-flow.spec.ts`, `study-hub.spec.ts` e `plan-access.spec.ts` | 26 testes aprovados; 2 ignorados, em desktop e mobile. |
 
 Para repetir os testes de navegador deste recorte:
 
 ```sh
 npx playwright install chromium --only-shell
-npx playwright test tests/e2e/study-flow.spec.ts tests/e2e/study-hub.spec.ts --workers=2
+npx playwright test tests/e2e/study-flow.spec.ts tests/e2e/study-hub.spec.ts tests/e2e/plan-access.spec.ts --workers=2
 ```
 
 Os cenários cobrem navegação, dicas, filtros, encerramento de Flash Cards,
 preferências, foco local, calculadora, quadro e verificações de acessibilidade e
-responsividade. Não incluem pagamento real, criação de contas ou conversa real com
+responsividade, além da apresentação das restrições de plano para visitante.
+Não incluem pagamento real, criação de contas ou conversa real com
 o provedor de IA em produção. Os relatórios são gerados em `playwright-report/` e
 `test-results/`, sem versionar esses artefatos.
 

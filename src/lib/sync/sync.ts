@@ -17,8 +17,8 @@ import { emitProgressUpdated, localAccountId, storageKey } from "@/lib/brand";
 import { listarNotas } from "@/lib/notes/store";
 import type { Nota } from "@/lib/notes/types";
 import { type MarcoLicao, marcosConcluidos } from "@/lib/profile/lesson-progress";
-import { obterDificuldadeAtual, obterHistorico } from "@/lib/questions/engine";
 import { obterHistoricoCalculo } from "@/lib/questions/engine-calculo";
+import { obterDificuldadeAtual, obterHistorico } from "@/lib/questions/practice-service";
 import type { Assunto, Dificuldade, Resposta } from "@/lib/questions/types";
 import { baixarDaNuvemServerFn, enviarParaNuvemServerFn, type FotoDadosLocais } from "./server-fn";
 
