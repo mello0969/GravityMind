@@ -1,6 +1,10 @@
 # Revisão dos cartões do TCC — 15/11/2026
 
-**Estado: alterações preparadas; ainda não aplicadas ao Trello.** O quadro está público para leitura. O conector retorna erro antes de identificar a conta; isso não comprova falta de permissão do usuário. A edição visual também ficou indisponível nesta sessão.
+**Estado: alterações preparadas; ainda não aplicadas ao Trello.** O quadro está público para leitura. Após uma falha inicial, o conector voltou a responder, mas lista somente “Meu quadro do Trello” e recusa o acesso ao quadro TCC, inclusive pelo identificador completo. O acesso de edição informado pelo autor no navegador não ficou disponível pelo conector. A edição visual também ficou indisponível nesta sessão.
+
+A exportação pública do quadro identifica a mesma conta retornada pelo conector como administradora. Portanto, a recusa do conector não deve ser tratada como ausência de permissão da conta do autor.
+
+O código desta revisão foi enviado ao GitHub no commit `41d08c0` e publicado no Worker existente, versão `c68aab22-18dd-4146-9849-3e1b74e7b62f`. Home, Prática, Cálculo e Tutor responderam HTTP 200, sem erros de JavaScript na navegação de visitante. Essa conferência não repetiu login, gravações autenticadas ou consulta real ao provedor do Tutor.
 
 Quadro: https://trello.com/b/BZjw4a2F/tcc
 

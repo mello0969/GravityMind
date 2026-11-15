@@ -187,3 +187,11 @@ participantes nos cartões ou anexos.
 O envio do commit ao GitHub permite auditar esta revisão, mas não publica a aplicação.
 A versão online depende de uma nova publicação; a reorganização local não altera a
 versão publicada automaticamente.
+
+Em 15/11/2026, a revisão de código `41d08c0` foi enviada ao GitHub e publicada no
+Worker existente, versão `c68aab22-18dd-4146-9849-3e1b74e7b62f`, em
+https://gravitymind.estudefisica.workers.dev. Na conferência após a publicação,
+Home, Prática, Cálculo e Tutor responderam HTTP 200 e não emitiram erros de
+JavaScript. Foi uma navegação de visitante: não comprova uma nova execução de
+login, gravação autenticada ou resposta real do provedor de IA. As cinco
+configurações secretas existentes e a origem da aplicação foram preservadas.
