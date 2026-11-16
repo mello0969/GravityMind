@@ -8,6 +8,17 @@ export function useAuthForm(mode: "login" | "cadastro") {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [confirmacaoSenha, setConfirmacaoSenha] = useState("");
+  const [confirmacaoVisitada, setConfirmacaoVisitada] = useState(false);
+  const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
+  const erroConfirmacao =
+    mode === "cadastro" && confirmacaoVisitada
+      ? !confirmacaoSenha
+        ? "Repita sua senha para confirmar."
+        : confirmacaoSenha !== senha
+          ? "As senhas não coincidem. Confira os dois campos."
+          : null
+      : null;
   const [website, setWebsite] = useState("");
   const [aceitouTermos, setAceitouTermos] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
@@ -24,6 +35,7 @@ export function useAuthForm(mode: "login" | "cadastro") {
     event.preventDefault();
     if (submitting.current) return;
     setErro(null);
+    if (mode === "cadastro") setConfirmacaoVisitada(true);
     if (!event.currentTarget.checkValidity()) {
       setErro(
         mode === "login"
@@ -35,6 +47,11 @@ export function useAuthForm(mode: "login" | "cadastro") {
     }
     if (mode === "cadastro" && !aceitouTermos) {
       setErro("Leia e aceite os Termos de Uso e a Política de Privacidade.");
+      return;
+    }
+    if (mode === "cadastro" && (!confirmacaoSenha || confirmacaoSenha !== senha)) {
+      setErro("Confira a confirmação da senha antes de continuar.");
+      event.currentTarget.querySelector<HTMLInputElement>('[name="confirmacaoSenha"]')?.focus();
       return;
     }
     if (!turnstileToken) {
@@ -78,6 +95,12 @@ export function useAuthForm(mode: "login" | "cadastro") {
     setEmail,
     senha,
     setSenha,
+    confirmacaoSenha,
+    setConfirmacaoSenha,
+    setConfirmacaoVisitada,
+    mostrarConfirmacao,
+    setMostrarConfirmacao,
+    erroConfirmacao,
     website,
     setWebsite,
     aceitouTermos,

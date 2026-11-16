@@ -60,6 +60,7 @@ describe("shared authentication form controller", () => {
         result.current.setNome("Aluno de teste");
         result.current.setEmail("aluno@example.test");
         result.current.setSenha("test-password-only");
+        result.current.setConfirmacaoSenha("test-password-only");
         result.current.setAceitouTermos(true);
         result.current.atualizarToken("test-verification");
       });
@@ -83,6 +84,42 @@ describe("shared authentication form controller", () => {
       });
     },
   );
+  it("blocks mismatched registration passwords without consuming verification and revalidates both fields", async () => {
+    const { result } = renderHook(() => useAuthForm("cadastro"));
+    const event = submitEvent();
+    event.currentTarget.innerHTML = '<input name="confirmacaoSenha">';
+    const focus = vi.spyOn(event.currentTarget.querySelector("input") as HTMLInputElement, "focus");
+    act(() => {
+      result.current.setSenha("first-password-only");
+      result.current.setConfirmacaoSenha("other-password-only");
+      result.current.setAceitouTermos(true);
+      result.current.atualizarToken("test-verification");
+    });
+    await act(() => result.current.handleSubmit(event));
+    expect(mocks.register).not.toHaveBeenCalled();
+    expect(focus).toHaveBeenCalled();
+    expect(result.current.erroConfirmacao).toContain("não coincidem");
+    expect(result.current.turnstileToken).toBe("test-verification");
+    act(() => result.current.setConfirmacaoSenha("first-password-only"));
+    expect(result.current.erroConfirmacao).toBeNull();
+    act(() => result.current.setSenha("changed-password-only"));
+    expect(result.current.erroConfirmacao).toContain("não coincidem");
+    act(() => result.current.setConfirmacaoSenha("changed-password-only"));
+    await act(() => result.current.handleSubmit(event));
+    expect(mocks.register).toHaveBeenCalledOnce();
+    expect(mocks.register.mock.calls[0]).toHaveLength(4);
+  });
+  it("requires a nonempty password confirmation", async () => {
+    const { result } = renderHook(() => useAuthForm("cadastro"));
+    act(() => {
+      result.current.setSenha("test-password-only");
+      result.current.setAceitouTermos(true);
+      result.current.atualizarToken("test-verification");
+    });
+    await act(() => result.current.handleSubmit(submitEvent()));
+    expect(mocks.register).not.toHaveBeenCalled();
+    expect(result.current.erroConfirmacao).toContain("Repita");
+  });
   it("surfaces server errors without navigating", async () => {
     mocks.login.mockResolvedValueOnce({ erro: "Credenciais inválidas" });
     const { result } = renderHook(() => useAuthForm("login"));

@@ -95,6 +95,8 @@ export function LoginPage() {
                   value={senha}
                   onChange={(evento) => setSenha(evento.target.value.slice(0, 128))}
                   autoComplete="current-password"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   maxLength={128}
                   className="ff-input pr-12"
                   required
@@ -104,6 +106,7 @@ export function LoginPage() {
                   onClick={() => setMostrarSenha((valor) => !valor)}
                   className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center text-muted-foreground hover:text-foreground"
                   aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+                  aria-pressed={mostrarSenha}
                 >
                   {mostrarSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>

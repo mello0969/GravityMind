@@ -14,6 +14,12 @@ export function CadastroPage() {
     setEmail,
     senha,
     setSenha,
+    confirmacaoSenha,
+    setConfirmacaoSenha,
+    setConfirmacaoVisitada,
+    mostrarConfirmacao,
+    setMostrarConfirmacao,
+    erroConfirmacao,
     website,
     setWebsite,
     aceitouTermos,
@@ -120,6 +126,8 @@ export function CadastroPage() {
                   value={senha}
                   onChange={(evento) => setSenha(evento.target.value.slice(0, 128))}
                   autoComplete="new-password"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   minLength={10}
                   maxLength={128}
                   className="ff-input pr-12"
@@ -131,12 +139,66 @@ export function CadastroPage() {
                   onClick={() => setMostrarSenha((valor) => !valor)}
                   className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center text-muted-foreground hover:text-foreground"
                   aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+                  aria-pressed={mostrarSenha}
                 >
                   {mostrarSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               <p id="senha-ajuda" className="mt-2 text-xs text-muted-foreground">
                 Use entre 10 e 128 caracteres. Uma frase longa costuma ser mais fácil de lembrar.
+              </p>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-bold" htmlFor="cadastro-confirmacao">
+                Confirmar senha
+              </label>
+              <div className="ff-input-wrap">
+                <Lock aria-hidden="true" />
+                <input
+                  id="cadastro-confirmacao"
+                  name="confirmacaoSenha"
+                  type={mostrarConfirmacao ? "text" : "password"}
+                  value={confirmacaoSenha}
+                  onChange={(evento) => setConfirmacaoSenha(evento.target.value)}
+                  onBlur={() => setConfirmacaoVisitada(true)}
+                  autoComplete="new-password"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  minLength={10}
+                  maxLength={128}
+                  className="ff-input pr-12 aria-[invalid=true]:border-destructive"
+                  aria-invalid={!!erroConfirmacao}
+                  aria-describedby="confirmacao-ajuda"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarConfirmacao((valor) => !valor)}
+                  className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center text-muted-foreground hover:text-foreground"
+                  aria-label={
+                    mostrarConfirmacao
+                      ? "Ocultar confirmação da senha"
+                      : "Mostrar confirmação da senha"
+                  }
+                  aria-pressed={mostrarConfirmacao}
+                >
+                  {mostrarConfirmacao ? (
+                    <EyeOff aria-hidden="true" className="h-4 w-4" />
+                  ) : (
+                    <Eye aria-hidden="true" className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+              <p
+                id="confirmacao-ajuda"
+                aria-live="polite"
+                className={`mt-2 text-xs ${erroConfirmacao ? "text-destructive" : "text-muted-foreground"}`}
+              >
+                {erroConfirmacao ||
+                  (confirmacaoSenha && confirmacaoSenha === senha
+                    ? "As senhas coincidem."
+                    : "Digite a mesma senha novamente.")}
               </p>
             </div>
 
