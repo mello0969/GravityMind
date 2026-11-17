@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Calculator, ChevronDown, Focus, NotebookPen, X } from "lucide-react";
+import { Calculator, Focus, NotebookPen, X } from "lucide-react";
 import { useState } from "react";
 import { PageHeading } from "@/components/page-heading";
 import {
@@ -24,7 +24,6 @@ export function QuestoesPage({
   const settings = useSiteSettings();
   const { profile } = useStudyProfile();
   const [resetKey, setResetKey] = useState(0);
-  const [toolsExpanded, setToolsExpanded] = useState(false);
   function setMode(value: PracticeMode) {
     void navigate({ search: (current) => ({ ...current, modo: value }) });
   }
@@ -48,102 +47,97 @@ export function QuestoesPage({
           {settings.focusMode ? "Sair do foco" : "Modo foco"}
         </button>
       </PageHeading>
-      <div className="gm-study-layout study-focus-layout">
-        <aside className="gm-study-sidebar focus-optional" aria-label="Configurar prática">
-          <fieldset>
-            <legend>Conteúdo</legend>
-            <label htmlFor="practice-subject" className="sr-only">
-              Conteúdo
-            </label>
-            <select
-              id="practice-subject"
-              value={assunto}
-              className="ff-input mt-2"
-              onChange={(e) =>
-                void navigate({
-                  search: (current) => ({ ...current, assunto: e.target.value as QuestionScope }),
-                })
-              }
-            >
-              {[
-                ["misto", "Revisão mista"],
-                ["mecanica", "Mecânica"],
-                ["lei-1", "1ª Lei · Inércia"],
-                ["lei-2", "2ª Lei · Dinâmica"],
-                ["lei-3", "3ª Lei · Ação e reação"],
-              ].map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </fieldset>
-          <fieldset>
-            <legend>Dificuldade</legend>
-            <div className="gm-mode-options">
-              {(
-                [
-                  ["adaptativo", "Adaptativo"],
-                  ["facil", "Fácil"],
-                  ["medio", "Médio"],
-                  ["dificil", "Difícil"],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  type="button"
-                  key={value}
-                  onClick={() => setMode(value)}
-                  aria-pressed={modo === value}
-                >
-                  {label}
-                </button>
-              ))}
+      <div className="gm-practice-flow study-focus-layout">
+        <details className="gm-practice-settings focus-optional">
+          <summary className="cursor-pointer text-sm font-semibold">
+            Personalizar prática{" "}
+            <span className="ml-2 font-normal text-muted-foreground">
+              {modo === "adaptativo"
+                ? "Adaptativo"
+                : modo === "facil"
+                  ? "Fácil"
+                  : modo === "medio"
+                    ? "Médio"
+                    : "Difícil"}
+            </span>
+          </summary>
+          <div className="gm-practice-options">
+            <fieldset>
+              <legend>Conteúdo</legend>
+              <label htmlFor="practice-subject" className="sr-only">
+                Conteúdo
+              </label>
+              <select
+                id="practice-subject"
+                value={assunto}
+                className="ff-input mt-2"
+                onChange={(e) =>
+                  void navigate({
+                    search: (current) => ({ ...current, assunto: e.target.value as QuestionScope }),
+                  })
+                }
+              >
+                {[
+                  ["misto", "Revisão mista"],
+                  ["mecanica", "Mecânica"],
+                  ["lei-1", "1ª Lei · Inércia"],
+                  ["lei-2", "2ª Lei · Dinâmica"],
+                  ["lei-3", "3ª Lei · Ação e reação"],
+                ].map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </fieldset>
+            <fieldset>
+              <legend>Dificuldade</legend>
+              <div className="gm-mode-options">
+                {(
+                  [
+                    ["adaptativo", "Adaptativo"],
+                    ["facil", "Fácil"],
+                    ["medio", "Médio"],
+                    ["dificil", "Difícil"],
+                  ] as const
+                ).map(([value, label]) => (
+                  <button
+                    type="button"
+                    key={value}
+                    onClick={() => setMode(value)}
+                    aria-pressed={modo === value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <div className="gm-practice-settings-tools">
+              <div className="gm-study-target">
+                <p>Objetivo de hoje</p>
+                <strong>
+                  {profile?.todayAnswers ?? 0} de {profile?.dailyGoal ?? 5} questões
+                </strong>
+                <progress
+                  className="gm-progress w-full"
+                  aria-label="Objetivo diário"
+                  value={Math.min(profile?.todayAnswers ?? 0, profile?.dailyGoal ?? 5)}
+                  max={profile?.dailyGoal ?? 5}
+                />
+              </div>
+              <nav className="gm-study-tools" aria-label="Instrumentos de estudo">
+                <Link to="/calculo">
+                  <Calculator size={16} aria-hidden="true" />
+                  Calculadora científica
+                </Link>
+                <Link to="/anotacoes">
+                  <NotebookPen size={16} aria-hidden="true" />
+                  Minhas anotações
+                </Link>
+              </nav>
             </div>
-          </fieldset>
-          <button
-            type="button"
-            className="gm-study-extra-toggle"
-            aria-controls="practice-tools"
-            aria-expanded={toolsExpanded}
-            onClick={() => setToolsExpanded((current) => !current)}
-          >
-            Objetivo e ferramentas <ChevronDown size={16} aria-hidden="true" />
-          </button>
-          <div id="practice-tools" className="gm-study-extra" data-expanded={toolsExpanded}>
-            <div className="gm-study-target">
-              <p>Objetivo de hoje</p>
-              <strong>
-                {profile?.todayAnswers ?? 0} de {profile?.dailyGoal ?? 5} questões
-              </strong>
-              <progress
-                className="gm-progress w-full"
-                aria-label="Objetivo diário"
-                value={Math.min(profile?.todayAnswers ?? 0, profile?.dailyGoal ?? 5)}
-                max={profile?.dailyGoal ?? 5}
-              />
-            </div>
-            <nav className="gm-study-tools" aria-label="Instrumentos de estudo">
-              <Link to="/calculo">
-                <Calculator size={16} aria-hidden="true" />
-                Calculadora científica
-              </Link>
-              <Link to="/anotacoes">
-                <NotebookPen size={16} aria-hidden="true" />
-                Minhas anotações
-              </Link>
-            </nav>
           </div>
-        </aside>
-        <div className="gm-practice-main">
-          <QuestionPractice
-            key={`${assunto}-${modo}-${resetKey}`}
-            assunto={assunto}
-            initialMode={modo}
-            showToolbar={false}
-            workspace
-            onModeChange={setMode}
-          />
-          <div className="focus-optional mt-6 border-t border-border pt-4">
+          <div className="mt-5 border-t border-border pt-4">
             <ResetHistoricoButton
               onReset={() => {
                 limparHistorico();
@@ -151,6 +145,19 @@ export function QuestoesPage({
               }}
             />
           </div>
+        </details>
+        <div className="gm-practice-main">
+          <QuestionPractice
+            key={`${assunto}-${modo}-${resetKey}`}
+            assunto={assunto}
+            initialMode={modo}
+            showToolbar={false}
+            workspace
+            dailyProgress={
+              profile ? { completed: profile.todayAnswers, target: profile.dailyGoal } : undefined
+            }
+            onModeChange={setMode}
+          />
         </div>
       </div>
     </main>

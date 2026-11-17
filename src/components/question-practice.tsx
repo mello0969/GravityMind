@@ -42,6 +42,7 @@ export function QuestionPractice({
   showToolbar = true,
   workspace = false,
   onModeChange,
+  dailyProgress,
 }: {
   assunto: QuestionScope;
   compact?: boolean;
@@ -49,6 +50,7 @@ export function QuestionPractice({
   showToolbar?: boolean;
   workspace?: boolean;
   onModeChange?: (mode: PracticeMode) => void;
+  dailyProgress?: { completed: number; target: number };
 }) {
   const {
     settings,
@@ -83,12 +85,13 @@ export function QuestionPractice({
     useHint,
     sessaoConcluida,
     horaDaPausa,
+    reiniciarTempo,
   } = useQuestionPractice({ assunto, compact, initialMode });
 
   return (
     <div className="space-y-5">
       <HighScoreDialog
-        open={successOpen}
+        open={successOpen && !settings.focusMode && !workspace}
         onOpenChange={setSuccessOpen}
         correct={sessao.acertos}
         total={sessao.total}
@@ -161,21 +164,44 @@ export function QuestionPractice({
         </fieldset>
       ) : null}
       {workspace ? (
-        <div className="gm-session-progress grid gap-4 border-b border-border pb-5 sm:grid-cols-[1fr_minmax(14rem,24rem)_auto] sm:items-center">
-          <p className="font-mono text-xs tracking-normal text-muted-foreground">
-            QUESTÃO {Math.min(sessao.total + 1, metaSessao)} DE {metaSessao}
-          </p>
-          <div className="ff-progress-track">
-            <div
-              className="ff-progress-fill"
-              style={{
-                width: `${Math.min(100, ((sessao.total + 1) / metaSessao) * 100)}%`,
-              }}
-            />
+        <div className="gm-session-progress space-y-3 border-b border-border pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+            <span>Questão {sessao.total + 1}</span>
+            {dailyProgress && (
+              <output className="focus-optional text-muted-foreground" aria-label="Meta diária">
+                {dailyProgress.completed >= dailyProgress.target ? "Meta diária atingida" : "Hoje"}:{" "}
+                {dailyProgress.completed}/{dailyProgress.target} questões
+              </output>
+            )}
           </div>
-          <span className="text-sm text-muted-foreground">
-            {Math.min(100, Math.round(((sessao.total + 1) / metaSessao) * 100))}%
-          </span>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
+            <span>Sessão de {settings.sessionMinutes} min</span>
+            {settings.showTimer && (
+              <span
+                role="timer"
+                aria-label="Tempo decorrido"
+                aria-live="off"
+                className="font-mono tabular-nums"
+              >
+                {formatarRelogio(segundosSessao)}
+              </span>
+            )}
+            {segundosSessao >= settings.sessionMinutes * 60 && (
+              <button
+                type="button"
+                className="underline underline-offset-4"
+                onClick={reiniciarTempo}
+              >
+                Reiniciar tempo
+              </button>
+            )}
+          </div>
+          <progress
+            className="gm-progress w-full"
+            aria-label="Tempo da sessão"
+            value={Math.min(segundosSessao, settings.sessionMinutes * 60)}
+            max={settings.sessionMinutes * 60}
+          />
         </div>
       ) : (
         <div className="grid gap-3 border-y border-border py-3 text-sm sm:grid-cols-3">
@@ -218,25 +244,55 @@ export function QuestionPractice({
         </div>
       )}
 
-      {(sessaoConcluida || horaDaPausa) && (
-        <div className="border-l-2 border-accent bg-card px-4 py-3 text-sm" role="status">
-          <strong>{sessaoConcluida ? "Meta curta concluída." : "Momento de pausa."}</strong>{" "}
+      {((!workspace && sessaoConcluida) || horaDaPausa) && (
+        <div className="border-y border-border py-3 text-sm" role="status">
+          <strong>
+            {!workspace && sessaoConcluida ? "Meta curta concluída." : "Tempo planejado concluído."}
+          </strong>{" "}
           <span className="text-muted-foreground">
-            {sessaoConcluida
+            {!workspace && sessaoConcluida
               ? "Feche a sessão agora ou continue sem perder o progresso."
-              : "Levante, descanse os olhos e volte quando estiver pronto."}
+              : "Termine esta questão e faça uma pausa quando quiser."}
           </span>
         </div>
       )}
 
       {tipo === "calculo" ? (
         questaoCalculo ? (
-          <CalculationCard
-            key={calcKey}
-            questao={questaoCalculo}
-            onProxima={proximaQuestaoCalculo}
-            onRegistrado={registrarSessaoCalculo}
-          />
+          <div className="space-y-4">
+            <CalculationCard
+              key={calcKey}
+              questao={questaoCalculo}
+              onProxima={proximaQuestaoCalculo}
+              onRegistrado={registrarSessaoCalculo}
+            />
+            <div className="gm-practice-scratch">
+              <button
+                type="button"
+                onClick={() => setQuadroAberto((aberto) => !aberto)}
+                aria-expanded={quadroAberto}
+                aria-controls={`practice-whiteboard-${assunto}`}
+                className="mt-2 flex w-full items-center justify-between gap-2 border-b border-border py-3 text-left text-sm font-semibold text-foreground"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <PenLine className="h-4 w-4" aria-hidden="true" /> Quadro de rascunho
+                </span>
+                {quadroAberto ? (
+                  <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+            {quadroAberto && (
+              <div
+                id={`practice-whiteboard-${assunto}`}
+                className="border-t border-border p-3 sm:p-5"
+              >
+                <Whiteboard compact />
+              </div>
+            )}
+          </div>
         ) : (
           <EmptyPractice />
         )
@@ -340,30 +396,35 @@ export function QuestionPractice({
                   </fieldset>
 
                   {etapa === "responder" && (
-                    <div className="gm-confidence">
-                      <span className="mr-1 text-xs font-semibold text-muted-foreground">
-                        Antes de responder, sua confiança:
-                      </span>
-                      {(["baixa", "media", "alta", "muito-alta"] as Confianca[]).map((valor) => (
-                        <button
-                          type="button"
-                          key={valor}
-                          aria-pressed={confianca === valor}
-                          onClick={() => setConfianca(valor)}
-                          className={`min-h-9 border px-3 text-xs font-semibold capitalize ${
-                            confianca === valor
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border bg-transparent text-muted-foreground"
-                          }`}
-                        >
-                          {valor === "media"
-                            ? "Média"
-                            : valor === "muito-alta"
-                              ? "Muito alta"
-                              : `${valor.charAt(0).toUpperCase()}${valor.slice(1)}`}
-                        </button>
-                      ))}
-                    </div>
+                    <details className="focus-optional mt-4">
+                      <summary className="cursor-pointer text-sm text-muted-foreground">
+                        Informar confiança (opcional)
+                      </summary>
+                      <div className="gm-confidence">
+                        <span className="mr-1 text-xs font-semibold text-muted-foreground">
+                          Antes de responder, sua confiança:
+                        </span>
+                        {(["baixa", "media", "alta", "muito-alta"] as Confianca[]).map((valor) => (
+                          <button
+                            type="button"
+                            key={valor}
+                            aria-pressed={confianca === valor}
+                            onClick={() => setConfianca(valor)}
+                            className={`min-h-9 border px-3 text-xs font-semibold capitalize ${
+                              confianca === valor
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-border bg-transparent text-muted-foreground"
+                            }`}
+                          >
+                            {valor === "media"
+                              ? "Média"
+                              : valor === "muito-alta"
+                                ? "Muito alta"
+                                : `${valor.charAt(0).toUpperCase()}${valor.slice(1)}`}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
                   )}
 
                   {etapa !== "resultado" && (
@@ -454,9 +515,9 @@ export function QuestionPractice({
                   </AnimatePresence>
                 </div>
 
-                <aside className="gm-practice-support" aria-label="Dicas e rascunho">
+                <aside className="gm-practice-support" aria-label="Dicas da questão">
                   <div className="gm-practice-hints">
-                    <h3>Dicas</h3>
+                    <h3 className="sr-only">Dicas</h3>
                     <button
                       type="button"
                       onClick={useHint}
@@ -483,35 +544,8 @@ export function QuestionPractice({
                       </ol>
                     )}
                   </div>
-                  <div className="gm-practice-scratch">
-                    <button
-                      type="button"
-                      onClick={() => setQuadroAberto((aberto) => !aberto)}
-                      aria-expanded={quadroAberto}
-                      aria-controls={`practice-whiteboard-${assunto}`}
-                      className="mt-2 flex w-full items-center justify-between gap-2 border-b border-border py-3 text-left text-sm font-semibold text-foreground"
-                    >
-                      <span className="inline-flex items-center gap-2">
-                        <PenLine className="h-4 w-4" aria-hidden="true" /> Quadro de rascunho
-                      </span>
-                      {quadroAberto ? (
-                        <ChevronUp className="h-4 w-4" aria-hidden="true" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                      )}
-                    </button>
-                  </div>
                 </aside>
               </div>
-
-              {quadroAberto && (
-                <div
-                  id={`practice-whiteboard-${assunto}`}
-                  className="border-t border-border p-3 sm:p-5"
-                >
-                  <Whiteboard compact />
-                </div>
-              )}
             </motion.article>
           ) : (
             <EmptyPractice />

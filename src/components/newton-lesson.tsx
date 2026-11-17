@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, BookOpen, Bot, FileText, Play, ScanSearch } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContentQuiz } from "@/components/content-quiz";
 import { GravityChat } from "@/components/gravity-chat";
 import { LawAnimation } from "@/components/law-animation";
@@ -56,6 +56,16 @@ export function NewtonLesson({ lesson }: { lesson: LessonContent }) {
   const [concluidos, setConcluidos] = useState<MarcoLicao[]>(() => marcosConcluidos(assunto));
   const [percentual, setPercentual] = useState(() => percentualLicao(assunto));
   const [quizAberto, setQuizAberto] = useState<FormatoQuiz | null>(null);
+  const quizPanel = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!quizAberto) return;
+    quizPanel.current?.focus({ preventScroll: true });
+    quizPanel.current?.scrollIntoView({
+      block: "start",
+      behavior: settings.motion === "reduced" ? "instant" : "smooth",
+    });
+  }, [quizAberto, settings.motion]);
 
   useEffect(() => {
     setConcluidos(marcosConcluidos(assunto));
@@ -125,6 +135,7 @@ export function NewtonLesson({ lesson }: { lesson: LessonContent }) {
 
         <AnimatePresence mode="wait">
           <motion.section
+            hidden={!!quizAberto}
             key={tab}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -226,8 +237,23 @@ export function NewtonLesson({ lesson }: { lesson: LessonContent }) {
                     ? "visual"
                     : "animacao";
             return (
-              <div className="mt-7 border-t border-border pt-7">
+              <section
+                ref={quizPanel}
+                tabIndex={-1}
+                aria-label="Verificação de compreensão"
+                className="mt-7 scroll-mt-24 outline-none"
+              >
+                <div className="mb-4 flex justify-end">
+                  <button
+                    type="button"
+                    className="ff-btn-outline"
+                    onClick={() => setQuizAberto(null)}
+                  >
+                    Voltar à aula
+                  </button>
+                </div>
                 <ContentQuiz
+                  key={`${assunto}-${quizAberto}`}
                   quiz={quiz}
                   accent="var(--primary)"
                   onAprovado={() => {
@@ -236,7 +262,7 @@ export function NewtonLesson({ lesson }: { lesson: LessonContent }) {
                   }}
                   onFechar={() => setQuizAberto(null)}
                 />
-              </div>
+              </section>
             );
           })()}
 

@@ -95,7 +95,7 @@ export function ConfiguracoesPage() {
               <div className="ff-divider-list mt-5 border-b border-t border-border">
                 <SettingRow
                   title="Modo foco"
-                  description="Simplifica a navegação e prioriza a questão atual."
+                  description="Esconde menus, rodapé e Tutor flutuante durante a Prática."
                 >
                   <Switch
                     aria-label="Ativar modo foco"
@@ -106,7 +106,7 @@ export function ConfiguracoesPage() {
 
                 <SettingRow
                   title="Duração da sessão"
-                  description="Define quando sugerir uma pausa."
+                  description="Tempo planejado para praticar. A barra na Prática acompanha a sessão; você decide quando parar."
                 >
                   <fieldset className="flex">
                     <legend className="sr-only">Duração da sessão</legend>
@@ -130,7 +130,7 @@ export function ConfiguracoesPage() {
 
                 <SettingRow
                   title="Meta diária"
-                  description="Questões que você pretende resolver por dia."
+                  description="Questões diferentes praticadas hoje neste aparelho. Cada questão conta uma vez, mesmo após corrigir a resposta. Acompanhe Hoje na Prática."
                 >
                   <div className="grid grid-cols-[2.75rem_5.5rem_2.75rem] border border-border">
                     <button
@@ -170,7 +170,7 @@ export function ConfiguracoesPage() {
 
                 <SettingRow
                   title="Mostrar cronômetro"
-                  description="Deixe desligado se contar o tempo causar pressão."
+                  description="Mostra minutos e segundos decorridos no topo da Prática. Desligado, fica só a barra de tempo."
                 >
                   <Switch
                     aria-label="Mostrar cronômetro"

@@ -12,6 +12,31 @@ vi.mock("@/lib/settings/use-site-settings", () => ({
 vi.mock("@/lib/profile/study-profile.server", () => ({ recordStudyActivityServerFn: vi.fn() }));
 
 describe("practice controllers", () => {
+  it("tracks the configured session duration and resets only the clock", () => {
+    vi.useFakeTimers();
+    try {
+      const { result, unmount } = renderHook(() =>
+        useQuestionPractice({ assunto: "lei-1", initialMode: "facil" }),
+      );
+      act(() => {
+        vi.advanceTimersByTime(599_000);
+      });
+      expect(result.current.segundosSessao).toBe(599);
+      expect(result.current.horaDaPausa).toBe(false);
+      act(() => {
+        vi.advanceTimersByTime(1_000);
+      });
+      expect(result.current.horaDaPausa).toBe(true);
+      const question = result.current.questaoAtual;
+      act(() => result.current.reiniciarTempo());
+      expect(result.current.segundosSessao).toBe(0);
+      expect(result.current.horaDaPausa).toBe(false);
+      expect(result.current.questaoAtual).toBe(question);
+      unmount();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   beforeEach(() => {
     localStorage.clear();
   });

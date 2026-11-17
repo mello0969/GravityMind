@@ -24,7 +24,7 @@ export function CalculationCard({
 
   return (
     <article className="ff-card overflow-hidden">
-      <div className="grid md:grid-cols-[minmax(0,1fr)_13rem]">
+      <div className="grid">
         <div className="p-5 sm:p-7 lg:p-9">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-muted-foreground">
             <span>Cálculo</span>
@@ -145,14 +145,14 @@ export function CalculationCard({
           )}
         </div>
 
-        <aside className="focus-optional border-t border-border bg-secondary/45 p-5 md:border-l md:border-t-0">
-          <p className="ff-kicker">Estratégia</p>
+        <details className="focus-optional border-t border-border p-5">
+          <summary className="cursor-pointer text-sm font-semibold">Ajuda para resolver</summary>
           <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
             <li>1. Liste os dados.</li>
             <li>2. Isole a incógnita.</li>
             <li>3. Confira unidade e sinal.</li>
           </ol>
-        </aside>
+        </details>
       </div>
     </article>
   );

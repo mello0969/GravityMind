@@ -3,6 +3,75 @@
 @import "./design.css";
 @source "../src";
 
+.gm-practice-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 54rem;
+  margin-inline: auto;
+}
+.gm-practice-settings {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+.gm-practice-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.gm-practice-options fieldset {
+  min-width: 0;
+}
+.gm-practice-options legend {
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+.gm-practice-settings-tools .gm-study-target {
+  margin-top: 0;
+  padding-top: 0;
+  border: 0;
+}
+.gm-practice-flow .gm-practice-support {
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: transparent;
+}
+.gm-practice-flow .gm-practice-hints {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+}
+.gm-practice-flow .gm-hint-button {
+  background: var(--secondary);
+  border-color: var(--border-strong);
+  color: var(--foreground);
+}
+.gm-practice-flow .gm-hint-list {
+  width: 100%;
+  margin-top: 0;
+}
+.gm-practice-flow .gm-practice-scratch {
+  padding: 0 0 0.5rem;
+}
+body:has(.study-focus-shell[data-focus="true"])
+  :is(.gm-site-header, .site-footer, .gm-contextual-tutor) {
+  display: none !important;
+}
+.study-focus-shell[data-focus="true"] {
+  min-height: 100dvh;
+  max-width: 54rem;
+}
+.study-focus-shell[data-focus="true"] :is(*, *::before, *::after) {
+  animation: none !important;
+  transition: none !important;
+}
+.study-focus-shell.gm-practice-page[data-focus="true"] .study-focus-surface {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
 .gm-practice-support {
   border: 1px solid var(--border-strong);
   background: var(--card);

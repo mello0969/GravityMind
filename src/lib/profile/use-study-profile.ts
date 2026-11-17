@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/use-auth";
 import { PROGRESS_EVENT, storageKey } from "@/lib/brand";
+import { dailyPractice, studyDay } from "@/lib/profile/daily-practice";
 import { montarPerfilAprendizagem } from "@/lib/profile/engine";
 import {
   getStudyProfileServerFn,
@@ -14,10 +15,6 @@ const LOCAL_GOAL_KEY = () => storageKey("daily-goal");
 
 function localProfile(): StudyProfile {
   const history = obterHistorico();
-  const today = new Date().toLocaleDateString("en-CA");
-  const todayAnswers = history.filter(
-    (answer) => new Date(answer.respondidoEm).toLocaleDateString("en-CA") === today,
-  );
   let correctStreak = 0;
   for (const answer of [...history].reverse()) {
     if (!answer.correta) break;
@@ -30,8 +27,7 @@ function localProfile(): StudyProfile {
     correctStreak,
     bestCorrectStreak: correctStreak,
     totalXp: calcularRecompensas().creditos,
-    todayAnswers: todayAnswers.length,
-    todayCorrect: todayAnswers.filter((answer) => answer.correta).length,
+    ...dailyPractice(history),
     plan: "free",
   };
 }
@@ -52,7 +48,15 @@ export function useStudyProfile() {
     }
     try {
       const result = await getStudyProfileServerFn();
-      setProfile(result.profile ?? fallback);
+      setProfile(
+        result.profile
+          ? {
+              ...result.profile,
+              todayAnswers: fallback.todayAnswers,
+              todayCorrect: fallback.todayCorrect,
+            }
+          : fallback,
+      );
     } catch {
       setProfile(fallback);
     } finally {
@@ -64,7 +68,18 @@ export function useStudyProfile() {
     if (authLoading) return;
     void refresh();
     window.addEventListener(PROGRESS_EVENT, refresh);
-    return () => window.removeEventListener(PROGRESS_EVENT, refresh);
+    let previousDay = studyDay();
+    const rollover = window.setInterval(() => {
+      const today = studyDay();
+      if (today !== previousDay) {
+        previousDay = today;
+        void refresh();
+      }
+    }, 60_000);
+    return () => {
+      window.removeEventListener(PROGRESS_EVENT, refresh);
+      window.clearInterval(rollover);
+    };
   }, [authLoading, refresh]);
 
   const updateDailyGoal = useCallback(
@@ -77,7 +92,7 @@ export function useStudyProfile() {
       if (!usuario) return;
       try {
         const result = await updateDailyGoalServerFn({ data: { dailyGoal } });
-        if (result.profile) setProfile(result.profile);
+        if (result.profile) setProfile({ ...result.profile, ...dailyPractice(obterHistorico()) });
       } catch {
         // The local goal remains usable until cloud sync is available again.
       }

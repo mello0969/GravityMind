@@ -17,6 +17,7 @@ test("adaptive practice is free while the Tutor requires a real account", async 
   await expect(page.locator("main textarea")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Nova conversa" })).toHaveCount(0);
   await page.goto("/questoes");
+  await page.getByText("Personalizar prática", { exact: false }).click();
   await expect(page.getByRole("button", { name: "Adaptativo", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",

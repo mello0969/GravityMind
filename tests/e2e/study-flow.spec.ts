@@ -28,7 +28,8 @@ test("home presents a clear entry to free study, without plans or embedded quest
 test("question hints stop at two and filters live in the URL", async ({ page }) => {
   await page.goto("/questoes?assunto=mecanica&modo=dificil");
   await waitForApp(page);
-  await expect(page.getByRole("button", { name: "Adaptativo" })).toBeVisible();
+  await page.getByText("Personalizar prática", { exact: false }).click();
+  await expect(page.getByRole("button", { name: "Adaptativo", exact: true })).toBeVisible();
   const hint = page.getByRole("button", { name: /Usar dica/ });
   await hint.click();
   await hint.click();
@@ -85,6 +86,10 @@ test("focus mode isolates the practice surface", async ({ page }) => {
   await expect(page.locator(".study-focus-shell")).toHaveAttribute("data-focus", "true");
   await expect(page.locator(".study-focus-surface")).toBeVisible();
   await expect(page.locator(".focus-optional").first()).toBeHidden();
+  await expect(page.locator(".gm-site-header")).toBeHidden();
+  await expect(page.locator(".site-footer")).toBeHidden();
+  await expect(page.getByRole("button", { name: "Sair do foco", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Usar dica/ })).toBeVisible();
 
   await page.goto("/calculo");
   await waitForApp(page);

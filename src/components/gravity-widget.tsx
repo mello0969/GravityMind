@@ -53,7 +53,7 @@ export function GravityWidget() {
             transition={{ duration: movimentoReduzido ? 0 : 0.18 }}
             role="dialog"
             aria-label="Tutor Gravity"
-            className="fixed bottom-20 right-4 z-50 w-[min(400px,calc(100vw-2rem))] border border-border-strong bg-card p-4"
+            className="gm-contextual-tutor fixed bottom-20 right-4 z-50 w-[min(400px,calc(100vw-2rem))] border border-border-strong bg-card p-4"
           >
             <div className="mb-3 flex items-start justify-between border-b border-border pb-3">
               <div>
@@ -93,7 +93,7 @@ export function GravityWidget() {
         onClick={() => setAberto((valor) => !valor)}
         aria-label={aberto ? "Fechar tutor Gravity" : "Abrir tutor Gravity"}
         aria-expanded={aberto}
-        className="fixed bottom-4 right-4 z-50 grid h-12 w-12 place-items-center border border-primary bg-primary text-primary-foreground hover:bg-[var(--primary-hover)]"
+        className="gm-contextual-tutor fixed bottom-4 right-4 z-50 grid h-12 w-12 place-items-center border border-primary bg-primary text-primary-foreground hover:bg-[var(--primary-hover)]"
       >
         {aberto ? (
           <X className="h-5 w-5" aria-hidden="true" />

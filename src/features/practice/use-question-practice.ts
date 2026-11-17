@@ -53,7 +53,7 @@ export function useQuestionPractice({
   const inicioQuestaoRef = useRef(Date.now());
   const inicioSessaoRef = useRef(Date.now());
   const metaSessao = META_POR_MINUTOS[settings.sessionMinutes];
-  const duracaoMovimento = settings.motion === "reduced" ? 0 : 0.24;
+  const duracaoMovimento = settings.motion === "reduced" || settings.focusMode ? 0 : 0.24;
 
   function carregarMultipla() {
     setRequestIds([...respondidoIds]);
@@ -220,6 +220,11 @@ export function useQuestionPractice({
   const sessaoConcluida = sessao.total >= metaSessao;
   const horaDaPausa = settings.breakReminders && segundosSessao >= settings.sessionMinutes * 60;
 
+  function reiniciarTempo() {
+    inicioSessaoRef.current = Date.now();
+    setSegundosSessao(0);
+  }
+
   return {
     settings,
     modo,
@@ -253,5 +258,6 @@ export function useQuestionPractice({
     useHint,
     sessaoConcluida,
     horaDaPausa,
+    reiniciarTempo,
   };
 }

@@ -28,7 +28,7 @@ test("restored navigation exposes every study route on desktop and mobile", asyn
 
 test("practice submits a response and still offers calculation mode", async ({ page }) => {
   await page.goto("/questoes?assunto=lei-2&modo=facil");
-  await page.getByRole("button", { name: "Fácil", exact: true }).waitFor();
+  await expect(page.getByRole("group", { name: "Alternativas" })).toBeVisible();
   const answers = page.getByRole("group", { name: "Alternativas" }).getByRole("button");
   await answers.first().click();
   await page.getByRole("button", { name: "Verificar resposta", exact: true }).click();
